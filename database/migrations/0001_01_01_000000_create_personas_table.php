@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
-            $table->enum('sexo',['M','F',O]);
+            $table->enum('sexo',['M','F','O']);
             $table->date('fecha_nacimiento');
             $table->string('CURP')->unique();
             $table->string('RFC')->unique();
@@ -34,4 +34,10 @@ return new class extends Migration
     {
         Schema::dropIfExists('personas');
     }
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('jobs');
+    //     Schema::dropIfExists('job_batches');
+    //     Schema::dropIfExists('failed_jobs');
+    // }
 };
