@@ -15,7 +15,8 @@ class Producto extends Model
         'porcentaje_comision',
         'seguro',
         'quincenas',
-        'interes_quincenal'
+        'interes_quincenal',
+        'activo'
     ];
 
     public function vale(): HasMany{

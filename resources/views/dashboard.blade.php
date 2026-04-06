@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Prevale</title>
+    <title>Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <style>
@@ -39,8 +39,9 @@
     }
 
     .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: white;
         margin-bottom: 30px;
         padding-bottom: 15px;
         border-bottom: 1px solid #374151;
@@ -124,24 +125,36 @@
                     <span>+</span> Nueva Distribuidora
                 </a>
             @endif
+            @if(auth()->check() && auth()->user()->role_id == 4)
+                <a href="#" class="btn-nueva" style="display: block; position: relative; z-index: 999;">
+                    <span>Crear Prevale</span>
+                </a>
+            @endif
             <nav>
                 <ul class="menu-nav">
+                    @if(auth()->check() && auth()->user()->role_id == 1)
                     <li><a href="#">Distribuidoras</a></li>
+                    @endif
+                    @if(auth()->check() && auth()->user()->role_id == 1)
                     <li><a href="#">Préstamos</a></li>
+                    @endif
+                    @if(auth()->check() && auth()->user()->role_id == 1)
                     <li><a href="#">Configuración</a></li>
-                    <li><a href="3">Memin</a></li>
-                    <li><a href="3">Memin</a></li>
-                    <li><a href="3">Memin</a></li>
-                    <li><a href="3">Memin</a></li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display: none;">
-                            @csrf
-                        </form>
-                        <a href="{{ route('logout') }}" 
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                        style="color: #ef4444; font-weight: bold;">
-                            Cerrar Sesión
-                        </a>
+                    @endif
+                    @if(auth()->check() && auth()->user()->role_id == 1)
+                    <li><a href="#">Productos</a></li>
+                    @endif
+                    @if(auth()->check() && auth()->user()->role_id == 4)
+                    <li><a href="#">Clientes</a></li>
+                    @endif
+                    <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display: none;">
+                        @csrf
+                    </form>
+                    <a href="{{ route('logout') }}" 
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    style="color: #ef4444; font-weight: bold;">
+                        Cerrar Sesión
+                    </a>
                     </li>
                 </ul>
             </nav>
@@ -154,19 +167,8 @@
                     {{ auth()->user()->persona->nombre }}!!
                 </span>
             </h1>
-            <p style="margin-top: 20px; color: #6b7280;">
-                Aquí aparecerá el listado y la gestión de tus distribuidoras.
-            </p>
-            <div>
-                <div>
-                    <div>1</div>
-                    <div>2</div>
-                    <div>3</div>
-                </div>
-                <div>
-                    <div>4</div>
-                    <div>5</div>
-                </div>
+            <div style="background:blue; height:95%">
+               AQUI SE DEBE MOSTAR MI TABLA PRODUCTOS
             </div>
         </main>
     </div>

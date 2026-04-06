@@ -15,6 +15,11 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/productos', function () {
+        return view('productos');
+    })->name('productos.index');
+    
     //Esta ruta manda a la vista de register 
     Route::get('/nueva-distribuidora', function () {
         return view('auth.register'); // Aquí le dices que use la vista de register auth

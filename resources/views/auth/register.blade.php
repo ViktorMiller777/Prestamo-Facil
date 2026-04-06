@@ -115,18 +115,45 @@
     .btn-submit:hover {
         background: #1d4ed8;
     }
+    .pf-header {
+        background: #111827;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--pf-border);
+    }
+
+    .pf-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: white;
+    }
+
+    .pf-logo-box {
+        background: #305be3;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
 
     /* Estilo para campos ocultos */
     .hidden { display: none; }
 </style>
 <body>
    <div class="barra">
-        <a href="{{ route('dashboard') }}" style="text-decoration: none; display: flex; align-items: center; gap: 20px;">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTF2fW_vpJTD4IBpyFft432fK67ngMkG9YtGOUBh-RW01Q9LaF9kgu_zSl6wU72JKcXNEglBxq-tgmLMn1N6eJWILnmnnIlZV_7Mn90bR6tBA&s=10" alt="Logo">
-            <h1>Creando Presolicitud</h1>
+        <header class="pf-header">
+            <div class="pf-logo">
+                <div class="pf-logo-box">PF</div>
+                Préstamo Fácil
+            </div>
+        </header>
         </a>
 
-        <a href="{{ route('dashboard') }}" style="margin-left: auto; color: #9ca3af; text-decoration: none; font-size: 0.8rem; border: 1px solid #374151; padding: 5px 12px; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.color='white'; this.style.borderColor='white'" onmouseout="this.style.color='#9ca3af'; this.style.borderColor='#374151'">
+        <a href="{{ route('dashboard') }}" style="margin-left: auto; color: white; text-decoration: none; font-size: 0.95rem; padding: 5px 12px; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.color='white'; this.style.borderColor='white'" onmouseout="this.style.color='#9ca3af'; this.style.borderColor='#374151'">
             ← Volver al Dashboard
         </a>
     </div>

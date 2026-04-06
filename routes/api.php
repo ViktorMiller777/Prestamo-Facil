@@ -31,7 +31,7 @@ Route::post('/crearVale',[ValesController::class,'crearPrevale']);
 //RUTA PARA CREAR UN CLIENTE
 Route::post('/crearCliente',[ClientesController::class,'crearCliente']);
 //RUTA PARA QUE EL COORDINADOR CREE UN PRODUCTO
-Route::post('/crearProducto',[ProductosController::class,'crearProducto']);
+Route::post('/crear/producto',[ProductosController::class,'crearProducto']);
 //RUTA PARA CREAR A LOS FAMILIAR DE UNA DISTRIBUIDORA
 Route::post('/crearDatoFamilia',[DatosFamiliaresController::class,'crearDatoFamiliar']);
 
@@ -39,6 +39,7 @@ Route::post('/crearVehiculo',[DatosVehiculosController::class,'crearVehiculo']);
 
 Route::post('/crearAfilial',[AfilialesController::class,'crearAfilial']);
 
+Route::get('/lista/productos',[ProductosController::class,'listaProductos']);
 
 
 
