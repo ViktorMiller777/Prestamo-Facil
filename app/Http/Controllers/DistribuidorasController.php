@@ -12,9 +12,7 @@ use Illuminate\Http\Request;
 class DistribuidorasController
 {
     public function listaDistribuidoras(){
-        $distribuidoras = Distribuidora::with([
-            'usuario.persona',
-        ]);
+        $distribuidoras = Distribuidora::with('usuario.persona')->get();
 
         return response()->json([
             'mensaje' => 'Lista de distribuidoras',

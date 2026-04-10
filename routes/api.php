@@ -12,6 +12,10 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\DatosFamiliaresController;
 use App\Http\Controllers\DatosVehiculosController;
 use App\Http\Controllers\AfilialesController;
+use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\RelacionesController;
+
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -19,44 +23,41 @@ Route::get('/user', function (Request $request) {
 
 
 //PARA CREAR UNA PERSONA
-Route::post('/crearPersona',[PersonasController::Class,'crearPersona']);
+Route::post('/crear/persona',[PersonasController::Class,'crearPersona']);
 //RUTA PARA PRIMERO CREAR UNA PERSONA Y LUEGO AL USUARIO
-Route::post('/crearUsuario',[UsersController::class,'crearUsuario']);
+Route::post('/crear/usuario',[UsersController::class,'crearUsuario']);
 //RUTA PARA PRIMERO CREAR UNA PERSONA LUEGO USUARIO Y AL FINAL DISTRIBUIDORA
-Route::post('/crearDistribuidora',[DistribuidorasController::class,'crearDistribuidora']);
+Route::post('/crear/distribuidora',[DistribuidorasController::class,'crearDistribuidora']);
 //RUTA PRAA INICIAR SESION
 Route::post('/login', [AuthController::class,'iniciarSesion']);
+
+
+
 //RUTA PARA CREAR UN VALE
-Route::post('/crearVale',[ValesController::class,'crearPrevale']);
+Route::post('/crear/vale',[ValesController::class,'crearPrevale']);
 //RUTA PARA CREAR UN CLIENTE
-Route::post('/crearCliente',[ClientesController::class,'crearCliente']);
+Route::post('/crear/cliente',[ClientesController::class,'crearCliente']);
 //RUTA PARA QUE EL COORDINADOR CREE UN PRODUCTO
 Route::post('/crear/producto',[ProductosController::class,'crearProducto']);
 //RUTA PARA CREAR A LOS FAMILIAR DE UNA DISTRIBUIDORA
-Route::post('/crearDatoFamilia',[DatosFamiliaresController::class,'crearDatoFamiliar']);
+Route::post('/crear/datoFamilia',[DatosFamiliaresController::class,'crearDatoFamiliar']);
 //Ruta para crear un vehiculo a una distribuidora
-Route::post('/crearVehiculo',[DatosVehiculosController::class,'crearVehiculo']);
+Route::post('/crear/vehiculo',[DatosVehiculosController::class,'crearVehiculo']);
 //Ruta para crear un afiliar a una distribuidora
-Route::post('/crearAfilial',[AfilialesController::class,'crearAfilial']);
+Route::post('/crear/afilial',[AfilialesController::class,'crearAfilial']);
 //Ruta para mostrar la lista de lo productos
 Route::get('/lista/productos',[ProductosController::class,'listaProductos']);
-
 //Ruta para editar un producto por su ID utilizando patch para campos parciales
 Route::patch('/editar/producto/{id}',[ProductosController::class,'editarProducto']);
-
-
-
-
-
-Route::get('/distribuidoras-detalle', [DistribuidorasController::class, 'obtenerDetalleDistribuidoras']);
-
-// Route::middleware('auth:sanctum')->group(function () {
-    
-//     // Ahora esta ruta está protegida
-//     Route::post('/crearDistribuidora', [DistribuidorasController::class, 'store']);
-    
-//     // Puedes crear una ruta rápida para probar tu identidad
-//     Route::get('/quien-soy', function (Request $request) {
-//         return $request->user()->load('persona', 'role');
-//     });
-// });
+//Ruta de lista de las distribuidoras
+Route::get('/lista/distribuidoras',[DistribuidorasController::class,'listaDistribuidoras']);
+//Ruta para subir de categoria una distribuidora
+Route::patch('/subir/categoria/{id}',[CategoriasController::class,'subirCategoria']);
+//Ruta para bajar de categoria un distribuidora
+Route::patch('/bajar/categoria/{id}',[CategoriasController::class,'bajarCategoria']);
+//Ruta para crear una relacion
+Route::post('/crear/relacion',[RelacionesController::class,'crearRelacion']);
+//Ruta para ver todas las relaciones con el nombre de la distribuidora
+Route::get('lista/relaciones',[RelacionesController::class,'listaRelaciones']);
+//Ruta de todos los vales creados 
+Route::get('lista/vales',[ValesController::class,'listaVales']);

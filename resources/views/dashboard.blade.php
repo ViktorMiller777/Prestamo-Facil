@@ -288,7 +288,10 @@
             <nav>
                 <ul class="menu-nav">
                     <li><a href="#" onclick="cargarVista('productos', this)">Productos</a></li>
-                    <li><a href="#" onclick="cargarVista('productos', this)">Distribuidoras</a></li>
+                    <li><a href="#" onclick="cargarVista('distribuidoras', this)">Distribuidoras</a></li>
+                    <li><a href="#" onclick="cargarVista('distribuidoras', this)">Relaciones</a></li>
+                    <li><a href="#" onclick="cargarVista('distribuidoras', this)">Vales</a></li>
+                    <li><a href="#" onclick="cargarVista('distribuidoras', this)">Configuracion</a></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display:none;">
                             @csrf
@@ -336,7 +339,7 @@
             cargarProductos();
         }
         if(nombre === 'distribuidoras'){
-            cargarProductos();
+            cargarDistribuidoras();
         }
     }
     function cargarProductos() {
@@ -399,6 +402,10 @@
             document.getElementById('panel-contenido').innerHTML =
                 `<p style="color:#ef4444; text-align:center; padding:40px;">Error al cargar productos.</p>`;
         });
+    }
+
+    function cargarDistribuidoras(){
+        
     }
 
     function abrirModal(id, monto, comision, seguro, quincenas, interes) {
