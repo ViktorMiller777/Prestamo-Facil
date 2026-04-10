@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DistribuidorasController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,6 +12,23 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/db-status', function () {
+    try {
+        $result = DB::select('SELECT @@server_id as server_id, @@hostname as hostname');
+        
+        return [
+            'client_ip' => request()->ip(),
+            'is_vpn' => strpos(request()->ip(), '10.200.0.') === 0,
+            'current_mysql_host' => config('database.connections.mysql.host'),
+            'mysql_server_id' => $result[0]->server_id ?? 'unknown',
+            'mysql_hostname' => $result[0]->hostname ?? 'unknown',
+            'app_server_hostname' => gethostname(),
+        ];
+    } catch (\Exception $e) {
+        return ['error' => $e->getMessage()];
+    }
+});
 
 
 
