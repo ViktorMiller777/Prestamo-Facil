@@ -5,18 +5,7 @@ use App\Http\Controllers\DistribuidorasController;
 use Illuminate\Support\Facades\Route;
 
 
-use App\Http\Controllers\Verificador\BandejaController;
-use App\Http\Controllers\Verificador\ExpedienteController;
-use App\Http\Controllers\Verificador\DomicilioController;
-use App\Http\Controllers\Cajera\ConciliacionController;
-use App\Http\Controllers\Cajera\PrevalesController;    
-use App\Http\Controllers\Cajera\MonitorController;
-use App\Http\Controllers\Distribuidora\CuentaController;      
-use App\Http\Controllers\Distribuidora\PuntosController; 
-use App\Http\Controllers\Distribuidora\ClientesController;  
-use App\Http\Controllers\Distribuidora\TokenController;  
-use App\Http\Controllers\NotificacionesController;
-use App\Http\Controllers\PerfilController;
+
 
 
 Route::get('/', function () {
