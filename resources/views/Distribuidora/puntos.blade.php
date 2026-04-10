@@ -121,78 +121,28 @@
     .mono { font-family: 'DM Mono', monospace; }
     .pts-plus { color: #16A34A; font-weight: 700; }
     .pts-minus { color: #DC2626; font-weight: 700; }
-
- /* ── TABLET (10 pulgadas aprox) ── */
+    
 @media (max-width: 1024px) {
 
-    .topbar {
-        flex-direction: column;
-        gap: 10px;
-        padding: 20px;
-    }
+    .topbar { padding: 20px; }
+    .topbar-title { font-size: 1.3rem; }
 
-    .topbar-title {
-        font-size: 1.3rem;
-    }
+    .main-card { margin: 0 16px 16px 16px; }
+    .historial-card { margin: 0 16px 32px 16px; }
 
-    .main-card {
-        margin: 0 20px 24px 20px;
-    }
+    .pts-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .pts-right { text-align: left; }
+    .pts-num { font-size: 2.8rem; }
 
-    /* Banner */
-    .banner {
-        flex-direction: column;
-        gap: 10px;
-    }
+    .multiplos-grid { grid-template-columns: 1fr 1fr; }
 
-    .banner-right {
-        text-align: left;
-    }
+    .resumen-card { flex-direction: column; align-items: flex-start; gap: 8px; }
 
-    /* Stats: 2x2 */
-    .stats-row {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .stat-cell {
-        padding: 14px;
-    }
-
-    /* Tabla scroll horizontal */
-    .pf-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
+    .pf-table { display: block; overflow-x: auto; white-space: nowrap; }
     .pf-table th,
-    .pf-table td {
-        padding: 10px 12px;
-        font-size: .78rem;
-    }
-
-    /* Crédito */
-    .credito-bar-wrap {
-        padding: 12px 14px;
-    }
-
-    /* Info banner */
-    .info-banner {
-        font-size: .78rem;
-        padding: 10px 14px;
-    }
-
-    /* Total bar */
-    .total-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .total-val {
-        font-size: 1.4rem;
-    }
+    .pf-table td { padding: 10px 14px; font-size: .78rem; }
 }
+
 </style>
 
 <div class="page-wrapper">

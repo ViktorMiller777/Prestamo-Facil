@@ -90,7 +90,7 @@
     .pf-table td { padding: 14px 22px; color: #334155; border-bottom: 1px solid #F8FAFC; vertical-align: middle; }
     .pf-table tr:last-child td { border-bottom: none; }
     .pf-table tr:hover td { background: #F8FAFC; }
-    .row-moroso   td { background: #FFF1F2; }
+    .row-moroso    td { background: #FFF1F2; }
     .row-pendiente td { background: #FFFBEB; }
 
     .cliente-name { font-size: .92rem; font-weight: 700; color: #0B1F3A; }
@@ -191,92 +191,22 @@
     .btn-danger { background: #FEE2E2; color: #B91C1C; border: 1.5px solid #FECACA; }
     .btn-danger:hover { background: #FECACA; }
 
-    /* ── ADAPTACIÓN SOLO PARA TABLET 10" ── */
-@media (max-width: 1280px) {
+    @media (max-width: 1024px) {
 
-    /* Márgenes generales */
-    .topbar,
-    .kpi-row,
-    .main-card {
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-        margin-left: 16px !important;
-        margin-right: 16px !important;
-    }
+    .topbar { padding: 20px; }
+    .topbar-title { font-size: 1.3rem; }
 
-    /* Topbar más compacto */
-    .topbar {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
+    .kpi-row { grid-template-columns: 1fr; padding: 0 16px 16px 16px; }
 
-    /* KPI → 2 columnas (no 3) */
-    .kpi-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
+    .main-card { margin: 0 16px 32px 16px; }
 
-    /* Header tabla */
-    .card-header-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
+    .card-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
 
-    /* Buscador más usable */
-    .search-input {
-        width: 100%;
-    }
+    .search-input { width: 100%; box-sizing: border-box; }
 
-    /* Tabs con scroll (clave) */
-    .tabs-row {
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
+    .tabs-row { overflow-x: auto; padding: 0 16px; }
 
-    .tabs-row::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Tabla */
-    .pf-table {
-        min-width: 800px;
-    }
-
-    .main-card {
-        overflow-x: auto;
-    }
-
-    /* Padding tabla más compacto */
-    .pf-table th,
-    .pf-table td {
-        padding: 10px 12px;
-    }
-
-    /* Tipografía ligera */
-    .kpi-value {
-        font-size: 1.6rem;
-    }
-
-    .topbar-title {
-        font-size: 1.3rem;
-    }
-
-    /* Modal más cómodo en tablet */
-    .modal-box {
-        width: 90%;
-        padding: 20px;
-    }
-
-    .modal-footer {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
-    }
-}
+    .pf-table { display: block; overflow-x: auto; w
 </style>
 
 <div class="page-wrapper">
@@ -291,20 +221,20 @@
     <div class="kpi-row">
         <div class="kpi-card blue-left">
             <div class="kpi-label">Total clientes</div>
-            {{-- TODO: traer de BD --}}
-            <div class="kpi-value"></div>
+            {{-- TODO: $totalClientes --}}
+            <div class="kpi-value">{{ $totalClientes ?? '—' }}</div>
             <div class="kpi-sub blue">En tu red</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Al corriente</div>
-            {{-- TODO: traer de BD --}}
-            <div class="kpi-value"></div>
+            {{-- TODO: $totalCorriente --}}
+            <div class="kpi-value">{{ $totalCorriente ?? '—' }}</div>
             <div class="kpi-sub green">Pagando bien</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Con problemas</div>
-            {{-- TODO: traer de BD --}}
-            <div class="kpi-value"></div>
+            {{-- TODO: $totalProblemas --}}
+            <div class="kpi-value">{{ $totalProblemas ?? '—' }}</div>
             <div class="kpi-sub red">Requieren atención</div>
         </div>
     </div>
@@ -317,13 +247,21 @@
         </div>
 
         <div class="tabs-row">
-            {{-- TODO: mostrar conteos reales desde BD --}}
             <button class="tab-btn active">Todos</button>
             <button class="tab-btn">Al corriente</button>
             <button class="tab-btn">Morosos</button>
             <button class="tab-btn">Solicitud pendiente</button>
         </div>
 
+        {{--
+            JOIN necesario en el controller:
+                Clientes
+                    LEFT JOIN Personas   ON Clientes.cliente_id      = Personas.ID
+                    LEFT JOIN Vales      ON Clientes.cliente_id       = Vales.cliente_id
+                    LEFT JOIN Productos  ON Vales.producto_id         = Productos.ID
+                    LEFT JOIN Detalle_vale ON Vales.ID               = Detalle_vale.vale_id (para quincenas)
+                    LEFT JOIN Relacion   ON Vales.ID                  = Relacion.vale_id
+        --}}
         <table class="pf-table">
             <thead>
                 <tr>
@@ -336,24 +274,37 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- TODO: iterar clientes desde BD --}}
-                {{--
-                @foreach($clientes as $cliente)
+                @forelse($clientes ?? [] as $cliente)
                 <tr class="
-                    {{ $cliente->estado === 'moroso' ? 'row-moroso' : '' }}
+                    {{ $cliente->estado === 'moroso'            ? 'row-moroso'    : '' }}
                     {{ $cliente->estado === 'solicitud_enviada' ? 'row-pendiente' : '' }}
                 ">
+                    {{-- Personas.nombre + Personas.apellido + Clientes.cliente_id --}}
                     <td>
-                        <div class="cliente-name">{{ $cliente->nombre }}</div>
-                        <div class="cliente-sub">Activo desde {{ $cliente->desde }}</div>
+                        <div class="cliente-name">{{ $cliente->nombre }} {{ $cliente->apellido }}</div>
+                        <div class="cliente-sub mono">#{{ $cliente->cliente_id }}</div>
                     </td>
-                    <td><span class="badge badge-blue">{{ $cliente->producto }}</span></td>
-                    <td class="mono" style="color:{{ $cliente->pagos_ok ? '#16A34A' : '#D97706' }};">
-                        {{ $cliente->pagos_realizados }}/{{ $cliente->pagos_total }}
+
+                    {{-- Productos.nombre via Vales.producto_id --}}
+                    <td>
+                        <span class="badge badge-blue">{{ $cliente->producto_nombre ?? '—' }}</span>
                     </td>
+
+                    {{-- Relacion.numero_pago_actual / Detalle_vale.quincenas --}}
+                    <td class="mono" style="color:{{ ($cliente->numero_pago_actual >= $cliente->quincenas) ? '#16A34A' : '#D97706' }};">
+                        {{ $cliente->numero_pago_actual ?? 0 }}/{{ $cliente->quincenas ?? '—' }}
+                    </td>
+
+                    {{-- (quincenas - numero_pago_actual) * Relacion.monto_pago_quincenal + Relacion.recargos --}}
                     <td class="mono" style="color:{{ $cliente->estado === 'moroso' ? '#DC2626' : '#334155' }};">
-                        ${{ $cliente->adeudo }}
+                        ${{ number_format(
+                            (($cliente->quincenas - $cliente->numero_pago_actual) * $cliente->monto_pago_quincenal)
+                            + ($cliente->recargos ?? 0),
+                            2
+                        ) }}
                     </td>
+
+                    {{-- Clientes.estado --}}
                     <td>
                         @if($cliente->estado === 'corriente')
                             <span class="badge badge-green">Al corriente</span>
@@ -363,26 +314,27 @@
                             <span class="badge badge-amber">Solicitud enviada</span>
                         @endif
                     </td>
+
+                    {{-- Botón siempre visible --}}
                     <td>
-                        @if($cliente->estado === 'corriente')
-                            <button class="btn-moroso"
-                                onclick="abrirModal('{{ $cliente->nombre }}', '{{ $cliente->producto }}', '${{ $cliente->adeudo }}')">
-                                Reportar moroso
-                            </button>
-                        @elseif($cliente->estado === 'solicitud_enviada')
-                            <span style="font-size:.78rem;color:#94A3B8;">En revisión coordinador</span>
-                        @else
-                            <span style="font-size:.78rem;color:#94A3B8;">Confirmado</span>
-                        @endif
+                        <button class="btn-moroso"
+                            onclick="abrirModal(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}',
+                                '{{ $cliente->producto_nombre }}',
+                                '{{ $cliente->cliente_id }}'
+                            )">
+                            Reportar moroso
+                        </button>
                     </td>
+
                 </tr>
-                @endforeach
-                --}}
+                @empty
                 <tr>
                     <td colspan="6" style="text-align:center;color:#94A3B8;padding:32px;font-size:.85rem;">
-                        Los clientes aparecerán aquí cuando se conecte la base de datos.
+                        No hay clientes registrados en tu red.
                     </td>
                 </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
@@ -396,7 +348,6 @@
         <div class="modal-sub">Esta solicitud se enviará al coordinador para su aprobación. No se aplica automáticamente.</div>
 
         <div class="modal-cliente">
-            {{-- TODO: llenar con datos del cliente seleccionado --}}
             <div class="modal-cliente-name" id="modal-nombre"></div>
             <div class="modal-cliente-sub" id="modal-sub"></div>
         </div>
@@ -426,9 +377,9 @@
 </div>
 
 <script>
-    function abrirModal(nombre, producto, adeudo) {
+    function abrirModal(nombre, producto, clienteId) {
         document.getElementById('modal-nombre').textContent = nombre;
-        document.getElementById('modal-sub').textContent = producto + ' · Adeudo: ' + adeudo;
+        document.getElementById('modal-sub').textContent = producto + ' · ID: ' + clienteId;
         document.getElementById('modal').classList.add('show');
     }
 

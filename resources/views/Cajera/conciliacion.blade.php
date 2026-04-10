@@ -6,7 +6,7 @@
 <style>
     .page-wrapper { background: #F0F2F7; min-height: 100vh; font-family: 'DM Sans', sans-serif; }
 
-    /* ── Topbar ── */
+    /* ── Topbar holaaaaaa ── */
     .topbar {
         display: flex;
         align-items: flex-start;
@@ -74,14 +74,6 @@
     }
     .main-card-title { font-size: 1rem; font-weight: 700; color: #0B1F3A; margin-bottom: 3px; }
     .main-card-sub   { font-size: .82rem; color: #94A3B8; }
-    .badge-cargado {
-        padding: 4px 12px;
-        background: #DCFCE7;
-        color: #166534;
-        font-size: .78rem;
-        font-weight: 700;
-        border-radius: 99px;
-    }
 
     /* ── Archivo cargado row ── */
     .file-loaded-row {
@@ -138,7 +130,6 @@
     }
     .drop-zone:hover { border-color: #2563EB; background: #DBEAFE; }
     .drop-zone.dragover { border-color: #2563EB; background: #DBEAFE; }
-
     .drop-icon {
         width: 56px; height: 56px;
         background: #DBEAFE;
@@ -160,9 +151,68 @@
         font-weight: 500;
         margin-top: 4px;
     }
-
-    /* Input file oculto */
     #file-input { display: none; }
+
+    /* ── Tabla de resultados ── */
+    .resultados-card {
+        margin: 0 32px 16px 32px;
+        background: #fff;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 14px;
+        overflow: hidden;
+        display: none;
+    }
+    .resultados-header {
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .resultados-title { font-size: 1rem; font-weight: 700; color: #0B1F3A; }
+    .resultados-sub   { font-size: .82rem; color: #94A3B8; margin-top: 2px; }
+
+    .kpi-concil {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .kpi-cell {
+        padding: 16px 20px;
+        border-right: 1px solid #F1F5F9;
+    }
+    .kpi-cell:last-child { border-right: none; }
+    .kpi-lbl { font-size: .68rem; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .kpi-val { font-size: 1.2rem; font-weight: 700; font-family: 'DM Mono', monospace; color: #0B1F3A; }
+    .kpi-val.green  { color: #16A34A; }
+    .kpi-val.red    { color: #DC2626; }
+    .kpi-val.blue   { color: #2563EB; }
+
+    .concil-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    .concil-table th {
+        padding: 10px 18px;
+        text-align: left;
+        color: #94A3B8;
+        font-weight: 700;
+        font-size: .68rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        border-bottom: 1px solid #F1F5F9;
+        background: #F8FAFC;
+    }
+    .concil-table td {
+        padding: 13px 18px;
+        color: #334155;
+        border-bottom: 1px solid #F8FAFC;
+        vertical-align: middle;
+    }
+    .concil-table tr:last-child td { border-bottom: none; }
+    .concil-table tr:hover td { background: #F8FAFC; }
+
+    .badge-ok    { background: #DCFCE7; color: #166534; padding: 3px 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; }
+    .badge-diff  { background: #FEF3C7; color: #92400E; padding: 3px 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; }
+    .badge-noenc { background: #FEE2E2; color: #991B1B; padding: 3px 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; }
+    .mono { font-family: 'DM Mono', monospace; }
 
     /* ── Nota inferior ── */
     .nota-card {
@@ -174,6 +224,20 @@
         font-size: .82rem;
         color: #94A3B8;
         line-height: 1.5;
+    }
+
+    /* ── Tablet ── */
+    @media (max-width: 1024px) {
+        .topbar { flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; }
+        .topbar-title { font-size: 1.3rem; }
+        .steps-row { grid-template-columns: 1fr; padding: 0 16px 16px 16px; }
+        .main-card { margin: 0 16px 16px 16px; }
+        .resultados-card { margin: 0 16px 16px 16px; }
+        .nota-card { margin: 0 16px 32px 16px; }
+        .kpi-concil { grid-template-columns: 1fr 1fr; }
+        .concil-table { display: block; overflow-x: auto; white-space: nowrap; }
+        .file-loaded-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .btn-quitar { width: 100%; justify-content: center; }
     }
 </style>
 
@@ -188,46 +252,45 @@
             </div>
         </div>
         <div class="topbar-actions">
-            
-            <button class="btn-tb btn-tb-primary">Iniciar conciliación</button>
+            <button class="btn-tb btn-tb-primary" id="btn-conciliar" onclick="iniciarConciliacion()" disabled>
+                Iniciar conciliación
+            </button>
         </div>
     </div>
 
     {{-- ── PASOS ── --}}
     <div class="steps-row">
-
         <div class="step-card">
             <div class="step-badge done">✓</div>
             <div class="step-title">Descargar estado de cuenta</div>
             <div class="step-desc">Obtén el Excel del portal bancario en formato .xlsx o .csv</div>
         </div>
-
         <div class="step-card">
             <div class="step-badge blue">2</div>
             <div class="step-title">Subir el archivo aquí</div>
             <div class="step-desc">Arrastra o selecciona el archivo. El sistema lo procesa automáticamente.</div>
         </div>
-
         <div class="step-card">
-            <div class="step-badge gray">3</div>
+            <div class="step-badge gray" id="step3-badge">3</div>
             <div class="step-title">Revisar y confirmar</div>
             <div class="step-desc">El sistema compara referencias y montos. Tú revisas las diferencias.</div>
         </div>
-
     </div>
 
-    {{-- ── MAIN CARD ── --}}
+    {{-- ── MAIN CARD — SUBIR ARCHIVO ── --}}
     <div class="main-card">
         <div class="main-card-header">
             <div>
                 <div class="main-card-title">Archivo del banco</div>
                 <div class="main-card-sub">Arrastra el Excel aquí o haz clic para seleccionarlo</div>
             </div>
-            <span class="badge-cargado" id="badge-estado">Archivo cargado</span>
+            <span id="badge-estado" style="padding:4px 12px;background:#F1F5F9;color:#64748B;font-size:.78rem;font-weight:700;border-radius:99px;">
+                Sin archivo
+            </span>
         </div>
 
         {{-- Archivo cargado --}}
-        <div class="file-loaded-row" id="file-loaded">
+        <div class="file-loaded-row" id="file-loaded" style="display:none;">
             <div class="file-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -237,8 +300,8 @@
                 </svg>
             </div>
             <div class="file-info">
-                <div class="file-name" id="file-name"> ejemplokojmfe</div>
-                <div class="file-meta" id="file-meta">18 movimientos detectados · 42 KB · Subido hace 5 min</div>
+                <div class="file-name" id="file-name"></div>
+                <div class="file-meta" id="file-meta"></div>
             </div>
             <button class="btn-quitar" onclick="quitarArchivo()">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -269,9 +332,54 @@
         <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="onFileSelect(event)">
     </div>
 
+    {{-- ── TABLA DE RESULTADOS ── --}}
+    <div class="resultados-card" id="resultados-card">
+        <div class="resultados-header">
+            <div>
+                <div class="resultados-title">Resultados de la conciliación</div>
+                <div class="resultados-sub">Comparación entre el archivo del banco y los registros del sistema</div>
+            </div>
+        </div>
+
+        <div class="kpi-concil">
+            <div class="kpi-cell">
+                <div class="kpi-lbl">Movimientos en banco</div>
+                <div class="kpi-val blue" id="kpi-total">—</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-lbl">Coinciden</div>
+                <div class="kpi-val green" id="kpi-ok">—</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-lbl">Diferencia de monto</div>
+                <div class="kpi-val" id="kpi-diff" style="color:#D97706;">—</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-lbl">No encontrados</div>
+                <div class="kpi-val red" id="kpi-noenc">—</div>
+            </div>
+        </div>
+
+        <table class="concil-table">
+            <thead>
+                <tr>
+                    <th>Referencia</th>
+                    <th>Distribuidor</th>
+                    <th>Monto esperado</th>
+                    <th>Monto banco</th>
+                    <th>Fecha límite</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-resultados">
+                {{-- Se llena con JS al conciliar --}}
+            </tbody>
+        </table>
+    </div>
+
     {{-- ── NOTA ── --}}
     <div class="nota-card">
-        El archivo no se guarda en el servidor. Solo se usa para la comparación.
+        El archivo no se guarda en el servidor. Solo se usa para la comparación contra los registros de la base de datos.
     </div>
 
 </div>{{-- /page-wrapper --}}
@@ -279,9 +387,13 @@
 <script>
     function quitarArchivo() {
         document.getElementById('file-loaded').style.display = 'none';
+        document.getElementById('drop-zone').style.display = 'flex';
+        document.getElementById('resultados-card').style.display = 'none';
         document.getElementById('badge-estado').textContent = 'Sin archivo';
         document.getElementById('badge-estado').style.background = '#F1F5F9';
         document.getElementById('badge-estado').style.color = '#64748B';
+        document.getElementById('btn-conciliar').disabled = true;
+        document.getElementById('file-input').value = '';
     }
 
     function onFileSelect(event) {
@@ -308,11 +420,31 @@
     function cargarArchivo(file) {
         const kb = Math.round(file.size / 1024);
         document.getElementById('file-name').textContent = file.name;
-        document.getElementById('file-meta').textContent = `${kb} KB · Subido ahora`;
+        document.getElementById('file-meta').textContent = kb + ' KB · Subido ahora';
         document.getElementById('file-loaded').style.display = 'flex';
+        document.getElementById('drop-zone').style.display = 'none';
         document.getElementById('badge-estado').textContent = 'Archivo cargado';
         document.getElementById('badge-estado').style.background = '#DCFCE7';
         document.getElementById('badge-estado').style.color = '#166534';
+        document.getElementById('btn-conciliar').disabled = false;
+    }
+
+    function iniciarConciliacion() {
+        document.getElementById('resultados-card').style.display = 'block';
+        document.getElementById('step3-badge').className = 'step-badge done';
+        document.getElementById('step3-badge').textContent = '✓';
+        document.getElementById('kpi-total').textContent = '—';
+        document.getElementById('kpi-ok').textContent = '—';
+        document.getElementById('kpi-diff').textContent = '—';
+        document.getElementById('kpi-noenc').textContent = '—';
+        document.getElementById('tabla-resultados').innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center;color:#94A3B8;padding:32px;">
+                    El backend procesará el archivo y llenará esta tabla con los resultados.
+                </td>
+            </tr>
+        `;
+        document.getElementById('resultados-card').scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 

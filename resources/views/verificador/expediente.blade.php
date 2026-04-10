@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Expediente digital — ' . $folio)
+@section('title', 'Expediente digital — ' . ($folio ?? ''))
 
 @section('content')
 <style>
@@ -149,34 +149,14 @@
     .foto-add  { font-size: .78rem; color: #94A3B8; }
     .foto-loaded-text { font-size: .78rem; color: #2563EB; font-weight: 500; }
 
-    /* ── Buró ── */
-    .buro-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .badge-buro-ok { background: #DCFCE7; color: #166534; padding: 4px 12px; border-radius: 99px; font-size: .78rem; font-weight: 700; }
-    .buro-row {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 10px 0; border-bottom: 1px solid #F1F5F9;
-        font-size: .86rem;
-    }
-    .buro-row:last-of-type { border-bottom: none; }
-    .buro-label { color: #94A3B8; font-weight: 500; }
-    .buro-value { color: #0B1F3A; font-weight: 600; }
-    .buro-value.green { color: #16A34A; }
-    .buro-value.mono  { font-family: 'DM Mono', monospace; font-size: .82rem; color: #0B1F3A; }
-    .score-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .score-nums { font-family: 'DM Mono', monospace; font-size: .88rem; }
-    .score-nums span { color: #16A34A; font-weight: 600; font-size: 1rem; }
-    .score-nums em    { color: #94A3B8; font-style: normal; }
-    .score-bar-wrap { height: 7px; background: #E2E8F0; border-radius: 99px; overflow: hidden; margin-bottom: 5px; }
-    .score-bar-fill { height: 100%; border-radius: 99px; background: #16A34A; }
-    .score-legends { display: flex; justify-content: space-between; font-size: .70rem; color: #94A3B8; margin-bottom: 14px; }
-
-    /* ── Datos personales ── */
+    /* ── Datos personales / vehículo / familiar ── */
     .datos-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
     .btn-edit {
         font-size: .83rem; color: #2563EB; font-weight: 600;
         background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
     }
-    .datos-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px 12px; }
+    .datos-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px 12px; }
+    .datos-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 12px; }
     .dato-label { font-size: .72rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
     .dato-value { font-size: .90rem; color: #0B1F3A; font-weight: 500; }
     .dato-value.mono { font-family: 'DM Mono', monospace; font-size: .84rem; }
@@ -184,83 +164,23 @@
     /* ── Bottom notice ── */
     .notice-text { font-size: .80rem; color: #94A3B8; margin-top: 14px; line-height: 1.5; }
 
-/* ── TABLEET ── */
+    @media (max-width: 1024px) {
 
-/* ── ADAPTACIÓN SOLO PARA TABLET 10" ── */
-@media (max-width: 1280px) {
+    .topbar { padding: 20px; }
+    .breadcrumb-title { font-size: 1rem; }
 
-    /* Márgenes generales */
-    .topbar,
-    .hero-card,
-    .content-grid {
-        margin-left: 16px !important;
-        margin-right: 16px !important;
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-    }
+    .hero-card { margin: 0 16px 16px 16px; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .hero-right { text-align: left; }
 
-    /* Topbar en columna */
-    .topbar {
-        flex-direction: column;
-        gap: 10px;
-    }
+    .content-grid { grid-template-columns: 1fr; padding: 0 16px 32px 16px; }
 
-    /* Hero card se acomoda */
-    .hero-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
+    .datos-grid   { grid-template-columns: 1fr 1fr; }
+    .datos-grid-2 { grid-template-columns: 1fr 1fr; }
 
-    .hero-right {
-        text-align: left;
-    }
+    .docs-grid { grid-template-columns: 1fr; }
 
-    /*CAMBIO CLAVE: layout pasa a 1 columna */
-    .content-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
-    /* Sidebar baja abajo */
-    .col-right {
-        order: 2;
-    }
-
-    .col-left {
-        order: 1;
-    }
-
-    /* Documentos en 1 columna (mejor touch) */
-    .docs-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Fotos siguen en 2 pero más cómodas */
-    .fotos-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    /* Datos personales más legibles */
-    .datos-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    /* Cards más compactas */
-    .section-card {
-        padding: 18px 16px;
-    }
-
-    /* Ajuste tipografías */
-    .hero-name {
-        font-size: 1rem;
-    }
-
-    .hero-folio-value {
-        font-size: .9rem;
-    }
+    .fotos-grid { grid-template-columns: 1fr 1fr; }
 }
-
 </style>
 
 <div class="page-wrapper">
@@ -276,70 +196,70 @@
                     Bandeja
                 </a>
                 <span class="breadcrumb-sep">/</span>
-                <span class="breadcrumb-title">expediente — {{ $folio }}</span>
+                <span class="breadcrumb-title">Expediente — {{ $folio ?? '' }}</span>
             </div>
-            <div class="breadcrumb-sub">{{ $nombre }}</div>
+            <div class="breadcrumb-sub">{{ $nombre ?? '' }}</div>
         </div>
     </div>
 
     {{-- ── HERO CARD ── --}}
     <div class="hero-card">
-        <div class="hero-avatar">{{ $iniciales }}</div>
+        <div class="hero-avatar">{{ $iniciales ?? '' }}</div>
         <div class="hero-info">
-            <div class="hero-name">{{ $nombre }}</div>
-            <div class="hero-addr">{{ $domicilio }}</div>
+            <div class="hero-name">{{ $nombre ?? '' }}</div>
+            <div class="hero-addr">{{ $domicilio ?? '' }}</div>
             <div class="hero-meta">
                 <span class="badge-status revision"><span class="dot"></span>En revisión</span>
-                <span class="hero-date">Solicitud: {{ $fecha_solicitud }}</span>
+                <span class="hero-date">Solicitud: {{ $fecha_solicitud ?? '' }}</span>
             </div>
         </div>
         <div class="hero-right">
             <div class="hero-folio-label">Folio de presolicitud</div>
-            <div class="hero-folio-value">{{ $folio }}</div>
-            <div class="hero-docs">Expediente: {{ $docs_cargados }} de {{ $docs_total }} documentos</div>
+            <div class="hero-folio-value">{{ $folio ?? '' }}</div>
+            <div class="hero-docs">Expediente: {{ $docs_cargados ?? 0 }} de {{ $docs_total ?? 0 }} documentos</div>
         </div>
     </div>
 
     {{-- ── GRID ── --}}
     <div class="content-grid">
 
-        {{-- COL IZQUIERDA ── --}}
+        {{-- ── COL IZQUIERDA ── --}}
         <div class="col-left">
 
             {{-- Documentos de identidad y domicilio --}}
             <div class="section-card">
                 <div class="section-header">
                     <span class="section-title">Documentos de identidad y domicilio</span>
-                    <span class="badge-count amber">{{ $docs_cargados }}/{{ $docs_total }} docs</span>
+                    <span class="badge-count amber">{{ $docs_cargados ?? 0 }}/{{ $docs_total ?? 0 }} docs</span>
                 </div>
                 <div class="docs-grid">
 
-                    {{-- INE --}}
+                    {{-- INE — Distribuidores.INE --}}
                     <div class="doc-card uploaded">
-                        <div class="doc-name">INE </div>
-                        <a href="#" class="doc-preview-link">Vista previa · INE_ART.pdf</a>
+                        <div class="doc-name">INE</div>
+                        <a href="#" class="doc-preview-link">Vista previa · INE.pdf</a>
                         <div class="doc-footer">
-                            <span class="doc-status-ok">  cargado o </span>
+                            <span class="doc-status-ok">✓ Cargado</span>
                             <a href="#" class="doc-link-ver">Ver</a>
                         </div>
                     </div>
 
-                    {{-- Comprobante de domicilio --}}
+                    {{-- Comprobante de domicilio — Distribuidores.comprobante_domicilio --}}
                     <div class="doc-card uploaded">
                         <div class="doc-name">Comprobante de domicilio</div>
-                        <a href="#" class="doc-preview-link">Vista previa · CFE_ART.pdf</a>
+                        <a href="#" class="doc-preview-link">Vista previa · CFE.pdf</a>
                         <div class="doc-footer">
-                            <span class="doc-status-ok">Cargado o nop </span>
+                            <span class="doc-status-ok">✓ Cargado</span>
                             <a href="#" class="doc-link-ver">Ver</a>
                         </div>
                     </div>
 
-                    {{-- Reporte de Buró --}}
+                    {{-- Reporte de Buró de Crédito --}}
                     <div class="doc-card uploaded">
                         <div class="doc-name">Reporte de Buró de Crédito</div>
-                        <a href="#" class="doc-preview-link">Vista previa · BURO_ART.pdf</a>
+                        <a href="#" class="doc-preview-link">Vista previa · BURO.pdf</a>
                         <div class="doc-footer">
-                            <span class="doc-status-ok"> Cargado o nop </span>
+                            <span class="doc-status-ok">✓ Cargado</span>
                             <a href="#" class="doc-link-ver">Ver</a>
                         </div>
                     </div>
@@ -347,18 +267,18 @@
                     {{-- Foto vehículo principal --}}
                     <div class="doc-card missing">
                         <div class="doc-name">Foto de vehículo principal</div>
-                        <div style="gloriagin-bottom:10px;">
+                        <div style="margin-bottom:10px;">
                             <button class="doc-upload-btn">+ Subir documento</button>
                         </div>
                         <div class="doc-footer">
-                            <span class="doc-status-miss"> Faltante o carg</span>
+                            <span class="doc-status-miss">✗ Faltante</span>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            {{-- Datos personales capturados --}}
+            {{-- Datos personales capturados — tabla Personas --}}
             <div class="section-card">
                 <div class="datos-header">
                     <span class="section-title">Datos personales capturados</span>
@@ -367,27 +287,39 @@
                 <div class="datos-grid">
                     <div>
                         <div class="dato-label">Nombre completo</div>
-                        <div class="dato-value">{{ $nombre }}</div>
+                        <div class="dato-value">{{ $nombre ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Sexo</div>
+                        <div class="dato-value">{{ $sexo ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Fecha de nacimiento</div>
+                        <div class="dato-value">{{ $fecha_nacimiento ?? '' }}</div>
                     </div>
                     <div>
                         <div class="dato-label">CURP</div>
-                        <div class="dato-value mono">{{ $curp }}</div>
+                        <div class="dato-value mono">{{ $curp ?? '' }}</div>
                     </div>
                     <div>
-                        <div class="dato-label">Teléfono</div>
-                        <div class="dato-value">{{ $telefono }}</div>
+                        <div class="dato-label">RFC</div>
+                        <div class="dato-value mono">{{ $rfc ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Teléfono personal</div>
+                        <div class="dato-value">{{ $telefono_personal ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Celular</div>
+                        <div class="dato-value">{{ $celular ?? '' }}</div>
                     </div>
                     <div>
                         <div class="dato-label">Domicilio</div>
-                        <div class="dato-value">{{ $calle }}</div>
+                        <div class="dato-value">{{ $calle ?? '' }}</div>
                     </div>
                     <div>
                         <div class="dato-label">Ciudad</div>
-                        <div class="dato-value">{{ $ciudad }}</div>
-                    </div>
-                    <div>
-                        <div class="dato-label">Vehículo</div>
-                        <div class="dato-value">{{ $vehiculo }}</div>
+                        <div class="dato-value">{{ $ciudad ?? '' }}</div>
                     </div>
                 </div>
                 <p class="notice-text">Faltan documentos antes de enviar al coordinador.</p>
@@ -395,7 +327,7 @@
 
         </div>{{-- /col-left --}}
 
-        {{-- COL DERECHA ── --}}
+        {{-- ── COL DERECHA ── --}}
         <div class="col-right">
 
             {{-- Fotos del vehículo --}}
@@ -406,25 +338,21 @@
                 </div>
                 <div class="fotos-grid">
 
-                    {{-- Frente — cargada --}}
                     <div class="foto-slot loaded">
                         <span class="foto-loaded-text">Foto frontal cargada</span>
                         <span class="foto-label">Frente</span>
                     </div>
 
-                    {{-- Lateral derecho — faltante --}}
                     <div class="foto-slot missing">
                         <span class="foto-add">+ Subir foto</span>
                         <span class="foto-label error">Lateral derecho</span>
                     </div>
 
-                    {{-- Lateral izquierdo — faltante --}}
                     <div class="foto-slot missing">
                         <span class="foto-add">+ Subir foto</span>
                         <span class="foto-label error">Lateral izquierdo</span>
                     </div>
 
-                    {{-- Trasera — faltante --}}
                     <div class="foto-slot missing">
                         <span class="foto-add">+ Subir foto</span>
                         <span class="foto-label error">Trasera</span>
@@ -433,7 +361,47 @@
                 </div>
             </div>
 
-        
+            {{-- Datos del vehículo — tabla Datos_vehiculo --}}
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-title">Datos del vehículo</span>
+                </div>
+                <div class="datos-grid-2">
+                    <div>
+                        <div class="dato-label">Marca</div>
+                        <div class="dato-value">{{ $marca ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Modelo</div>
+                        <div class="dato-value">{{ $modelo ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Color</div>
+                        <div class="dato-value">{{ $color ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Número de placas</div>
+                        <div class="dato-value mono">{{ $numero_placas ?? '' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Familiar de referencia — tabla Afiliales --}}
+            <div class="section-card">
+                <div class="section-header">
+                    <span class="section-title">Familiar de referencia</span>
+                </div>
+                <div class="datos-grid-2">
+                    <div>
+                        <div class="dato-label">Nombre</div>
+                        <div class="dato-value">{{ $familiar_nombre ?? '' }}</div>
+                    </div>
+                    <div>
+                        <div class="dato-label">Parentesco</div>
+                        <div class="dato-value">{{ $familiar_parentesco ?? '' }}</div>
+                    </div>
+                </div>
+            </div>
 
         </div>{{-- /col-right --}}
 

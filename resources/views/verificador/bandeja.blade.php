@@ -210,78 +210,22 @@
     .badge-dom.problema   { background: #FEE2E2; color: #991B1B; }
     .badge-dom.problema .dot   { background: #EF4444; }
 
-    @media (max-width: 1280px) {
+    @media (max-width: 1024px) {
 
-    /* Contenedor general más compacto */
-    .topbar,
-    .kpi-row,
-    .main-card {
-        margin-left: 16px !important;
-        margin-right: 16px !important;
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-    }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px; }
+    .topbar-title { font-size: 1.3rem; }
+    .topbar-actions { flex-wrap: wrap; width: 100%; }
+    .btn-tb { flex: 1; text-align: center; }
 
-    /* Topbar se acomoda mejor */
-    .topbar {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
+    .kpi-row { display: grid; grid-template-columns: 1fr 1fr; padding: 0 16px 16px 16px; }
 
-    .topbar-actions {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
+    .main-card { margin: 0 16px 32px 16px; }
 
-    /* KPI cards en 2 columnas (no responsive total, solo tablet) */
-    .kpi-row {
-        flex-wrap: wrap;
-    }
+    .card-header-row { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
 
-    .kpi-card {
-        flex: 0 0 calc(50% - 8px);
-    }
-
-    /* Tabs con scroll horizontal (clave para tablet) */
-    .tabs-row {
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-
-    .tabs-row::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Tabla más compacta */
-    .presol-table thead th,
-    .presol-table tbody td {
-        padding: 12px 14px;
-    }
-
-    /* Reducir tipografías ligeramente */
-    .kpi-value {
-        font-size: 1.6rem;
-    }
-
-    .topbar-title {
-        font-size: 1.3rem;
-    }
-
-    /* Evita que se rompa la tabla */
-    .presol-table {
-        min-width: 900px;
-    }
-
-    .main-card {
-        overflow-x: auto;
-    }
-}
+    .tabs-row { overflow-x: auto; padding: 10px 16px 0 16px; }
+    .tab-btn { font-size: .80rem; padding: 8
 </style>
-
-
-
 
 <div class="page-wrapper">
 

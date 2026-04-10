@@ -144,77 +144,26 @@
     }
     .btn-cerrar:hover { background: #FECACA; }
 
- /* ── TABLET (10 pulgadas aprox) ── */
-@media (max-width: 1024px) {
+    @media (max-width: 1024px) {
 
-    .topbar {
-        flex-direction: column;
-        gap: 10px;
-        padding: 20px;
-    }
+    .topbar { padding: 20px; }
+    .topbar-title { font-size: 1.3rem; }
 
-    .topbar-title {
-        font-size: 1.3rem;
-    }
+    .section-card { margin: 0 16px 16px 16px; }
+    .danger-card  { margin: 0 16px 32px 16px; }
 
-    .main-card {
-        margin: 0 20px 24px 20px;
-    }
+    .avatar-section { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .avatar-big { width: 54px; height: 54px; font-size: 1.1rem; }
 
-    /* Banner */
-    .banner {
-        flex-direction: column;
-        gap: 10px;
-    }
+    .form-grid-2 { grid-template-columns: 1fr; }
 
-    .banner-right {
-        text-align: left;
-    }
+    .card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
 
-    /* Stats: 2x2 */
-    .stats-row {
-        grid-template-columns: 1fr 1fr;
-    }
+    .danger-body { flex-direction: column; align-items: flex-start; gap: 12px; }
 
-    .stat-cell {
-        padding: 14px;
-    }
-
-    /* Tabla scroll horizontal */
-    .pf-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .pf-table th,
-    .pf-table td {
-        padding: 10px 12px;
-        font-size: .78rem;
-    }
-
-    /* Crédito */
-    .credito-bar-wrap {
-        padding: 12px 14px;
-    }
-
-    /* Info banner */
-    .info-banner {
-        font-size: .78rem;
-        padding: 10px 14px;
-    }
-
-    /* Total bar */
-    .total-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .total-val {
-        font-size: 1.4rem;
-    }
-}    
+    .form-footer { flex-direction: column; }
+    .btn { width: 100%; text-align: center; }
+}
 </style>
 
 <div class="page-wrapper">

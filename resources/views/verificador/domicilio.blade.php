@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Validación de domicilio — ' . $folio)
+@section('title', 'Validación de domicilio — ' . ($folio ?? ''))
 
 @section('content')
 <style>
@@ -68,6 +68,7 @@
         padding: 13px 16px;
         gap: 10px;
         margin-bottom: 14px;
+        position: relative;
     }
     .search-wrap svg { width: 17px; height: 17px; stroke: #94A3B8; flex-shrink: 0; }
     .search-input {
@@ -82,8 +83,31 @@
     }
     .search-input::placeholder { color: #64748B; }
 
+    /* Sugerencias del buscador */
+    .search-suggestions {
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: #fff;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 10px;
+        margin-top: 6px;
+        z-index: 1000;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0,0,0,.08);
+        display: none;
+    }
+    .suggestion-item {
+        padding: 11px 16px;
+        font-size: .86rem;
+        color: #334155;
+        cursor: pointer;
+        border-bottom: 1px solid #F1F5F9;
+        transition: background .1s;
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: #F0F6FF; color: #2563EB; }
+
     .coords-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .coord-group {}
     .coord-lbl { font-size: .72rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
     .coord-input {
         width: 100%;
@@ -190,151 +214,59 @@
         font-weight: 700;
         border-radius: 99px;
     }
-
-    /* Zoom buttons */
-    .zoom-btns { display: flex; flex-direction: column; gap: 4px; }
-    .btn-zoom {
-        width: 34px; height: 34px;
-        border: 1.5px solid #E2E8F0;
-        border-radius: 8px;
-        background: #fff;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #0B1F3A;
-        cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        transition: background .12s;
+    .badge-confirmado {
+        display: inline-block;
+        padding: 3px 10px;
+        background: #DCFCE7;
+        color: #166534;
+        font-size: .75rem;
+        font-weight: 700;
+        border-radius: 99px;
     }
-    .btn-zoom:hover { background: #F0F2F7; }
-    .btn-zoom.layers { font-size: .75rem; color: #64748B; }
 
-    /* Mapa simulado */
-    .map-container {
+    /* Mapa Leaflet */
+    #map {
         width: 100%;
-        aspect-ratio: 4/3.2;
+        height: 420px;
         border-radius: 14px;
         overflow: hidden;
         border: 1.5px solid #E2E8F0;
-        background: #E8EAE3;
-        position: relative;
-    }
-    .map-iframe {
-        width: 100%; height: 100%;
-        border: none;
-        pointer-events: none;
-        filter: saturate(.7) brightness(1.05);
-    }
-    /* Overlay del pin */
-    .map-pin-overlay {
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -100%);
-        display: flex; flex-direction: column; align-items: center;
-        pointer-events: none;
-    }
-    .map-pin-dot {
-        width: 18px; height: 18px;
-        border-radius: 50% 50% 50% 0;
-        background: #2563EB;
-        transform: rotate(-45deg);
-        box-shadow: 0 2px 8px rgba(37,99,235,.5);
-    }
-    .map-pin-shadow {
-        width: 10px; height: 5px;
-        background: rgba(0,0,0,.18);
-        border-radius: 50%;
-        margin-top: 2px;
+        z-index: 1;
     }
 
     /* Tooltip inferior del mapa */
     .map-tooltip {
-        position: absolute;
-        bottom: 16px; right: 16px;
         background: #fff;
         border: 1.5px solid #E2E8F0;
         border-radius: 10px;
         padding: 10px 14px;
         font-size: .78rem;
         color: #64748B;
-        max-width: 160px;
         line-height: 1.4;
         display: flex; align-items: flex-start; gap: 6px;
     }
     .map-tooltip-dot { width: 7px; height: 7px; border-radius: 50%; background: #2563EB; margin-top: 3px; flex-shrink: 0; }
-/* ── ADAPTACIÓN SOLO PARA TABLET 10" ── */
-@media (max-width: 1280px) {
 
-    /* Contenedor general */
-    .topbar,
-    .main-grid {
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-    }
+@media (max-width: 1024px) {
 
-    /* Topbar más compacto */
-    .topbar {
-        flex-direction: column;
-        gap: 10px;
-    }
+    .topbar { padding: 20px; }
+    .breadcrumb-title { font-size: 1rem; }
 
-    /* CAMBIO CLAVE: grid pasa a 1 columna */
-    .main-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
+    .main-grid { grid-template-columns: 1fr; padding: 0 16px 32px 16px; }
 
-    /* Panel derecho ya no sticky (en tablet estorba) */
-    .right-panel {
-        position: relative;
-        top: auto;
-    }
+    .right-panel { position: static; }
 
-    /* Cards un poco más compactas */
-    .section-card {
-        padding: 18px 16px;
-    }
+    #map { height: 320px; }
 
-    /* Inputs más cómodos en tablet */
-    .coord-input {
-        font-size: .85rem;
-        padding: 8px 10px;
-    }
+    .coords-row { grid-template-columns: 1fr 1fr; }
 
-    /* Buscador */
-    .search-wrap {
-        padding: 10px 12px;
-    }
-
-    /* Botones en columna si no caben */
-    .actions-row {
-        flex-direction: column;
-    }
-
-    .btn-action {
-        width: 100%;
-    }
-
-    /* Mapa más grande (clave en tablet) */
-    .map-container {
-        aspect-ratio: 4/3;
-    }
-
-    /* Pin card y controles */
-    .map-controls-row {
-        flex-direction: column;
-    }
-
-    .zoom-btns {
-        flex-direction: row;
-    }
-
-    .btn-zoom {
-        flex: 1;
-    }
+    .actions-row { flex-direction: column; }
+    .btn-action { width: 100%; }
 }
-
-
 </style>
+
+{{-- Leaflet CSS --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 
 <div class="page-wrapper">
 
@@ -342,16 +274,16 @@
     <div class="topbar">
         <div>
             <div class="breadcrumb-row">
-                <a href="{{ route('verificador.expediente', ['folio' => $folio]) }}" class="breadcrumb-back">
+                <a href="{{ route('verificador.expediente', ['folio' => $folio ?? '']) }}" class="breadcrumb-back">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="15 18 9 12 15 6"/>
                     </svg>
                     Expediente
                 </a>
                 <span class="breadcrumb-sep">/</span>
-                <span class="breadcrumb-title">Validación de domicilio — {{ $folio }}</span>
+                <span class="breadcrumb-title">Validación de domicilio — {{ $folio ?? '' }}</span>
             </div>
-            <div class="breadcrumb-sub">{{ $nombre }}</div>
+            <div class="breadcrumb-sub">{{ $nombre ?? '' }}</div>
         </div>
     </div>
 
@@ -366,19 +298,15 @@
                 <div class="section-label">Datos del interesado</div>
                 <div class="dato-group">
                     <div class="dato-lbl">Nombre</div>
-                    <div class="dato-val">{{ $nombre }}</div>
+                    <div class="dato-val">{{ $nombre ?? '' }}</div>
                 </div>
                 <div class="dato-group">
                     <div class="dato-lbl">Domicilio declarado</div>
-                    <div class="dato-val">{{ $calle }}</div>
+                    <div class="dato-val">{{ $calle ?? '' }}</div>
                 </div>
                 <div class="dato-group">
                     <div class="dato-lbl">Ciudad</div>
-                    <div class="dato-val">{{ $ciudad }}</div>
-                </div>
-                <div class="dato-group">
-                    <div class="dato-lbl">C.P.</div>
-                    <div class="dato-val mono">{{ $cp }}</div>
+                    <div class="dato-val">{{ $ciudad ?? '' }}</div>
                 </div>
             </div>
 
@@ -390,19 +318,20 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
-                    <input type="text" class="search-input"
-                           placeholder="Calle Hidalgo #412, Torreón"
-                           value="{{ $calle }}, {{ $ciudad }}">
+                    <input type="text" class="search-input" id="search-input"
+                           placeholder="Ej: Calle Hidalgo #412, Torreón"
+                           value="{{ ($calle ?? '') . ', ' . ($ciudad ?? '') }}">
+                    <div class="search-suggestions" id="suggestions"></div>
                 </div>
 
                 <div class="coords-row">
-                    <div class="coord-group">
+                    <div>
                         <div class="coord-lbl">Latitud</div>
-                        <input type="text" class="coord-input" value="{{ $latitud }}" id="lat-input">
+                        <input type="text" class="coord-input" id="lat-input" value="{{ $latitud ?? '' }}" readonly>
                     </div>
-                    <div class="coord-group">
+                    <div>
                         <div class="coord-lbl">Longitud</div>
-                        <input type="text" class="coord-input" value="{{ $longitud }}" id="lng-input">
+                        <input type="text" class="coord-input" id="lng-input" value="{{ $longitud ?? '' }}" readonly>
                     </div>
                 </div>
             </div>
@@ -458,32 +387,17 @@
             <div class="map-controls-row">
                 <div class="pin-card">
                     <div class="pin-card-title">Pin colocado</div>
-                    <div class="pin-card-addr">{{ $calle }}<br>Col. Centro, {{ $ciudad_corta }}</div>
-                    <span class="badge-confirmar">Por confirmar</span>
-                </div>
-                <div class="zoom-btns">
-                    <button class="btn-zoom">+</button>
-                    <button class="btn-zoom">−</button>
-                    <button class="btn-zoom layers">⊕</button>
+                    <div class="pin-card-addr" id="pin-addr">{{ $calle ?? 'Sin dirección seleccionada' }}</div>
+                    <span class="badge-confirmar" id="pin-badge">Por confirmar</span>
                 </div>
             </div>
 
-            {{-- Mapa con OpenStreetMap embebido --}}
-            <div class="map-container">
-                <iframe
-                    class="map-iframe"
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=-103.4200,25.5300,-103.3900,25.5550&layer=mapnik&marker={{ $latitud }},{{ $longitud }}"
-                    allowfullscreen
-                    loading="lazy">
-                </iframe>
-                <div class="map-pin-overlay">
-                    <div class="map-pin-dot"></div>
-                    <div class="map-pin-shadow"></div>
-                </div>
-                <div class="map-tooltip">
-                    <span class="map-tooltip-dot"></span>
-                    Haz clic en el mapa para mover el pin manualmente
-                </div>
+            {{-- Mapa Leaflet --}}
+            <div id="map"></div>
+
+            <div class="map-tooltip">
+                <span class="map-tooltip-dot"></span>
+                Escribe una dirección en el buscador o haz clic en el mapa para mover el pin.
             </div>
 
         </div>{{-- /right-panel --}}
@@ -491,4 +405,138 @@
     </div>{{-- /main-grid --}}
 
 </div>{{-- /page-wrapper --}}
+
+{{-- Leaflet JS --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<script>
+    // ── Coordenadas iniciales (Torreón por defecto si no vienen del controller)
+    const initLat = parseFloat('{{ $latitud ?? 25.5428 }}') || 25.5428;
+    const initLng = parseFloat('{{ $longitud ?? -103.4068 }}') || -103.4068;
+
+    // ── Inicializar mapa
+    const map = L.map('map').setView([initLat, initLng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+    }).addTo(map);
+
+    // ── Ícono personalizado del pin
+    const pinIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width:18px;height:18px;
+            background:#2563EB;
+            border:3px solid #fff;
+            border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);
+            box-shadow:0 2px 8px rgba(37,99,235,.5);
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 18],
+    });
+
+    // ── Marcador inicial
+    let marker = L.marker([initLat, initLng], { icon: pinIcon, draggable: true }).addTo(map);
+
+    // ── Actualizar campos al mover el pin
+    function actualizarCoordenadas(lat, lng) {
+        document.getElementById('lat-input').value = lat.toFixed(6);
+        document.getElementById('lng-input').value = lng.toFixed(6);
+    }
+
+    // ── Actualizar dirección en la pin card
+    async function actualizarDireccion(lat, lng) {
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=es`
+            );
+            const data = await res.json();
+            const addr = data.display_name ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            document.getElementById('pin-addr').textContent = addr;
+        } catch {
+            document.getElementById('pin-addr').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        }
+    }
+
+    actualizarCoordenadas(initLat, initLng);
+
+    // ── Arrastrar el marcador
+    marker.on('dragend', function(e) {
+        const { lat, lng } = e.target.getLatLng();
+        actualizarCoordenadas(lat, lng);
+        actualizarDireccion(lat, lng);
+    });
+
+    // ── Clic en el mapa mueve el pin
+    map.on('click', function(e) {
+        const { lat, lng } = e.latlng;
+        marker.setLatLng([lat, lng]);
+        actualizarCoordenadas(lat, lng);
+        actualizarDireccion(lat, lng);
+    });
+
+    // ── Buscador con Nominatim
+    let searchTimer = null;
+    const searchInput = document.getElementById('search-input');
+    const suggestionsBox = document.getElementById('suggestions');
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimer);
+        const query = this.value.trim();
+        if (query.length < 3) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+        searchTimer = setTimeout(async () => {
+            try {
+                const res = await fetch(
+                    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&accept-language=es&countrycodes=mx`
+                );
+                const results = await res.json();
+                if (!results.length) {
+                    suggestionsBox.style.display = 'none';
+                    return;
+                }
+                suggestionsBox.innerHTML = results.map(r => `
+                    <div class="suggestion-item" data-lat="${r.lat}" data-lng="${r.lon}">
+                        ${r.display_name}
+                    </div>
+                `).join('');
+                suggestionsBox.style.display = 'block';
+
+                // Al hacer clic en una sugerencia
+                suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const lat = parseFloat(this.dataset.lat);
+                        const lng = parseFloat(this.dataset.lng);
+                        marker.setLatLng([lat, lng]);
+                        map.setView([lat, lng], 17);
+                        actualizarCoordenadas(lat, lng);
+                        document.getElementById('pin-addr').textContent = this.textContent.trim();
+                        searchInput.value = this.textContent.trim();
+                        suggestionsBox.style.display = 'none';
+                    });
+                });
+            } catch {
+                suggestionsBox.style.display = 'none';
+            }
+        }, 500);
+    });
+
+    // Cerrar sugerencias al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.style.display = 'none';
+        }
+    });
+
+    // ── Botón confirmar
+    document.querySelector('.btn-confirmar').addEventListener('click', function() {
+        document.getElementById('pin-badge').className = 'badge-confirmado';
+        document.getElementById('pin-badge').textContent = '✓ Confirmado';
+    });
+</script>
+
 @endsection

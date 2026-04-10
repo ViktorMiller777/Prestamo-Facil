@@ -6,12 +6,10 @@
 <style>
     .page-wrapper { background: #F0F2F7; min-height: 100vh; font-family: 'DM Sans', sans-serif; }
 
-    /* ── Topbar ── */
     .topbar { padding: 24px 32px 16px 32px; }
     .topbar-title { font-size: 1.5rem; font-weight: 700; color: #0B1F3A; margin: 0; }
     .topbar-sub   { font-size: .82rem; color: #64748B; margin-top: 3px; }
 
-    /* ── Info banner ── */
     .info-banner {
         margin: 0 32px 16px 32px;
         background: #EFF6FF;
@@ -26,7 +24,6 @@
         line-height: 1.6;
     }
 
-    /* ── Main card ── */
     .main-card {
         margin: 0 32px 16px 32px;
         background: #fff;
@@ -54,16 +51,14 @@
         cursor: pointer;
     }
 
-    /* ── Cliente preview ── */
     .cliente-preview {
         background: #F8FAFC;
         border: 1.5px solid #E2E8F0;
         border-radius: 9px;
         padding: 12px 16px;
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: space-between;
-        display: none;
     }
     .cliente-preview.show { display: flex; }
     .cliente-av {
@@ -76,6 +71,17 @@
     }
     .cliente-name { font-size: .92rem; font-weight: 700; color: #0B1F3A; }
     .cliente-sub  { font-size: .78rem; color: #94A3B8; margin-top: 2px; }
+
+    .docs-row { display: flex; gap: 10px; }
+    .doc-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 12px;
+        border-radius: 99px;
+        font-size: .75rem; font-weight: 700;
+    }
+    .doc-ok      { background: #DCFCE7; color: #15803D; }
+    .doc-missing { background: #FEE2E2; color: #B91C1C; }
+
     .badge-elegible { background: #DCFCE7; color: #15803D; padding: 3px 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; }
 
     .btn-generar {
@@ -92,7 +98,6 @@
     }
     .btn-generar:hover { background: #1D4ED8; }
 
-    /* ── Token generado ── */
     .token-box {
         background: #0B1F3A;
         border-radius: 10px;
@@ -130,7 +135,6 @@
     }
     .alert-warn.show { display: block; }
 
-    /* ── Historial ── */
     .historial-card {
         margin: 0 32px 32px 32px;
         background: #fff;
@@ -140,7 +144,6 @@
     }
     .historial-header { padding: 16px 22px; border-bottom: 1px solid #F1F5F9; }
     .historial-title  { font-size: .95rem; font-weight: 700; color: #0B1F3A; }
-
     .hist-item {
         display: flex;
         align-items: center;
@@ -157,77 +160,23 @@
     .badge-green { background: #DCFCE7; color: #15803D; }
     .badge-amber { background: #FEF3C7; color: #B45309; }
 
- /* ── TABLET (10 pulgadas aprox) ── */
-@media (max-width: 1024px) {
+    @media (max-width: 1024px) {
 
-    .topbar {
-        flex-direction: column;
-        gap: 10px;
-        padding: 20px;
-    }
+    .topbar { padding: 20px; }
+    .topbar-title { font-size: 1.3rem; }
 
-    .topbar-title {
-        font-size: 1.3rem;
-    }
+    .info-banner { margin: 0 16px 16px 16px; }
 
-    .main-card {
-        margin: 0 20px 24px 20px;
-    }
+    .main-card { margin: 0 16px 16px 16px; }
 
-    /* Banner */
-    .banner {
-        flex-direction: column;
-        gap: 10px;
-    }
+    .historial-card { margin: 0 16px 32px 16px; }
 
-    .banner-right {
-        text-align: left;
-    }
+    .token-val { font-size: 1.3rem; letter-spacing: .08em; }
 
-    /* Stats: 2x2 */
-    .stats-row {
-        grid-template-columns: 1fr 1fr;
-    }
+    .cliente-preview { flex-direction: column; align-items: flex-start; gap: 10px; }
 
-    .stat-cell {
-        padding: 14px;
-    }
-
-    /* Tabla scroll horizontal */
-    .pf-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .pf-table th,
-    .pf-table td {
-        padding: 10px 12px;
-        font-size: .78rem;
-    }
-
-    /* Crédito */
-    .credito-bar-wrap {
-        padding: 12px 14px;
-    }
-
-    /* Info banner */
-    .info-banner {
-        font-size: .78rem;
-        padding: 10px 14px;
-    }
-
-    /* Total bar */
-    .total-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .total-val {
-        font-size: 1.4rem;
-    }
-}    
+    .docs-row { flex-wrap: wrap; }
+}
 </style>
 
 <div class="page-wrapper">
@@ -254,21 +203,48 @@
         </div>
         <div class="card-body">
 
+            {{--
+                Campos ocultos para Cambio_cliente:
+                - IDpersona_id    → se llena al seleccionar cliente
+                - distribuidor_id → distribuidora actual (de la sesión)
+            --}}
+            <input type="hidden" id="input-persona-id"     name="persona_id" />
+            <input type="hidden" id="input-distribuidor-id" name="distribuidor_id" value="{{ auth()->user()->distribuidor_id ?? '' }}" />
+
             <div>
                 <label class="field-label">Cliente a transferir</label>
-                {{-- TODO: llenar con clientes al corriente de la BD --}}
+                {{--
+                    SELECT desde Clientes JOIN Personas
+                    Solo clientes con estado = 'corriente' de esta distribuidora
+                    data-persona-id  → Cambio_cliente.IDpersona_id
+                    data-ine         → Clientes.INE
+                    data-domicilio   → Clientes.comprobante_domicilio
+                --}}
                 <select class="field-select" id="cliente-select" onchange="onClienteSelect(this)">
                     <option value="">Seleccionar cliente...</option>
+                    @foreach($clientes ?? [] as $cliente)
+                        <option value="{{ $cliente->cliente_id }}"
+                                data-persona-id="{{ $cliente->IDpersona_id }}"
+                                data-nombre="{{ $cliente->nombre }} {{ $cliente->apellido }}"
+                                data-ine="{{ $cliente->INE }}"
+                                data-domicilio="{{ $cliente->comprobante_domicilio }}">
+                            {{ $cliente->nombre }} {{ $cliente->apellido }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
 
-            {{-- Preview cliente seleccionado --}}
+            {{-- Preview cliente + validación de documentos (Clientes.INE + Clientes.comprobante_domicilio) --}}
             <div class="cliente-preview" id="cliente-preview">
                 <div style="display:flex;align-items:center;gap:12px;">
                     <div class="cliente-av" id="cliente-av"></div>
                     <div>
                         <div class="cliente-name" id="cliente-nombre"></div>
-                        <div class="cliente-sub" id="cliente-sub"></div>
+                        <div class="docs-row" style="margin-top:6px;">
+                            {{-- Se llena en JS según data-ine y data-domicilio --}}
+                            <span class="doc-badge" id="doc-ine"></span>
+                            <span class="doc-badge" id="doc-domicilio"></span>
+                        </div>
                     </div>
                 </div>
                 <span class="badge-elegible">Elegible</span>
@@ -276,7 +252,7 @@
 
             <button class="btn-generar" onclick="generarToken()">Generar token →</button>
 
-            {{-- Token generado --}}
+            {{-- Token generado — en producción vendrá del backend --}}
             <div class="token-box" id="token-box">
                 <div class="token-label">Código de autorización</div>
                 <div class="token-val" id="token-val"></div>
@@ -297,7 +273,35 @@
         </div>
     </div>
 
-
+    {{-- ── HISTORIAL ── --}}
+    {{--
+        Viene de Cambio_cliente JOIN Personas
+        Campos: IDpersona_id, distribuidor_id, token (cuando el backend lo genere)
+    --}}
+    <div class="historial-card">
+        <div class="historial-header">
+            <div class="historial-title">Tokens generados</div>
+        </div>
+        @forelse($tokens ?? [] as $token)
+        <div class="hist-item">
+            <div>
+                {{-- Personas.nombre via Cambio_cliente.IDpersona_id --}}
+                <div class="hist-nombre">{{ $token->nombre }} {{ $token->apellido }}</div>
+                <div class="hist-token">{{ $token->codigo ?? '—' }}</div>
+            </div>
+            <div class="hist-right">
+                <div class="hist-fecha">{{ $token->fecha ?? '—' }}</div>
+                <span class="badge {{ $token->usado ? 'badge-green' : 'badge-amber' }}">
+                    {{ $token->usado ? 'Usado' : 'Pendiente' }}
+                </span>
+            </div>
+        </div>
+        @empty
+        <div style="padding:32px;text-align:center;color:#94A3B8;font-size:.85rem;">
+            No hay tokens generados aún.
+        </div>
+        @endforelse
+    </div>
 
 </div>
 
@@ -306,20 +310,42 @@
         const preview = document.getElementById('cliente-preview');
         document.getElementById('token-box').classList.remove('show');
         document.getElementById('alert-warn').classList.remove('show');
-        if (!sel.value) { preview.classList.remove('show'); return; }
-        // TODO: cuando haya BD, los datos vendrán del option seleccionado
-        const nombre = sel.options[sel.selectedIndex].text;
+
+        if (!sel.value) {
+            preview.classList.remove('show');
+            document.getElementById('input-persona-id').value = '';
+            return;
+        }
+
+        const opt = sel.options[sel.selectedIndex];
+
+        {{-- Cambio_cliente.IDpersona_id --}}
+        document.getElementById('input-persona-id').value = opt.dataset.personaId ?? '';
+
+        const nombre   = opt.dataset.nombre;
         const initials = nombre.split(' ').map(w => w[0]).slice(0,2).join('');
-        document.getElementById('cliente-av').textContent = initials;
+
+        document.getElementById('cliente-av').textContent    = initials;
         document.getElementById('cliente-nombre').textContent = nombre;
-        document.getElementById('cliente-sub').textContent = 'Al corriente';
+
+        {{-- Clientes.INE --}}
+        const ine = opt.dataset.ine && opt.dataset.ine !== 'null';
+        document.getElementById('doc-ine').textContent  = ine ? '✓ INE' : '✗ INE';
+        document.getElementById('doc-ine').className    = 'doc-badge ' + (ine ? 'doc-ok' : 'doc-missing');
+
+        {{-- Clientes.comprobante_domicilio --}}
+        const dom = opt.dataset.domicilio && opt.dataset.domicilio !== 'null';
+        document.getElementById('doc-domicilio').textContent = dom ? '✓ Domicilio' : '✗ Domicilio';
+        document.getElementById('doc-domicilio').className   = 'doc-badge ' + (dom ? 'doc-ok' : 'doc-missing');
+
         preview.classList.add('show');
     }
 
     function generarToken() {
         if (!document.getElementById('cliente-select').value) return;
+        {{-- En producción este token vendrá del backend vía POST --}}
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        const seg = n => Array.from({length:n}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+        const seg   = n => Array.from({length:n}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
         document.getElementById('token-val').textContent = 'TK-' + seg(4) + '-' + seg(4);
         document.getElementById('token-box').classList.add('show');
         document.getElementById('alert-warn').classList.add('show');
