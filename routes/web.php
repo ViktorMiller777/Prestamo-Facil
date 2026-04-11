@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -39,31 +37,57 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // ── verificador
-    Route::prefix('verificador')->name('verificador.')->group(function () {
-    Route::get('/bandeja', [BandejaController::class, 'index'])->name('bandeja');
-    Route::get('/expediente/{folio?}', [ExpedienteController::class, 'index'])->name('expediente');
-    Route::get('/domicilio/{folio?}', [DomicilioController::class, 'index'])->name('domicilio');
 });
 
-// ── cajera
-    Route::prefix('cajera')->name('cajera.')->group(function () {
-    Route::get('/conciliacion', [ConciliacionController::class, 'index'])->name('conciliacion');
-    Route::get('/prevales', [PrevalesController::class, 'index'])->name('prevales');
-    Route::get('/monitor', [MonitorController::class, 'index'])->name('monitor');
+
+// ── Verificador
+Route::prefix('verificador')->name('verificador.')->group(function () {
+    Route::get('/bandeja', function () {
+        return view('Verificador.bandeja');
+    })->name('bandeja');
+    Route::get('/expediente/{folio?}', function () {
+        return view('Verificador.expediente');
+    })->name('expediente');
+    Route::get('/domicilio/{folio?}', function () {
+        return view('Verificador.domicilio');
+    })->name('domicilio');
 });
 
-// ── distribuidora
-    Route::prefix('distribuidora')->name('distribuidora.')->group(function () {
-    Route::get('/cuenta', [CuentaController::class, 'index'])->name('cuenta');
-    Route::get('/puntos', [PuntosController::class, 'index'])->name('puntos');
-    Route::get('/clientes', [ClientesController::class, 'index'])->name('clientes');
-    Route::get('/token', [TokenController::class, 'index'])->name('token');
+// ── Cajera
+Route::prefix('cajera')->name('cajera.')->group(function () {
+    Route::get('/conciliacion', function () {
+        return view('Cajera.conciliacion');
+    })->name('conciliacion');
+    Route::get('/prevales', function () {
+        return view('Cajera.prevales');
+    })->name('prevales');
+    Route::get('/monitor', function () {
+        return view('Cajera.monitor');
+    })->name('monitor');
 });
 
-// ── Transversales (sin auth por ahora para desarrollo)
-    Route::get('/notificaciones', [NotificacionesController::class, 'index'])->name('notificaciones');
-    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
+/// ── Distribuidora
+Route::prefix('distribuidora')->name('distribuidora.')->group(function () {
+    Route::get('/cuenta', function () {
+        return view('Distribuidora.cuenta');
+    })->name('cuenta');
+    Route::get('/puntos', function () {
+        return view('Distribuidora.puntos');
+    })->name('puntos');
+    Route::get('/clientes', function () {
+        return view('Distribuidora.clientes');
+    })->name('clientes');
+    Route::get('/token', function () {
+        return view('Distribuidora.token');
+    })->name('token');
 });
+// ── Transversales
+Route::get('/notificaciones', function () {
+    return view('general.notificaciones');
+})->name('notificaciones');
+Route::get('/perfil', function () {
+    return view('general.perfil');
+})->name('perfil');
+
 
 require __DIR__.'/auth.php';
