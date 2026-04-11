@@ -74,11 +74,6 @@
         transition: all 0.3s ease;
         box-shadow: 5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff;
     }
-    .option-btn:hover {
-        background: #e5e7eb;
-        border-color: #305be3;
-        transform: translateY(-3px); /* Se eleva un poquito */
-    }
     .option-btn h1 {
         font-size: 1.1rem;
         text-transform: uppercase;
@@ -109,40 +104,13 @@
                 <span>icon</span>
                 <h1 style="color:white;">Ajustes</h1>
             </a>
-
-            <a href="#" class="option-btn" style="background:gray">
+            <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display:none;">
+                @csrf
+            </form>
+              <a href="#" onclick="document.getElementById('logout-form').submit();" class="option-btn" style="background:red">
                 <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
+                <h1 style="color:white;">Cerrar Sesion</h1>
             </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            <a href="#" class="option-btn" style="background:gray">
-                <span>icon</span>
-                <h1 style="color:white;">Ajustes</h1>
-            </a>
-            
         </div>
     </div>
 </body>

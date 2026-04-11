@@ -27,6 +27,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        if ($request->user()->role_id == 4) {
+            return redirect()->intended(route('distribuidora.dashboard'));
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

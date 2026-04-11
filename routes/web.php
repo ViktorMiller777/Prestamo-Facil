@@ -3,29 +3,32 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\DistribuidorasController;
+use App\Http\Middleware\SoloDistribuidoras;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+//Dashboard para gerente, coordinado y cajera 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/distribuidora/dashboard', function (){
-    return view('distribuidora.distribuidora');
-})->name('distribuidora.dashboard');
 
-Route::get('/distribuidora/clientes', function () {
-    return view('distribuidora.clientes');
-})->name('clientes.index');
+Route::middleware(['auth', SoloDistribuidoras::class])->group(function () {
+    
+    Route::get('/distribuidora/dashboard', function (){
+        return view('distribuidora.distribuidora');
+    })->name('distribuidora.dashboard');
 
-Route::get('/distribuidora/prevale',function(){
-    return view('distribuidora.prevale');
-})->name('prevale');
+    Route::get('/distribuidora/clientes', function () {
+        return view('distribuidora.clientes');
+    })->name('clientes.index');
 
-Route::get('/distribuidora/productos', [ProductosController::class, 'listaProductos'])->name('productos');
+    Route::get('/distribuidora/productos', [ProductosController::class, 'listaProductos'])->name('productos');
+
+});
 
 Route::middleware('auth')->group(function () {
 

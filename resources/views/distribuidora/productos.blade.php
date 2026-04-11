@@ -124,7 +124,7 @@
     <div class="box-2">
         <div class="box-products">
             @foreach ($productos as $producto)
-                <div class="product-card-flex" onclick="abrirModal({{ $producto->id }}, '{{ $producto->monto }}')">
+                <div class="product-card-flex" onclick="abrirModalProducto('modalPrevale',{{ $producto->id }})">
                     <div class="product-amount">${{ number_format($producto->monto, 2) }}</div>
                     <div class="product-badge">{{ $producto->quincenas }} Quincenas</div>
                     
@@ -202,7 +202,7 @@
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="button" onclick="cerrarModal()" style="flex:1; background:#9ca3af; color:white;" class="btn-submit">Cancelar</button>
+                <button type="button" onclick="cerrarModal('modalPrevale')" style="flex:1; background:#9ca3af; color:white;" class="btn-submit">Cancelar</button>
                 <button type="button" onclick="enviarVale()" style="flex:2;" class="btn-submit">Emitir Vale</button>
             </div>
         </form>
@@ -211,15 +211,17 @@
 </body>
 </html>
 <script>
-    function abrirModal(id) {
-        // 1. Guardamos el ID del producto que clickeaste
-        document.getElementById('modal_producto_id').value = id;
-        
-        // 2. Mostramos el modal
-        document.getElementById('modalPrevale').style.display = 'flex';
+    function abrirModalProducto(id, producto_id) {
+        document.getElementById('modal_producto_id').value = producto_id;
+        document.getElementById(id).style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal(id) {
+        document.getElementById(id).style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
     async function enviarVale() {
-
     const form = document.getElementById('formPrevale');
     const formData = new FormData(form);
 
