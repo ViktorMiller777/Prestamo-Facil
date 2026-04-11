@@ -12,6 +12,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/distribuidoras/dashboard', function (){
+    return view('distribuidor.distribuidora');
+});
 
 
 Route::middleware('auth')->group(function () {
