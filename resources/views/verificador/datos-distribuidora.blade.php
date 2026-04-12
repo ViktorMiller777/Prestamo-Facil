@@ -106,11 +106,23 @@
             ✅ Activar Distribuidora
         </button>
     </div>
-
+    <div id="toast" style="
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    pointer-events: none;">
+    </div>
 <script>
     function activarDistribuidora(id) {
-        if (!confirm('¿Estás seguro de activar esta distribuidora?')) return;
-
         fetch(`/api/activar/distribuidora/${id}`, {
             method: 'PUT',
             headers: {
@@ -121,13 +133,28 @@
         .then(res => res.json())
         .then(data => {
             if (data.res) {
-                alert('✅ Distribuidora activada correctamente');
-                window.location.href = '/verificador/notificaciones';
+                mostrarToast('✅ Distribuidora activada correctamente', 'success');
+                setTimeout(() => {
+                    window.location.href = '/verificador/notificaciones';
+                }, 1400);
             } else {
-                alert('❌ Error: ' + data.mensaje);
+                mostrarToast('❌ ' + data.mensaje, 'error');
             }
         })
-        .catch(() => alert('❌ Error al activar'));
+        .catch(() => mostrarToast('❌ Error al activar', 'error'));
+    }
+    
+    function mostrarToast(mensaje, tipo = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = mensaje;
+        toast.style.background = tipo === 'success' ? '#16a34a' : '#dc2626';
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+        }, 3000);
     }
 </script>
 </body>

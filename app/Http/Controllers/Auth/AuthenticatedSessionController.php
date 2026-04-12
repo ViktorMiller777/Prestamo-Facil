@@ -28,9 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
         return match($request->user()->role_id) {
+            1 => redirect()->route('gerente.dashboard'),
+            2 => redirect()->route('coordinador.dashboard'),
+            3 => redirect()->route('verificador.dashboard'),
             4 => redirect()->route('distribuidora.dashboard'),
-            3 => redirect()->route('distribuidora.dashboard'),
-            default => redirect()->route('dashboard'),
+            5 => redirect()->route('cajera.dashboard'),
+            default => redirect()->route('login'),
         };
     }
 

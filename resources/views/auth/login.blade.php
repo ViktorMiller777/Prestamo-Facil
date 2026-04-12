@@ -189,7 +189,6 @@
             <div class="pf-logo-box">PF</div>
             Préstamo Fácil
         </div>
-        <a href="/" class="link">Ir a la web principal →</a>
     </header>
 
     <main class="pf-main">

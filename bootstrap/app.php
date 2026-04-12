@@ -13,7 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'gerente'      => \App\Http\Middleware\SoloGerente::class,
+            'coordinador'  => \App\Http\Middleware\SoloCoordinador::class,
+            'verificador'  => \App\Http\Middleware\SoloVerificador::class,
+            'distribuidor' => \App\Http\Middleware\SoloDistribuidor::class,
+            'cajera'       => \App\Http\Middleware\SoloCajera::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

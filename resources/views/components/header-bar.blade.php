@@ -48,12 +48,22 @@
     }
 </style>
 <div class="box">
+    @if(auth()->check() && auth()->user()->role_id == 4)
     <a href="{{ route('distribuidora.dashboard') }}" class="pf-logo-link">
         <div class="pf-logo">
             <div class="pf-logo-box">PF</div>
             <span>Préstamo Fácil</span>
         </div>
     </a>
+    @endif
+    @if(auth()->check() && auth()->user()->role_id == 3)
+    <a href="{{ route('verificador.dashboard') }}" class="pf-logo-link">
+        <div class="pf-logo">
+            <div class="pf-logo-box">PF</div>
+            <span>Préstamo Fácil</span>
+        </div>
+    </a>
+    @endif
     <h1 class="content-bar">
         Bienvenido(a)
         <span style="text-transform: capitalize; color:white">
