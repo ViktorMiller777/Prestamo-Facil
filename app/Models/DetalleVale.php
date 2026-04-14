@@ -11,6 +11,7 @@ class DetalleVale extends Model
     protected $table = 'detalle_vales';
 
     protected $fillable = [
+        'relacion_id',
         'vale_id',
         'monto',
         'porcentaje_comision',
@@ -26,5 +27,9 @@ class DetalleVale extends Model
 
     public function vale(): BelongsTo{
         return $this->belongsTo(Vale::class,'vale_id');
+    }
+    
+    public function relacion(): BelongsTo{
+        return $this->belongsTo(Relacion::class,'relacion_id');
     }
 }

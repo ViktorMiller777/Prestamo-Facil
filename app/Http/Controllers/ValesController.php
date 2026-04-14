@@ -9,7 +9,7 @@ use App\Models\Cliente;
 use App\Models\Distribuidora;
 use App\Models\DetalleVale;
 use App\Models\Producto;
-
+use App\Models\Relacion;
 
 class ValesController
 {
@@ -94,20 +94,20 @@ class ValesController
 
             $monto = $producto->monto; 
             $comision = $producto->porcentaje_comision;
-            $interes_quincenal = $producto->interes_quincenal;
-            
+            $interes_quincenal = $producto->interes_quincenal;   
             
             $seguro = $producto->seguro;
             $quincenas = $producto->quincenas;
 
             $monto_comision = $monto * $comision;
-            $monto_comision_quincenal = $monto_comision * $interes_quincenal; 
+            $monto_comision_quincenal = $monto * $interes_quincenal;
             $total_comision_quincenal = $monto_comision_quincenal * $quincenas;
 
             $TOTAL = $monto + $monto_comision + $seguro + $total_comision_quincenal;
   
 
             $detalle_vale = DetalleVale::create([
+                'relacion_id'                 => null,
                 'vale_id'                     => $vale->id,
                 'monto'                       => $producto->monto,
                 'porcentaje_comision'         => $producto->porcentaje_comision,
