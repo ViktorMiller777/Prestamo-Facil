@@ -9,6 +9,26 @@ use App\Models\Cliente;
 
 class ClientesController
 {
+    public function listaClientes(){
+        $clientes = Cliente::with('persona')->get();
+
+        return response()->json([
+            'mensaje' => 'Todos los clientes',
+            'clientes' => $clientes
+        ],200);
+
+        
+    }
+
+
+    public function clientesDistribuidora($id){
+        $clientes = Cliente::where('distribuidor_id', $id)->with('persona') ->get();
+        return response()->json([
+            'mensaje' => 'clientes de distribuidora',
+            'clientes' => $clientes
+        ],200);
+    }
+
     public function crearCliente(Request $request){
         $datos = $request->validate([
             //Datos de la persona

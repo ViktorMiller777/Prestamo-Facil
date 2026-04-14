@@ -16,7 +16,9 @@ class Producto extends Model
         'seguro',
         'quincenas',
         'interes_quincenal',
+        
     ];
+    
 
     public function vale(): HasMany{
         return $this->hasMany(Vale::class,'producto_id');

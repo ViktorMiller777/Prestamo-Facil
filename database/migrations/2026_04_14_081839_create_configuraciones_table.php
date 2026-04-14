@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('relaciones', function (Blueprint $table) {
+        Schema::create('configuraciones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('distribuidor_id')->constrained('distribuidoras');
-            $table->integer('folio_referencia')->unique();
-            $table->date('fecha_limite_pago');
-            $table->decimal('total_a_pagar',10,2);
+            $table->string('clave')->unique();  // 'dia_corte_1', 'dia_corte_2'
+            $table->string('valor');            // '1', '16'
+            $table->string('descripcion')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('relaciones');
+        Schema::dropIfExists('configuraciones');
     }
 };

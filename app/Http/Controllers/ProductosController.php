@@ -11,25 +11,27 @@ class ProductosController
 {
     public function listaProductos(){
         $productos = Producto::all();
-
-        return response()->json([
-            'mensaje' => 'Lista de productos',
-            'productos' => $productos
-        ],200);
+        return match(auth()->user()->role_id) {
+            4 => view('distribuidora.productos', compact('productos')),  // distribuidor
+            1 => view('gerente.productos', compact('productos')),        // gerente
+            default => abort(403, 'No tienes acceso.')
+        };
     }
 
 
     public function crearProducto(Request $request)
     {
         try {
-            // La regla 'required' por sí sola ya impide valores NULL o vacíos
             $data = $request->validate([
-                'monto'               => 'required|unique:productos,monto|numeric|min:0.01',
-                'porcentaje_comision' => 'required|unique:productos,porcentaje_comision|numeric|between:0,100',
-                'seguro'              => 'required|unique:productos,seguro|numeric|min:0',
-                'quincenas'           => 'required|unique:productos,quincenas|integer|min:1|max:96',
-                'interes_quincenal'   => 'required|unique:productos,interes_quincenal|numeric|min:0',
+                'monto'               => 'required|numeric|min:0.01',
+                'porcentaje_comision' => 'required|numeric|between:0,100',
+                'seguro'              => 'required|numeric|min:0',
+                'quincenas'           => 'required|integer|min:1|max:96',
+                'interes_quincenal'   => 'required|numeric|min:0',
             ]);
+
+            $data['porcentaje_comision'] = (float) $data['porcentaje_comision'] / 100;
+            $data['interes_quincenal']   = (float) $data['interes_quincenal'] / 100;
 
             $producto = Producto::create($data);
 
@@ -67,6 +69,7 @@ class ProductosController
             'interes_quincenal'    => 'sometimes|numeric|min:0',
             'activo'               => 'sometimes|boolean',
         ]);
+        
 
         $producto->update($validated);
 
@@ -74,5 +77,18 @@ class ProductosController
             'mensaje'  => 'Producto actualizado correctamente',
             'producto' => $producto
         ], 200);
-        }
     }
+
+    public function eliminarProducto($id)
+    {
+        $producto = Producto::findOrFail($id);
+        $producto->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'mensaje' => 'Producto eliminado correctamente'
+        ], 200);
+    }
+}
+
+    

@@ -25,7 +25,7 @@ class UsersController
             //Datos de la persona
             'nombre'            => 'required|string|max:100',
             'apellido'          => 'required|string|max:100',
-            'sexo'              => 'required|in:H,M,O', // Hombre, Mujer, Otro
+            'sexo'              => 'required|in:F,M,O', 
             'fecha_nacimiento'  => 'required|date|before:today',
             'CURP'              => 'required|string|size:18|unique:personas,CURP',
             'RFC'               => 'nullable|string|min:12|max:13|unique:personas,RFC',

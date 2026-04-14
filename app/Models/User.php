@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -46,6 +47,10 @@ class User extends Authenticatable
 
     public function distribuidora(): HasOne{
         return $this->hasOne(Distribuidora::class,'usuario_id');
+    }
+
+    public function notificacion(): HasMany{
+        return $this->hasMany(Notificacion::class,'usuario_id');
     }
     /**
      * The attributes that should be hidden for serialization.

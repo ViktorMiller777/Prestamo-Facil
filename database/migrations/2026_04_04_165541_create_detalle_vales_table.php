@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('detalle_vales', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('relacion_id')->nullable()->constrained('relaciones')->onDelete('set null');
             $table->foreignId('vale_id')->constrained('vales')->onDelete('cascade');
             $table->decimal('monto', 10, 2);
             $table->decimal('porcentaje_comision', 5, 2);
