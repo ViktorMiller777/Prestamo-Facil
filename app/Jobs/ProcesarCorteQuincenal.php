@@ -36,10 +36,9 @@ class ProcesarCorteQuincenal implements ShouldQueue
 
                 if ($detallesPendientes->isEmpty()) continue;
 
-                // 3. Cálculos globales de la distribuidora para este corte
+                // 3. Cálculos globales para la ÚNICA relación de esta distribuidora
                 $limite = $dist->linea_credito;
                 
-                // Crédito ocupado: Suma de montos de vales que están activos
                 $totalOcupado = DetalleVale::whereHas('vale', function ($query) use ($dist) {
                     $query->where('distribuidor_id', $dist->id)
                           ->where('estado', 'activo');
@@ -47,48 +46,48 @@ class ProcesarCorteQuincenal implements ShouldQueue
                 
                 $disponible = $limite - $totalOcupado;
 
+                // Sumatorias de los detalles para el total de la relación
+                $totalAbonoQuincenal = 0;
+                $sumaMontosOriginales = 0;
+                $sumaComisiones = 0;
+
+                foreach ($detallesPendientes as $detalle) {
+                    $quincenas = $detalle->quincenas ?? 1;
+                    // Sumamos el pago parcial de cada vale
+                    $totalAbonoQuincenal += ($detalle->monto / $quincenas);
+                    $sumaMontosOriginales += $detalle->monto;
+                    $sumaComisiones += $detalle->porcentaje_comision ?? 0;
+                }
+
                 $fechaLimite = now()->addDays(15); 
                 $pagoAnticipado = $fechaLimite->copy()->subDays(3);
 
-                // 4. Procesamos cada detalle para crear su relación individual (o agrupada)
-                // Si quieres que cada vale tenga su propio contador X/Y, procesamos uno a uno:
+                // 4. CREAR LA RELACIÓN ÚNICA (Solo una por distribuidora)
+                $relacion = Relacion::create([
+                    'num_distribuidora'    => $dist->id,
+                    'nombre_distribuidora' => $dist->usuario->persona->nombre . ' ' . $dist->usuario->persona->apellido,
+                    'limite_de_credito'    => $limite,
+                    'credito_disponible'   => $disponible,
+                    'puntos'               => $dist->puntos ?? 0,
+                    'referencia_de_pago'   => 'CQ-' . $dist->id . '-' . now()->format('Ymd'),
+                    'fecha_limite_pago'    => $fechaLimite,
+                    'pago_anticipado'      => $pagoAnticipado->format('Y-m-d'),
+                    'producto'             => 'VARIOS', 
+                    'cliente'              => 'VARIOS', // Al ser varios vales, marcamos como VARIOS
+                    'pagos_realizados'     => 'CORTE Q.', 
+                    'vale_id'              => 0, // ID genérico ya que agrupa varios
+                    'total_pagar'          => round($totalAbonoQuincenal, 2),
+                    'comision'             => $sumaComisiones,
+                    'pago'                 => round($totalAbonoQuincenal, 2),
+                    'total'                => $sumaMontosOriginales,
+                    'totales'              => $sumaMontosOriginales,
+                    'nombre_empresa'       => "PF Prestamo Facil SA",
+                    'convenio'             => "1628789",
+                    'cable'                => $dist->clabe ?? '12345678901234567890',
+                ]);
+
+                // 5. VINCULAR TODOS LOS DETALLES A LA MISMA RELACIÓN
                 foreach ($detallesPendientes as $detalle) {
-                    
-                    // Cálculo de quincenas: buscamos cuántas relaciones previas tiene este vale_id
-                    $conteoAnteriores = Relacion::whereHas('detalle_vale', function($query) use ($detalle) {
-                        $query->where('vale_id', $detalle->vale_id);
-                    })->count();
-
-                    $pagoActual = $conteoAnteriores + 1;
-                    $totalQuincenas = $detalle->quincenas ?? 0;
-                    $formatoPagos = $pagoActual . '/' . $totalQuincenas;
-                    $pagoQuincenal = $detalle->monto_comision_calculada / $totalQuincenas;
-
-                    // Crear la Relación (Encabezado del corte)
-                    $relacion = Relacion::create([
-                        'num_distribuidora'    => $dist->id,
-                        'nombre_distribuidora' => $dist->usuario->persona->nombre . ' ' . $dist->usuario->persona->apellido,
-                        'limite_de_credito'    => $limite,
-                        'credito_disponible'   => $disponible,
-                        'puntos'               => $dist->puntos ?? 0,
-                        'referencia_de_pago'   => 'CQ-' . $dist->id . '-' . $detalle->id . '-' . now()->format('Ymd'),
-                        'fecha_limite_pago'    => $fechaLimite,
-                        'pago_anticipado'      => $pagoAnticipado->format('Y-m-d'),
-                        'producto'             => 'VARIOS', 
-                        'cliente'              => $detalle->nombre_cliente ?? 'VARIOS',
-                        'pagos_realizados'     => $formatoPagos,
-                        'vale_id'              => $detalle->vale_id,
-                        'total_pagar'          => $detalle->monto_comision_calculada,
-                        'comision'             => $detalle->porcentaje_comision ?? 0,
-                        'pago'                 => $pagoQuincenal,
-                        'total'                => $detalle->monto,
-                        'totales'              => $detalle->monto,
-                        'nombre_empresa'       => "PF Prestamo Facil SA",
-                        'convenio'             => "1628789",
-                        'cable'                => $dist->clabe ?? '12345678901234567890',
-                    ]);
-
-                    // Vincular este detalle específico a la relación recién creada
                     $detalle->update([
                         'relacion_id' => $relacion->id
                     ]);
