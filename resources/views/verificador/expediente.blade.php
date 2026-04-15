@@ -165,22 +165,16 @@
     .notice-text { font-size: .80rem; color: #94A3B8; margin-top: 14px; line-height: 1.5; }
 
     @media (max-width: 1024px) {
-
-    .topbar { padding: 20px; }
-    .breadcrumb-title { font-size: 1rem; }
-
-    .hero-card { margin: 0 16px 16px 16px; flex-direction: column; align-items: flex-start; gap: 14px; }
-    .hero-right { text-align: left; }
-
-    .content-grid { grid-template-columns: 1fr; padding: 0 16px 32px 16px; }
-
-    .datos-grid   { grid-template-columns: 1fr 1fr; }
-    .datos-grid-2 { grid-template-columns: 1fr 1fr; }
-
-    .docs-grid { grid-template-columns: 1fr; }
-
-    .fotos-grid { grid-template-columns: 1fr 1fr; }
-}
+        .topbar { padding: 20px; }
+        .breadcrumb-title { font-size: 1rem; }
+        .hero-card { margin: 0 16px 16px 16px; flex-direction: column; align-items: flex-start; gap: 14px; }
+        .hero-right { text-align: left; }
+        .content-grid { grid-template-columns: 1fr; padding: 0 16px 32px 16px; }
+        .datos-grid   { grid-template-columns: 1fr 1fr; }
+        .datos-grid-2 { grid-template-columns: 1fr 1fr; }
+        .docs-grid { grid-template-columns: 1fr; }
+        .fotos-grid { grid-template-columns: 1fr 1fr; }
+    }
 </style>
 
 <div class="page-wrapper">
@@ -216,7 +210,7 @@
         <div class="hero-right">
             <div class="hero-folio-label">Folio de presolicitud</div>
             <div class="hero-folio-value">{{ $folio ?? '' }}</div>
-            <div class="hero-docs">Expediente: {{ $docs_cargados ?? 0 }} de {{ $docs_total ?? 0 }} documentos</div>
+            <div class="hero-docs">Expediente: {{ $docs_cargados ?? 0 }} de {{ $docs_total ?? 4 }} documentos</div>
         </div>
     </div>
 
@@ -230,41 +224,87 @@
             <div class="section-card">
                 <div class="section-header">
                     <span class="section-title">Documentos de identidad y domicilio</span>
-                    <span class="badge-count amber">{{ $docs_cargados ?? 0 }}/{{ $docs_total ?? 0 }} docs</span>
+                    <span class="badge-count amber">{{ $docs_cargados ?? 0 }}/{{ $docs_total ?? 4 }} docs</span>
                 </div>
                 <div class="docs-grid">
 
                     {{-- INE — Distribuidores.INE --}}
+                    @if($ine ?? null)
                     <div class="doc-card uploaded">
                         <div class="doc-name">INE</div>
-                        <a href="#" class="doc-preview-link">Vista previa · INE.pdf</a>
+                        <a href="{{ $ine }}" target="_blank" class="doc-preview-link">Vista previa · INE.pdf</a>
                         <div class="doc-footer">
                             <span class="doc-status-ok">✓ Cargado</span>
-                            <a href="#" class="doc-link-ver">Ver</a>
+                            <a href="{{ $ine }}" target="_blank" class="doc-link-ver">Ver</a>
                         </div>
                     </div>
+                    @else
+                    <div class="doc-card missing">
+                        <div class="doc-name">INE</div>
+                        <div style="margin-bottom:10px;">
+                            <button class="doc-upload-btn">+ Subir documento</button>
+                        </div>
+                        <div class="doc-footer">
+                            <span class="doc-status-miss">✗ Faltante</span>
+                        </div>
+                    </div>
+                    @endif
 
                     {{-- Comprobante de domicilio — Distribuidores.comprobante_domicilio --}}
+                    @if($comprobante_domicilio ?? null)
                     <div class="doc-card uploaded">
                         <div class="doc-name">Comprobante de domicilio</div>
-                        <a href="#" class="doc-preview-link">Vista previa · CFE.pdf</a>
+                        <a href="{{ $comprobante_domicilio }}" target="_blank" class="doc-preview-link">Vista previa · CFE.pdf</a>
                         <div class="doc-footer">
                             <span class="doc-status-ok">✓ Cargado</span>
-                            <a href="#" class="doc-link-ver">Ver</a>
+                            <a href="{{ $comprobante_domicilio }}" target="_blank" class="doc-link-ver">Ver</a>
                         </div>
                     </div>
+                    @else
+                    <div class="doc-card missing">
+                        <div class="doc-name">Comprobante de domicilio</div>
+                        <div style="margin-bottom:10px;">
+                            <button class="doc-upload-btn">+ Subir documento</button>
+                        </div>
+                        <div class="doc-footer">
+                            <span class="doc-status-miss">✗ Faltante</span>
+                        </div>
+                    </div>
+                    @endif
 
                     {{-- Reporte de Buró de Crédito --}}
+                    @if($buro ?? null)
                     <div class="doc-card uploaded">
                         <div class="doc-name">Reporte de Buró de Crédito</div>
-                        <a href="#" class="doc-preview-link">Vista previa · BURO.pdf</a>
+                        <a href="{{ $buro }}" target="_blank" class="doc-preview-link">Vista previa · BURO.pdf</a>
                         <div class="doc-footer">
                             <span class="doc-status-ok">✓ Cargado</span>
-                            <a href="#" class="doc-link-ver">Ver</a>
+                            <a href="{{ $buro }}" target="_blank" class="doc-link-ver">Ver</a>
                         </div>
                     </div>
+                    @else
+                    <div class="doc-card missing">
+                        <div class="doc-name">Reporte de Buró de Crédito</div>
+                        <div style="margin-bottom:10px;">
+                            <button class="doc-upload-btn">+ Subir documento</button>
+                        </div>
+                        <div class="doc-footer">
+                            <span class="doc-status-miss">✗ Faltante</span>
+                        </div>
+                    </div>
+                    @endif
 
                     {{-- Foto vehículo principal --}}
+                    @if($foto_vehiculo ?? null)
+                    <div class="doc-card uploaded">
+                        <div class="doc-name">Foto de vehículo principal</div>
+                        <a href="{{ $foto_vehiculo }}" target="_blank" class="doc-preview-link">Vista previa · foto.jpg</a>
+                        <div class="doc-footer">
+                            <span class="doc-status-ok">✓ Cargado</span>
+                            <a href="{{ $foto_vehiculo }}" target="_blank" class="doc-link-ver">Ver</a>
+                        </div>
+                    </div>
+                    @else
                     <div class="doc-card missing">
                         <div class="doc-name">Foto de vehículo principal</div>
                         <div style="margin-bottom:10px;">
@@ -274,6 +314,7 @@
                             <span class="doc-status-miss">✗ Faltante</span>
                         </div>
                     </div>
+                    @endif
 
                 </div>
             </div>
@@ -330,33 +371,61 @@
         {{-- ── COL DERECHA ── --}}
         <div class="col-right">
 
-            {{-- Fotos del vehículo --}}
+            {{-- Fotos del vehículo — tabla Datos_vehiculo --}}
             <div class="section-card">
                 <div class="section-header">
                     <span class="section-title">Fotos del vehículo</span>
-                    <span class="badge-count red">1/4 fotos</span>
+                    <span class="badge-count red">{{ $fotos_cargadas ?? 0 }}/4 fotos</span>
                 </div>
                 <div class="fotos-grid">
 
+                    @if($foto_frente ?? null)
                     <div class="foto-slot loaded">
-                        <span class="foto-loaded-text">Foto frontal cargada</span>
+                        <span class="foto-loaded-text">✓ Cargada</span>
                         <span class="foto-label">Frente</span>
                     </div>
+                    @else
+                    <div class="foto-slot missing">
+                        <span class="foto-add">+ Subir foto</span>
+                        <span class="foto-label error">Frente</span>
+                    </div>
+                    @endif
 
+                    @if($foto_lateral_derecho ?? null)
+                    <div class="foto-slot loaded">
+                        <span class="foto-loaded-text">✓ Cargada</span>
+                        <span class="foto-label">Lateral derecho</span>
+                    </div>
+                    @else
                     <div class="foto-slot missing">
                         <span class="foto-add">+ Subir foto</span>
                         <span class="foto-label error">Lateral derecho</span>
                     </div>
+                    @endif
 
+                    @if($foto_lateral_izquierdo ?? null)
+                    <div class="foto-slot loaded">
+                        <span class="foto-loaded-text">✓ Cargada</span>
+                        <span class="foto-label">Lateral izquierdo</span>
+                    </div>
+                    @else
                     <div class="foto-slot missing">
                         <span class="foto-add">+ Subir foto</span>
                         <span class="foto-label error">Lateral izquierdo</span>
                     </div>
+                    @endif
 
+                    @if($foto_trasera ?? null)
+                    <div class="foto-slot loaded">
+                        <span class="foto-loaded-text">✓ Cargada</span>
+                        <span class="foto-label">Trasera</span>
+                    </div>
+                    @else
                     <div class="foto-slot missing">
                         <span class="foto-add">+ Subir foto</span>
                         <span class="foto-label error">Trasera</span>
                     </div>
+                    @endif
 
                 </div>
             </div>
@@ -402,6 +471,16 @@
                     </div>
                 </div>
             </div>
+
+        <a href="{{ route('verificador.domicilio', ['folio' => $folio]) }}"
+           style="display:block; width:100%; padding: 14px;
+                  background:#2563EB; color:#fff; border-radius:10px;
+                  text-align:center; font-weight:700; font-size:.95rem;
+                  text-decoration:none; transition: background .15s;"
+           onmouseover="this.style.background='#1D4ED8'"
+           onmouseout="this.style.background='#2563EB'">
+            Ir a validación de domicilio →
+        </a>    
 
         </div>{{-- /col-right --}}
 
