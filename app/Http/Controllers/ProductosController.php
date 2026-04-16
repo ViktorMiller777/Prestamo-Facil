@@ -17,6 +17,13 @@ class ProductosController
             default => abort(403, 'No tienes acceso.')
         };
     }
+    public function index()
+    {
+        $distribuidora = auth()->user()->distribuidora;
+        $productos = Producto::all(); // o como lo tengas
+
+        return view('distribuidora.productos', compact('productos', 'distribuidora'));
+    }
 
 
     public function crearProducto(Request $request)

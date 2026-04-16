@@ -16,19 +16,19 @@ class Relacion extends Model
         'limite_de_credito',
         'credito_disponible',
         'puntos',
+        
         'referencia_de_pago',
         'fecha_limite_pago',
         'pago_anticipado',
         'total_pagar',
-        //'vale_id',
-        'producto',
-        //'cliente',
+
         'pagos_realizados',
-        'comision',
-        'pago',
+
         'recargos',
         'total',
         'totales',
+
+        //RELLENO
         'nombre_empresa',
         'convenio',
         'cable',

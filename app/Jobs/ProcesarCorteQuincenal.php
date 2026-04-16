@@ -59,9 +59,22 @@ class ProcesarCorteQuincenal implements ShouldQueue
                     $sumaComisiones += $detalle->porcentaje_comision ?? 0;
                 }
 
+                
                 $fechaLimite = now()->addDays(15); 
                 $pagoAnticipado = $fechaLimite->copy()->subDays(3);
+                
+                if (now() > $fechaLimite) {
+                    $recargo = 300;
+                } else {
+                    $recargo = 0;
+                }
+                $totalAPagarFinal = $totalAbonoQuincenal + $recargo;
 
+                $totalPagos = DetalleVale::whereHas('vale', function ($query) use ($dist) {
+                    $query->where('distribuidor_id', $dist->id)
+                          ->where('estado', 'activo');
+                })->sum('pago');
+                
                 // 4. CREAR LA RELACIÓN ÚNICA (Solo una por distribuidora)
                 $relacion = Relacion::create([
                     'num_distribuidora'    => $dist->id,
@@ -69,18 +82,19 @@ class ProcesarCorteQuincenal implements ShouldQueue
                     'limite_de_credito'    => $limite,
                     'credito_disponible'   => $disponible,
                     'puntos'               => $dist->puntos ?? 0,
+
                     'referencia_de_pago'   => 'CQ-' . $dist->id . '-' . now()->format('Ymd'),
                     'fecha_limite_pago'    => $fechaLimite,
                     'pago_anticipado'      => $pagoAnticipado->format('Y-m-d'),
-                    'producto'             => 'VARIOS', 
-                    'cliente'              => 'VARIOS', // Al ser varios vales, marcamos como VARIOS
+                    'total_pagar'          => $totalPagos,
+                   
                     'pagos_realizados'     => 'CORTE Q.', 
-                    'vale_id'              => 0, // ID genérico ya que agrupa varios
-                    'total_pagar'          => round($totalAbonoQuincenal, 2),
-                    'comision'             => $sumaComisiones,
-                    'pago'                 => round($totalAbonoQuincenal, 2),
-                    'total'                => $sumaMontosOriginales,
+                 
+                    //CHECAR LAS OPERACIONES DE AQUI EN ADELANTE
+                    'recargos'             => $recargo,
+                    'total'                => $totalAPagarFinal,
                     'totales'              => $sumaMontosOriginales,
+
                     'nombre_empresa'       => "PF Prestamo Facil SA",
                     'convenio'             => "1628789",
                     'cable'                => $dist->clabe ?? '12345678901234567890',

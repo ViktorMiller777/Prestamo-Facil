@@ -149,7 +149,8 @@
         <form id="formPrevale" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="producto_id" id="modal_producto_id">
-            <input type="hidden" name="distribuidor_id" value="1"> <input type="hidden" name="estado" value="prevale">
+            <input type="hidden" name="distribuidor_id" value="{{ auth()->user()->distribuidora->id }}">
+            <input type="hidden" name="estado" value="prevale">
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">

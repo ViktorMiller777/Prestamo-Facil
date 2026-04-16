@@ -70,9 +70,9 @@ class DistribuidorasController
             'persona.sexo'              => 'required|in:F,M,O',
             'persona.fecha_nacimiento'  => 'required|date|before:today',
             'persona.CURP'              => 'required|string|size:18|unique:personas,CURP',
-            'persona.RFC'               => 'nullable|string|min:12|max:13|unique:personas,RFC',
-            'persona.telefono_personal' => 'nullable|string|max:15|unique:personas,telefono_personal',
-            'persona.celular'           => 'required|string|max:15|unique:personas,celular',
+            'persona.RFC'               => 'required|string|min:12|max:13|unique:personas,RFC',
+            'persona.telefono_personal' => 'required|string|size:10|unique:personas,telefono_personal',
+            'persona.celular'           => 'required|string|size:10|unique:personas,celular',
 
             // Datos del usuario
             'usuario.sucursal_id'       => 'required|exists:sucursales,id',

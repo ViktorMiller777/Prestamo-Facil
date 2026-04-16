@@ -108,7 +108,10 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        input:invalid:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
         .btn {
             padding: 12px 25px;
             border-radius: 8px;
@@ -178,7 +181,7 @@
                             </div>
                             <div class="form-group">
                                 <label>RFC</label>
-                                <input type="text" name="persona[RFC]" maxlength="13">
+                                <input type="text" name="persona[RFC]" required maxlength="13">
                             </div>
                             <div class="form-group">
                                 <label>Fecha Nacimiento</label>
@@ -186,11 +189,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Teléfono Personal</label>
-                                <input type="text" name="persona[telefono_personal]"> <!--CHECAR QUE SI ES TEXT -->
+                                <input type="number" name="persona[telefono_personal]" required maxlength="10"> <!--CHECAR QUE SI ES TEXT -->
                             </div>
                             <div class="form-group">
                                 <label>Celular</label>
-                                <input type="text" name="persona[celular]" required> <!--CHECAR QUE SI ES TEXT --> 
+                                <input type="number" name="persona[celular]" required maxlength="10"> <!--CHECAR QUE SI ES TEXT --> 
                             </div>
                         </div>
                     </div>
@@ -253,7 +256,7 @@
                             </div>
                             <div class="form-group">
                                 <label>RFC</label>
-                                <input type="text" name="familiar[RFC]" maxlength="13">
+                                <input type="text" name="familiar[RFC]" required maxlength="13">
                             </div>
                             <div class="form-group">
                                 <label>Fecha Nacimiento</label>
@@ -336,20 +339,34 @@ pointer-events: none;">
     let current = 1;
 
     function movePage(step) {
-        // Validar que no se pase de los límites
+        // Si intentamos avanzar, validamos la página actual
+        if (step === 1) {
+            const currentPage = document.getElementById(`page${current}`);
+            const inputs = currentPage.querySelectorAll('input, select');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                // checkValidity() devuelve false si el input tiene "required" y está vacío
+                if (!input.checkValidity()) {
+                    input.reportValidity(); // Esto muestra el mensaje de error nativo del navegador
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) return; // Detenemos la función si hay errores
+        }
+
+        // --- El resto de tu lógica se mantiene igual ---
         if (current + step < 1 || current + step > 4) return;
 
-        // Ocultar actual
         document.getElementById(`page${current}`).classList.remove('active');
         document.getElementById(`s${current}`).classList.remove('active');
 
         current += step;
 
-        // Mostrar siguiente
         document.getElementById(`page${current}`).classList.add('active');
         document.getElementById(`s${current}`).classList.add('active');
 
-        // Actualizar botones
         document.getElementById('btnPrev').style.visibility = current === 1 ? 'hidden' : 'visible';
         
         if (current === 4) {
@@ -362,7 +379,14 @@ pointer-events: none;">
     }
     
     function enviarForm() {
+        
         const form = document.getElementById('multiStepForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        event.preventDefault();
+
         const formData = new FormData(form);
 
         // Ver qué se está enviando

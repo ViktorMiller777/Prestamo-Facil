@@ -82,11 +82,12 @@ class ValesController
                 'INE'                   => $datos['INE']
             ]);
 
+            
             // C. Crear el Vale usando el ID del cliente recién creado
             $vale = Vale::create([
                 'folio'           => $datos['folio'],
                 'cliente_id'      => $cliente->id, // Aquí vinculamos
-                'distribuidor_id' => $datos['distribuidor_id'],
+                'distribuidor_id' => 8, //$distribuidora,
                 'producto_id'     => $datos['producto_id'],
                 'estado'          => $datos['estado'],
                 'fecha_emision'   => now(),
@@ -104,8 +105,10 @@ class ValesController
             $total_comision_quincenal = $monto_comision_quincenal * $quincenas;
 
             $TOTAL = $monto + $monto_comision + $seguro + $total_comision_quincenal;
-  
+            $pago = $TOTAL / $quincenas;
 
+            $vale->load('distribuidora.usuario.persona');
+            
             $detalle_vale = DetalleVale::create([
                 'relacion_id'                 => null,
                 'vale_id'                     => $vale->id,
@@ -115,6 +118,8 @@ class ValesController
                 'interes_quincenal'           => $producto->interes_quincenal,
                 'quincenas'                   => $producto->quincenas,
                 'seguro'                      => $producto->seguro,
+                'comision'                    => $monto_comision_quincenal,
+                'pago'                        => $pago,
                 'nombre_cliente'              => $persona->nombre,
                 'nombre_distribuidora'        => $vale->distribuidora->usuario->persona->nombre,
                 'fecha_emision'               => $vale->fecha_emision,

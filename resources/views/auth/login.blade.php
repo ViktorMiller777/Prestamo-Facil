@@ -25,6 +25,9 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--pf-bg);
             color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* HEADER */
@@ -56,21 +59,22 @@
         /* LAYOUT */
         .pf-main {
             max-width: 1150px;
-            margin: 40px auto;
+            margin: 20px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: 1.8fr 1fr;
             gap: 40px;
+            flex: 1; /* ✅ esto es lo único que le falta */
         }
 
         @media (max-width: 900px) {
-            .pf-main { grid-template-columns: 1fr; margin: 20px auto; }
+            .pf-main { grid-template-columns: 1fr; margin: 10px auto; }
         }
 
         /* CARD LOGIN */
         .login-card {
             background: white;
-            padding: 35px;
+            padding: 25px;
             border-radius: 28px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.03);
             border: 1px solid #f1f5f9;
@@ -82,12 +86,12 @@
             gap: 8px;
             font-size: 0.85rem;
             color: #64748b;
-            margin-bottom: 35px;
+            margin-bottom: 20px;
         }
 
         .status-badge svg { width: 18px; color: var(--pf-green); }
 
-        .title { font-size: 2.6rem; font-weight: 800; margin-bottom: 40px; color: var(--pf-dark-blue); }
+        .title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; color: var(--pf-dark-blue); }
 
         /* FORMULARIO */
         .form-group { margin-bottom: 25px; }
@@ -97,16 +101,16 @@
             font-size: 0.85rem;
             font-weight: 700;
             color: #475569;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             margin-left: 4px;
         }
 
         .form-control {
             width: 100%;
-            padding: 15px 16px;
+            padding: 10px 6px;
             border: 2px solid var(--pf-border);
-            border-radius: 14px;
-            font-size: 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
             transition: all 0.2s;
             outline: none;
             background: #fcfcfd;
@@ -127,7 +131,7 @@
             display: flex;
             align-items: center;
             gap: 30px;
-            margin-top: 35px;
+            margin-top: 20px;
         }
 
         .btn-primary {
@@ -177,8 +181,8 @@
             color: #64748b;
             padding: 40px;
             text-align: center;
-            font-size: 0.8rem;
-            margin-top: 60px;
+            font-size: 1rem;
+            margin-bottom:0px
         }
     </style>
 </head>
@@ -222,8 +226,8 @@
 
                 <div class="form-group">
                     <label class="form-label">CONTRASEÑA</label>
-                    <input type="password" name="password" class="form-control" 
-                           placeholder="••••••••" required>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    <a href="forgot-password">¿Olvidaste tu contraseña?</a>
                 </div>
 
                 {{-- WIDGET RECAPTCHA V2 (Checkbox) --}}

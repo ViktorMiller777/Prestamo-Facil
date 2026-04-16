@@ -22,12 +22,8 @@ return new class extends Migration
             $table->string('pago_anticipado')->nullable(); // "13,14,15 de febrero" 
             $table->decimal('total_pagar', 12, 2); // "\$4,800.00" 
 
-            //$table->unsignedBigInteger('vale_id')->nullable(); 
-            $table->string('producto'); // Ej: "$2/10$ Plus" [cite: 8]
-            //$table->string('cliente'); // Ej: "Luis Ramirez López" [cite: 8]
-            $table->string('pagos_realizados'); // Ej: "$5/10$" [cite: 8]
-            $table->decimal('comision', 12, 2)->default(0.00);
-            $table->decimal('pago', 12, 2)->default(0.00);
+            $table->string('pagos_realizados');
+
             $table->decimal('recargos', 12, 2)->default(0.00);
             $table->decimal('total', 12, 2)->default(0.00); // Total por fila [cite: 8]
             $table->decimal('totales', 12, 2)->default(0.00); // Sumatoria final [cite: 8]
