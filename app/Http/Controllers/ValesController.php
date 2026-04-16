@@ -87,7 +87,7 @@ class ValesController
             $vale = Vale::create([
                 'folio'           => $datos['folio'],
                 'cliente_id'      => $cliente->id, // Aquí vinculamos
-                'distribuidor_id' => 8, //$distribuidora,
+                'distribuidor_id' => $datos['distribuidor_id'], //$distribuidora,
                 'producto_id'     => $datos['producto_id'],
                 'estado'          => $datos['estado'],
                 'fecha_emision'   => now(),

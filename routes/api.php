@@ -52,8 +52,6 @@ Route::get('/lista/distribuidoras',[DistribuidorasController::class,'listaDistri
 Route::patch('/subir/categoria/{id}',[CategoriasController::class,'subirCategoria']);
 //Ruta para bajar de categoria un distribuidora
 Route::patch('/bajar/categoria/{id}',[CategoriasController::class,'bajarCategoria']);
-//Ruta para crear una relacion
-Route::post('/crear/relacion',[RelacionesController::class,'crearRelacion']);
 //Ruta para ver todas las relaciones con el nombre de la distribuidora
 Route::get('lista/relaciones',[RelacionesController::class,'listaRelaciones']);
 //Ruta de todos los vales creados 
@@ -68,3 +66,5 @@ Route::get('/lista/distribuidoras-inactivas',[DistribuidorasController::class,'d
 Route::put('/activar/distribuidora/{id}', [DistribuidorasController::class, 'activarDistribuidora']);
 //Ruta para elimiar un producto alv
 Route::delete('/eliminar/producto/{id}', [ProductosController::class, 'eliminarProducto']);
+
+Route::get('/distribuidora/relaciones',[RelacionesController::class,'listaRelacionesAuth']);

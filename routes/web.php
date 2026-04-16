@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\DistribuidorasController;
 use App\Http\Controllers\ValesController;
+use App\Http\Controllers\RelacionesController;
+use App\Http\Controllers\DetallesValesController;
 use Illuminate\Support\Facades\Route;
 
 // ================================
@@ -80,6 +82,13 @@ Route::middleware(['auth', 'distribuidor'])->group(function () {
     Route::get('/distribuidora/vales', [ValesController::class, 'valesPorDistribuidora'])->name('distribuidora.vale');
 
     Route::get('/distribuidora/productos', [ProductosController::class, 'listaProductos'])->name('productos');
+
+    // Asegúrate de que apunte a listaRelacionesAuth y no a otra función
+    Route::get('/distribuidora/relaciones', [RelacionesController::class, 'listaRelacionesAuth'])->name('relaciones');
+
+    Route::get('/distribudora/detalle_vale/{id}',[DetallesValesController::class, 'verDetalleRelacion'])->name('detalle_vale');
+
+
 });
 
 

@@ -264,7 +264,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Teléfono Personal</label>
-                                <input type="text" name="familiar[telefono_personal]"> <!--CHECAR QUE SI ES TEXT -->
+                                <input type="text" name="familiar[telefono_personal]" required> <!--CHECAR QUE SI ES TEXT -->
                             </div>
                             <div class="form-group">
                                 <label>Celular</label>
@@ -289,19 +289,19 @@
                             </div>
                             <div class="form-group">
                                 <label>Marca Vehículo</label>
-                                <input type="text" name="vehiculo[marca]">
+                                <input type="text" name="vehiculo[marca]" required >
                             </div>
                             <div class="form-group">
                                 <label>Modelo</label>
-                                <input type="text" name="vehiculo[modelo]">
+                                <input type="text" name="vehiculo[modelo]"required>
                             </div>
                             <div class="form-group">
                                 <label>Placas</label>
-                                <input type="text" name="vehiculo[numero_placas]">
+                                <input type="text" name="vehiculo[numero_placas]" required>
                             </div>
                             <div class="form-group">
                                 <label>Color</label>
-                                <input type="text" name="vehiculo[color]">
+                                <input type="text" name="vehiculo[color]" required>
                             </div>
                         </div>
                     </div>

@@ -92,7 +92,7 @@
             <a href="{{ route('clientes.index') }}" class="option-btn" style="background:#e54444">
                 <h1 style="color:white;">Clientes</h1>
             </a>         
-            <a href="#" class="option-btn" style="background:#305be3">
+            <a href="{{ route('relaciones') }}" class="option-btn" style="background:#305be3">
                 <h1 style="color:white;">Relaciones</h1>
             </a>
             <a href="#" class="option-btn" style="background:gray">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Relacion;
 
 class RelacionesController
@@ -16,24 +17,12 @@ class RelacionesController
         ],200);
     }
 
-    public function crearRelacion(Request $request)
-    {
-        // 1. Validación robusta (Si falla, Laravel devuelve 422 automáticamente)
-        $datos = $request->validate([
-            'distribuidor_id'   => 'required|exists:distribuidoras,id',
-            'folio_referencia'  => 'required|string|unique:relaciones,folio_referencia',
-            'fecha_limite_pago' => 'required|date',
-            'total_a_pagar'     => 'required|numeric|min:0',
-        ]);
+    public function listaRelacionesAuth(){
+        $distribuidoraId = Auth::user()->distribuidora->id;
 
-        // 2. Creación directa
-        // Usamos el retorno de create() para tener el ID y timestamps reales
-        $relacion = Relacion::create($datos);
+        $relaciones = Relacion::where('num_distribuidora', $distribuidoraId)->get();
 
-        // 3. Respuesta estandarizada con código 201 (Created)
-        return response()->json([
-            'mensaje'  => 'Relación creada exitosamente',
-            'relacion' => $relacion
-        ], 201);
+        return view('distribuidora.relaciones', compact('relaciones'));
     }
+
 }
