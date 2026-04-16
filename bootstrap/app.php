@@ -19,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'verificador'  => \App\Http\Middleware\SoloVerificador::class,
             'distribuidor' => \App\Http\Middleware\SoloDistribuidor::class,
             'cajera'       => \App\Http\Middleware\SoloCajera::class,
+            'recaptcha' => \App\Http\Middleware\VerifyRecaptcha::class,
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -1,4 +1,3 @@
-{{-- resources/views/auth/login.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso Clientes | Préstamo Fácil</title>
 
+    {{-- CARGA DE RECAPTCHA V2 (Checkbox) --}}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <style>
         /* RESET & VARIABLES */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         :root {
             --pf-dark-blue: #0f172a;
             --pf-main-blue: #305be3;
             --pf-main-hover: #1e40af;
             --pf-green: #22c55e;
-            --pf-orange: #f59e0b;
             --pf-bg: #f8fafc;
             --pf-border: #e2e8f0;
         }
@@ -69,7 +70,7 @@
         /* CARD LOGIN */
         .login-card {
             background: white;
-            padding: 20px;
+            padding: 35px;
             border-radius: 28px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.03);
             border: 1px solid #f1f5f9;
@@ -117,6 +118,11 @@
             box-shadow: 0 0 0 4px rgba(48, 91, 227, 0.08);
         }
 
+        /* Contenedor del Captcha */
+        .captcha-wrapper {
+            margin: 25px 0;
+        }
+
         .actions {
             display: flex;
             align-items: center;
@@ -139,17 +145,20 @@
         .btn-primary:hover {
             background: var(--pf-main-hover);
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(48, 91, 227, 0.3);
         }
 
-        .link {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
+        .alert-error {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: #B91C1C;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
-
-        .link:hover { text-decoration: underline; }
 
         /* SIDE PANEL */
         .side-info {
@@ -160,18 +169,9 @@
             align-self: start;
         }
 
-        .side-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #92400e;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
+        .side-title { color: #92400e; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .side-text { color: #92400e; font-size: 0.9rem; line-height: 1.7; margin-bottom: 15px; }
 
-        /* FOOTER */
         .footer {
             background: var(--pf-dark-blue);
             color: #64748b;
@@ -194,59 +194,70 @@
     <main class="pf-main">
         <section class="login-card">
             <div class="status-badge">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
-                Conexión cifrada de alta seguridad
+                Verificación de seguridad requerida
             </div>
 
             <h1 class="title">¡Bienvenido!</h1>
 
+            {{-- Bloque de errores mejorado --}}
+            @if ($errors->any())
+                <div class="alert-error">
+                    @foreach ($errors->all() as $error)
+                        <span>• {{ $error }}</span>
+                    @endforeach
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login') }}">
                 @csrf
+
                 <div class="form-group">
-                    <label class="form-label">CORREO</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="ejemplo@correo.com" required autofocus>
-                    
-                    @error('email')
-                        <span style="color: red; font-size: 0.8rem;">{{ $message }}</span>
-                    @enderror
+                    <label class="form-label">CORREO ELECTRÓNICO</label>
+                    <input type="email" name="email" class="form-control" 
+                           value="{{ old('email') }}" placeholder="ejemplo@correo.com" required autofocus>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">CONTRASEÑA</label>
-                    <input type="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
-                    
-                    @error('password')
-                        <span style="color: red; font-size: 0.8rem;">{{ $message }}</span>
-                    @enderror
+                    <input type="password" name="password" class="form-control" 
+                           placeholder="••••••••" required>
+                </div>
+
+                {{-- WIDGET RECAPTCHA V2 (Checkbox) --}}
+                <div class="captcha-wrapper">
+                    <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
                 </div>
 
                 <div class="actions">
-                    <button type="submit" class="btn-primary">Ingresar al Panel</button>
+                    <button type="submit" class="btn-primary">
+                        Ingresar al Panel
+                    </button>
                 </div>
             </form>
         </section>
 
         <aside class="side-info">
             <div class="side-title">
-                <svg style="width:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <svg style="width:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 Consejo de Seguridad
             </div>
             <p class="side-text">
-                Nunca compartas tus claves con nadie. <strong>Préstamo Fácil</strong> no solicita contraseñas por WhatsApp o llamadas telefónicas.
+                Al usar <strong>reCAPTCHA v2</strong>, asegúrate de marcar la casilla y seleccionar las imágenes correspondientes si el sistema lo solicita.
             </p>
             <p class="side-text">
-                Asegúrate de que la URL sea <strong>https://tu-dominio.com</strong> antes de ingresar.
+                Este proceso ayuda a mantener tus datos protegidos contra ataques automatizados.
             </p>
-            <a href="#" class="link" style="font-size: 0.85rem">Centro de seguridad →</a>
         </aside>
     </main>
 
     <footer class="footer">
         © 2026 Préstamo Fácil México. Todos los derechos reservados.
     </footer>
+
 </body>
 </html>
