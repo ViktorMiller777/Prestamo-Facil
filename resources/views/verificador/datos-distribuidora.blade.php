@@ -5,157 +5,308 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle Distribuidora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --primary: #6366f1;
+            --success: #16a34a;
+            --danger: #ef4444;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            background-color: var(--bg);
+            padding: 30px;
+            /* Espacio para que no se meta debajo de tu x-header-bar */
+            padding-top: 9rem !important; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Encabezado Superior */
+        .header-detalle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .header-info h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: white;
+            color: var(--text-main);
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .btn-back:active { transform: scale(0.95); background: #f8fafc; }
+
+        /* Tarjetas de Información */
+        .info-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-data {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .dato-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .dato-item label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .dato-item span {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .badge-status {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 6px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        /* Botón de Acción Gigante para Tablet */
+        .btn-activar {
+            width: 100%;
+            padding: 25px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 15px 30px rgba(22, 163, 74, 0.25);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+
+        .btn-activar:active {
+            transform: scale(0.96);
+            filter: brightness(0.9);
+        }
+
+        /* Toast de Notificación */
+        #toast {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+    </style>
 </head>
-<style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-    body, html {
-        padding-top: 4rem !important;
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-        padding: 10px;
-        width: 100%;
-        background-color: #f4f7f6;
-    }
-    .box-2 { border-radius:10px; width:100%; background:white; box-shadow:0 4px 6px rgba(0,0,0,0.1); padding:30px; }
-    .section-title { font-size:1rem; font-weight:700; color:#111827; margin-bottom:15px; padding-bottom:8px; border-bottom:2px solid #e5e7eb; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:25px; }
-    .dato-item label { font-size:0.75rem; font-weight:600; color:#6b7280; text-transform:uppercase; display:block; margin-bottom:4px; }
-    .dato-item span { font-size:0.95rem; color:#111827; font-weight:500; }
-    .header-detalle { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
-    .header-detalle h2 { font-size:1.3rem; font-weight:800; color:#111827; }
-    .btn-back { padding:8px 16px; background:#e5e7eb; color:#374151; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.9rem; }
-    .btn-back:hover { background:#d1d5db; }
-    .btn-activar { width:100%; padding:14px; background:#16a34a; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:1rem; margin-top:10px; }
-    .btn-activar:hover { background:#15803d; }
-    .badge-red { background:#fee2e2; color:#991b1b; padding:4px 12px; border-radius:99px; font-size:0.8rem; font-weight:600; }
-</style>
 <body>
     <x-header-bar />
 
-    <div class="box-2">
+    <div class="container">
         <div class="header-detalle">
-            <h2>
-                {{ $distribuidora->usuario->persona->nombre }}
-                {{ $distribuidora->usuario->persona->apellido }}
-                <span class="badge-red" style="margin-left:10px;">Inactiva</span>
-            </h2>
-            <button class="btn-back" onclick="window.history.back()">← Volver</button>
+            <div class="header-info">
+                <h2>
+                    <i data-lucide="user-check" style="color: var(--primary); width: 36px; height: 36px;"></i>
+                    Detalle del Registro
+                    <span class="badge-status">Presolicitud</span>
+                </h2>
+            </div>
+            <button class="btn-back" onclick="window.history.back()">
+                <i data-lucide="arrow-left"></i> Volver
+            </button>
         </div>
 
-        {{-- Datos Personales --}}
-        <p class="section-title">Datos Personales</p>
-        <div class="grid-3">
-            <div class="dato-item">
-                <label>Nombre Completo</label>
-                <span>{{ $distribuidora->usuario->persona->nombre }} {{ $distribuidora->usuario->persona->apellido }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Sexo</label>
-                <span>{{ $distribuidora->usuario->persona->sexo == 'M' ? 'Masculino' : 'Femenino' }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Fecha de Nacimiento</label>
-                <span>{{ \Carbon\Carbon::parse($distribuidora->usuario->persona->fecha_nacimiento)->format('d/m/Y') }}</span>
-            </div>
-            <div class="dato-item">
-                <label>CURP</label>
-                <span>{{ $distribuidora->usuario->persona->CURP }}</span>
-            </div>
-            <div class="dato-item">
-                <label>RFC</label>
-                <span>{{ $distribuidora->usuario->persona->RFC ?? 'N/A' }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Teléfono Personal</label>
-                <span>{{ $distribuidora->usuario->persona->telefono_personal ?? 'N/A' }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Celular</label>
-                <span>{{ $distribuidora->usuario->persona->celular }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Email</label>
-                <span>{{ $distribuidora->usuario->email }}</span>
-            </div>
-        </div>
-
-        {{-- Datos Distribuidora --}}
-        <p class="section-title">Datos de la Distribuidora</p>
-        <div class="grid-3">
-            <div class="dato-item">
-                <label>ID Distribuidora</label>
-                <span>#{{ $distribuidora->id }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Línea de Crédito</label>
-                <span>${{ number_format($distribuidora->linea_credito, 2) }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Puntos</label>
-                <span>{{ $distribuidora->puntos }}</span>
-            </div>
-            <div class="dato-item">
-                <label>Fecha de Registro</label>
-                <span>{{ \Carbon\Carbon::parse($distribuidora->created_at)->format('d/m/Y') }}</span>
+        <div class="info-card">
+            <p class="section-title">
+                <i data-lucide="id-card" style="width: 20px;"></i>
+                Datos Personales
+            </p>
+            <div class="grid-data">
+                <div class="dato-item">
+                    <label>Nombre Completo</label>
+                    <span>{{ $distribuidora->usuario->persona->nombre }} {{ $distribuidora->usuario->persona->apellido }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>Sexo</label>
+                    <span>{{ $distribuidora->usuario->persona->sexo == 'M' ? 'Masculino' : 'Femenino' }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>Fecha de Nacimiento</label>
+                    <span>{{ \Carbon\Carbon::parse($distribuidora->usuario->persona->fecha_nacimiento)->format('d/m/Y') }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>CURP</label>
+                    <span style="font-family: monospace; letter-spacing: 1px;">{{ $distribuidora->usuario->persona->CURP }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>RFC</label>
+                    <span>{{ $distribuidora->usuario->persona->RFC ?? 'No registrado' }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>Celular de Contacto</label>
+                    <span>{{ $distribuidora->usuario->persona->celular }}</span>
+                </div>
             </div>
         </div>
 
-        {{-- Botón Activar --}}
-        <button class="btn-activar" onclick="activarDistribuidora({{ $distribuidora->id }})">
-            ✅ Confirmar Distribuidora
+        <div class="info-card">
+            <p class="section-title">
+                <i data-lucide="shield-check" style="width: 20px;"></i>
+                Información de Distribuidora
+            </p>
+            <div class="grid-data">
+                <div class="dato-item">
+                    <label>Correo Electrónico</label>
+                    <span>{{ $distribuidora->usuario->email }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>Línea de Crédito Solicitada</label>
+                    <span style="color: var(--success); font-weight: 800;">
+                        ${{ number_format($distribuidora->linea_credito, 2) }}
+                    </span>
+                </div>
+                <div class="dato-item">
+                    <label>ID de Sistema</label>
+                    <span>#{{ $distribuidora->id }}</span>
+                </div>
+                <div class="dato-item">
+                    <label>Puntos Iniciales</label>
+                    <span>{{ $distribuidora->puntos }} pts</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-activar" id="confirmBtn" onclick="activarDistribuidora({{ $distribuidora->id }})">
+            <i data-lucide="check-circle-2" style="width: 32px; height: 32px;"></i>
+            Confirmar Distribuidora
         </button>
     </div>
-    <div id="toast" style="
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    padding: 14px 20px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: white;
-    z-index: 9999;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.3s ease;
-    pointer-events: none;">
-    </div>
-</body>
-<script>
-    function activarDistribuidora(id) {
-        fetch(`/api/activar/distribuidora/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.res) {
-                mostrarToast('✅ Distribuidora activada correctamente', 'success');
-                setTimeout(() => {
-                    window.location.href = '/verificador/notificaciones';
-                }, 1400);
-            } else {
-                mostrarToast('❌ ' + data.mensaje, 'error');
-            }
-        })
-        .catch(() => mostrarToast('❌ Error al activar', 'error'));
-    }
-    
-    function mostrarToast(mensaje, tipo = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = mensaje;
-        toast.style.background = tipo === 'success' ? '#16a34a' : '#dc2626';
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
 
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(20px)';
-        }, 3000);
-    }
-</script>
+    <div id="toast"></div>
+
+    <script>
+        lucide.createIcons();
+
+        function activarDistribuidora(id) {
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Procesando...';
+            lucide.createIcons();
+
+            fetch(`/api/inactivar/distribuidora/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.res) {
+                    mostrarToast('✅ Activación exitosa. Redirigiendo...', 'success');
+                    
+                    // RUTA CORREGIDA: Regresa a notificaciones después del éxito
+                    setTimeout(() => {
+                        window.location.href = "{{ route('verificador.presolicitud') }}";
+                    }, 1500);
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-lucide="check-circle-2"></i> Confirmar Distribuidora';
+                    lucide.createIcons();
+                    mostrarToast('❌ ' + (data.mensaje || 'Error al procesar'), 'error');
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="check-circle-2"></i> Confirmar Distribuidora';
+                lucide.createIcons();
+                mostrarToast('❌ Error de conexión con el servidor', 'error');
+            });
+        }
+
+        function mostrarToast(mensaje, tipo) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensaje;
+            toast.style.display = 'block';
+            toast.style.background = tipo === 'success' ? '#16a34a' : '#ef4444';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
 </html>

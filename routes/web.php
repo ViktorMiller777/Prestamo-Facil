@@ -24,11 +24,9 @@ Route::middleware(['auth', 'gerente'])->group(function () {
         return view('gerente.dashboard');
     })->name('gerente.dashboard');
 
-    Route::get('/gerente/productos', [ProductosController::class, 'listaProductos'])
-        ->name('gerente.productos');
+    Route::get('/gerente/productos', [ProductosController::class, 'listaProductos'])->name('gerente.productos');
 
-    Route::get('/gerente/distribuidora', [DistribuidorasController::class, 'listaDistribuidoras'])
-        ->name('gerente.distribuidoras');
+    Route::get('/gerente/distribuidora', [DistribuidorasController::class, 'listaDistribuidoras'])->name('gerente.distribuidoras');
 
     Route::post('/distribuidoras/store', [DistribuidorasController::class, 'crearDistribuidora'])->name('distribuidoras.store');
 
@@ -48,8 +46,7 @@ Route::middleware(['auth', 'coordinador'])->group(function () {
         return view('auth.register');
     })->name('distribuidoras.create');
 
-    Route::post('/distribuidoras/store', [DistribuidorasController::class, 'crearDistribuidora'])
-        ->name('distribuidoras.store');
+    Route::post('/distribuidoras/store', [DistribuidorasController::class, 'crearDistribuidora'])->name('distribuidoras.store');
 });
 
 // ================================
@@ -57,15 +54,11 @@ Route::middleware(['auth', 'coordinador'])->group(function () {
 // ================================
 
 Route::middleware(['auth', 'verificador'])->group(function () {
-    Route::get('/verificador/dashboard', function () {
-        return view('verificador.dashboard');
-    })->name('verificador.dashboard');
+    Route::get('/verificador/dashboard', function () {return view('verificador.dashboard');})->name('verificador.dashboard');
 
-    Route::get('/verificador/notificaciones', [DistribuidorasController::class, 'distribuidorasInactivas'])
-        ->name('verificador.notificaciones');
+    Route::get('/verificador/presolicitudes', [DistribuidorasController::class, 'distribuidorasPresolicitud'])->name('verificador.presolicitud');
 
-    Route::get('/verificador/distribuidora/{id}', [DistribuidorasController::class, 'detalle'])
-        ->name('verificador.detalle');
+    Route::get('/verificador/distribuidora/{id}', [DistribuidorasController::class, 'detalle'])->name('verificador.detalle');
 });
 
 // ================================

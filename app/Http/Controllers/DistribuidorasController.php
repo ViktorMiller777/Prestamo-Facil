@@ -18,24 +18,21 @@ class DistribuidorasController
         return view('gerente.distribuidora', compact('distribuidoras'));
     }
 
+
+    //Esta funcion muestra las distribuidoras con el estado en presolicitud, VISTA PARA VERIFICADOR
     public function distribuidorasPresolicitud(){
         $distribuidoras = Distribuidora::where('estado', 'presolicitud')->with('usuario.persona')->get();
 
         return view('verificador.notificaciones', compact('distribuidoras'));
-        // return response()->json([
-        //     'mensaje' => 'exito!',
-        //     'distribuidoras' => $distribuidoras
-        // ],200);
     }
 
+
+    //Esta funcion muestras las distribuidora con el estado en inactivo,
     public function distribuidorasInactivas(){
         $distribuidoras = Distribuidora::where('estado', 'inactivo')->with('usuario.persona')->get();
 
         return view('gerente.presolicitud', compact('distribuidoras'));
-        // return response()->json([
-        //     'mensaje' => 'exito!',
-        //     'distribuidoras' => $distribuidoras
-        // ],200);
+    
     }
 
     public function detalle($id)
@@ -196,6 +193,17 @@ class DistribuidorasController
         }
     }
 
+    public function inactivarDistribuidora($id)
+    {
+        $distribuidora = Distribuidora::findOrFail($id);
+        $distribuidora->update(['estado' => 'inactivo']);
+
+        return response()->json([
+            'res' => true,
+            'mensaje' => 'Distribuidora inactivada correctamente'
+        ], 200);
+    }
+    
     public function activarDistribuidora($id)
     {
         $distribuidora = Distribuidora::findOrFail($id);

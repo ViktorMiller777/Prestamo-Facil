@@ -70,3 +70,5 @@ Route::delete('/eliminar/producto/{id}', [ProductosController::class, 'eliminarP
 Route::get('/distribuidora/relaciones',[RelacionesController::class,'listaRelacionesAuth']);
 //Ruta para activar a una distribuidora
 Route::patch('/activar/distribuidora/{id}', [DistribuidorasController::class, 'activarDistribuidora']);
+
+Route::patch('/inactivar/distribuidora/{id}', [DistribuidorasController::class, 'inactivarDistribuidora']);

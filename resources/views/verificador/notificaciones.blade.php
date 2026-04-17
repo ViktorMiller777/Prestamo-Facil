@@ -1,88 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Distribuidoras Inactivas</title>
+    <title>Presolicitudes - Préstamo Fácil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --primary: #6366f1;
+            --danger-bg: #fef2f2;
+            --danger-text: #991b1b;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            padding: 30px;
+            padding-top: 7rem !important; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .box-2 {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 35px;
+            width: 100%;
+            max-width: 1100px;
+            border: 1px solid rgba(0,0,0,0.05);
+            /* Margen adicional por seguridad */
+            margin-top: 10px; 
+        }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f8fafc;
+        }
+
+        .box-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge-total {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 1px solid #fee2e2;
+        }
+
+        .table-container {
+            overflow: hidden;
+            border-radius: 15px;
+            border: 1px solid #f1f5f9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            text-align: left;
+            padding: 22px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 25px 22px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        /* Feedback táctil para la tablet */
+        tbody tr:active {
+            background-color: #f1f5f9;
+        }
+
+        .dist-name { font-weight: 700; display: block; }
+        .dist-sub { font-size: 0.95rem; color: var(--text-muted); display: block; margin-top: 4px; }
+        
+        .credit-amount {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff7ed;
+            color: #9a3412;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 1px solid #ffedd5;
+        }
+    </style>
 </head>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-    }
-    body, html {
-        padding-top: 4rem !important; 
-        display:flex;
-        flex-direction: column;
-        gap:25px;
-        padding:10px;
-        width: 100%;
-        height: 100%;
-        background-color: #f4f7f6;
-    }
-    .box-2 {
-        border-radius: 10px;
-        width: 100%;
-        background: white;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        padding: 20px;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    thead tr { background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
-    th { text-align: left; padding: 12px 16px; color: #6b7280; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
-    td { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; color: #374151; }
-    tbody tr:hover { background: #f9fafb; }
-    .badge-red { background: #fee2e2; color: #991b1b; padding: 3px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
-    .btn-activar { padding: 6px 14px; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
-    .btn-activar:hover { background: #15803d; }
-    .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .box-header h2 { font-size: 1.1rem; font-weight: 700; color: #111827; }
-</style>
 <body>
+
     <x-header-bar />
+
     <div class="box-2">
         <div class="box-header">
-            <h2>Distribuidoras Inactivas</h2>
-            <span class="badge-red">{{ $distribuidoras->count() }} pendientes</span>
+            <h2>
+                <i data-lucide="users-round" style="color: var(--primary); width: 32px; height: 32px;"></i>
+                Presolicitudes de Distribuidoras 
+            </h2>
+            <span class="badge-total">{{ $distribuidoras->count() }} PENDIENTES</span>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Celular</th>
-                    <th>Línea de Crédito</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($distribuidoras as $dist)
-                <tr style="cursor:pointer;" onclick="verDistribuidora({{ $dist->id }})">
-                    <td>{{ $dist->id }}</td>
-                    <td><b>{{ $dist->usuario->persona->nombre }} {{ $dist->usuario->persona->apellido }}</b></td>
-                    <td>{{ $dist->usuario->email }}</td>
-                    <td>{{ $dist->usuario->persona->celular }}</td>
-                    <td>${{ number_format($dist->linea_credito, 2) }}</td>
-                    <td><span class="badge-red">Presolicitud</span></td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" style="text-align:center; padding:40px; color:#9ca3af;">
-                        No hay distribuidoras inactivas.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Distribuidora</th>
+                        <th>Contacto</th>
+                        <th>Crédito</th>
+                        <th>Estado</th>
+                        <th style="text-align: right;">Ver</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($distribuidoras as $dist)
+                    <tr onclick="verDistribuidora({{ $dist->id }})">
+                        <td>
+                            <span class="dist-name">{{ $dist->usuario->persona->nombre }} {{ $dist->usuario->persona->apellido }}</span>
+                            <span class="dist-sub">ID: #{{ $dist->id }}</span>
+                        </td>
+                        <td>
+                            <span class="dist-name" style="font-weight: 500;">{{ $dist->usuario->persona->celular }}</span>
+                            <span class="dist-sub">{{ $dist->usuario->email }}</span>
+                        </td>
+                        <td>
+                            <span class="credit-amount">${{ number_format($dist->linea_credito, 2) }}</span>
+                        </td>
+                        <td>
+                            <span class="status-pill">
+                                <i data-lucide="clock" style="width: 16px; height: 16px;"></i>
+                                Presolicitud
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <i data-lucide="chevron-right" style="color: var(--text-muted); width: 28px; height: 28px;"></i>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:100px; color:var(--text-muted);">
+                            <i data-lucide="inbox" style="width: 60px; height: 60px; margin-bottom: 15px; opacity: 0.3;"></i>
+                            <p>No hay preosolicitudes pendientes.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script>
+        lucide.createIcons();
+        function verDistribuidora(id) {
+            window.location.href = `/verificador/distribuidora/${id}`;
+        }
+    </script>
 </body>
-<script>
-    function verDistribuidora(id) {
-        window.location.href = `/verificador/distribuidora/${id}`;
-    }
-</script>
 </html>
