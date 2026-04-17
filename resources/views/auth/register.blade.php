@@ -154,48 +154,62 @@
 
             <form action="/api/crear/distribuidora" method="POST" id="multiStepForm">
                 @csrf
-                
                 <div class="form-body">
-                    
                     <div class="form-page active" id="page1">
                         <span class="section-title">Información Personal del Titular</span>
                         <div class="grid-3">
                             <div class="form-group">
                                 <label>Nombre(s)</label>
-                                <input type="text" name="persona[nombre]" required placeholder="Ej: Kory">
+                                <input type="text" name="persona[nombre]"required placeholder="Ej: Nombre">
                             </div>
                             <div class="form-group">
                                 <label>Apellido(s)</label>
-                                <input type="text" name="persona[apellido]" required placeholder="Ej: Martinez">
+                                <input type="text" name="persona[apellido]"required placeholder="Ej: Apellido">
                             </div>
                             <div class="form-group">
                                 <label>Sexo</label>
-                                <select name="persona[sexo]" required>
+                                <select name="persona[sexo]"required>
                                     <option value="F">Femenino</option>
                                     <option value="M">Masculino</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>CURP</label>
-                                <input type="text" name="persona[CURP]" required maxlength="18">
+                                <input type="text" name="persona[CURP]"required maxlength="18">
                             </div>
                             <div class="form-group">
                                 <label>RFC</label>
-                                <input type="text" name="persona[RFC]" required maxlength="13">
+                                <input type="text" name="persona[RFC]"required maxlength="13">
                             </div>
                             <div class="form-group">
                                 <label>Fecha Nacimiento</label>
-                                <input type="date" name="persona[fecha_nacimiento]" required>
+                                <input type="date" name="persona[fecha_nacimiento]"required>
                             </div>
                             <div class="form-group">
                                 <label>Teléfono Personal</label>
-                                <input type="number" name="persona[telefono_personal]" required maxlength="10"> <!--CHECAR QUE SI ES TEXT -->
+                                <input type="number" name="persona[telefono_personal]"required maxlength="10"> <!--CHECAR QUE SI ES TEXT -->
                             </div>
                             <div class="form-group">
                                 <label>Celular</label>
-                                <input type="number" name="persona[celular]" required maxlength="10"> <!--CHECAR QUE SI ES TEXT --> 
+                                <input type="number" name="persona[celular]"required maxlength="10"> <!--CHECAR QUE SI ES TEXT --> 
                             </div>
+                            <div class="form-group" style="grid-column: span 3;">
+                                <label>Domicilio Completo</label>
+                                <input type="text" name="distribuidora[domicilio]" id="domicilio_input" class="form-control" placeholder="Se llenará solo al usar el buscador del mapa" required>
+                            </div>
+
+                            <div class="form-group" style="grid-column: span 3; margin-top: 10px;">
+                                <label style="font-weight: 600;">📍 Ubicación en el Mapa (Busca o arrastra el pin)</label>
+                                <div id="map" style="height: 400px; width: 100%; border-radius: 12px; border: 1px solid #e5e7eb;"></div>
+                            </div>
+
+                            <input type="hidden" name="distribuidora[geolocalizacion_lat]" id="lat_input">
+                            <input type="hidden" name="distribuidora[geolocalizacion_lng]" id="lng_input">
                         </div>
+                        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+                        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
                     </div>
 
                     <div class="form-page" id="page2">
@@ -203,7 +217,7 @@
                         <div class="grid-3">
                             <div class="form-group">
                                 <label>Email de Acceso</label>
-                                <input type="email" name="usuario[email]" required placeholder="kory@ejemplo.com">
+                                <input type="email" name="usuario[email]" required placeholder="tu@ejemplo.com">
                             </div>
                             <div class="form-group">
                                 <label>Contraseña</label>
@@ -216,13 +230,10 @@
                             <input type="hidden" name="usuario[sucursal_id]" value="1">
                             <input type="hidden" name="usuario[role_id]" value="4">
                             <input type="hidden" name="distribuidora[categoria_id]" value="1">
-                            <input type="hidden" name="distribuidora[estado]" value="inactivo">
+                            <input type="hidden" name="distribuidora[estado]" value="presolicitud">
                             <input type="hidden" name="distribuidora[puntos]" value="0">
-                            <input type="hidden" name="distribuidora[geolocalizacion_lat]" value="25.5438">
-                            <input type="hidden" name="distribuidora[geolocalizacion_lng]" value="-103.4189">
                         </div>
                     </div>
-
                     <div class="form-page" id="page3">
                         <span class="section-title">Datos del Familiar</span>
                         <div class="grid-3">
@@ -338,25 +349,23 @@ pointer-events: none;">
 <script>
     let current = 1;
 
+    // 1. LÓGICA DE NAVEGACIÓN ENTRE PÁGINAS
     function movePage(step) {
-        // Si intentamos avanzar, validamos la página actual
         if (step === 1) {
             const currentPage = document.getElementById(`page${current}`);
             const inputs = currentPage.querySelectorAll('input, select');
             let isValid = true;
 
             inputs.forEach(input => {
-                // checkValidity() devuelve false si el input tiene "required" y está vacío
                 if (!input.checkValidity()) {
-                    input.reportValidity(); // Esto muestra el mensaje de error nativo del navegador
+                    input.reportValidity();
                     isValid = false;
                 }
             });
 
-            if (!isValid) return; // Detenemos la función si hay errores
+            if (!isValid) return; 
         }
 
-        // --- El resto de tu lógica se mantiene igual ---
         if (current + step < 1 || current + step > 4) return;
 
         document.getElementById(`page${current}`).classList.remove('active');
@@ -366,6 +375,13 @@ pointer-events: none;">
 
         document.getElementById(`page${current}`).classList.add('active');
         document.getElementById(`s${current}`).classList.add('active');
+
+        // Fix visual para el mapa cuando cambias de página
+        if (current === 1 || current === 2) { // Ajusta al número de página donde esté tu mapa
+            setTimeout(() => {
+                if (window.leafletMap) window.leafletMap.invalidateSize();
+            }, 300);
+        }
 
         document.getElementById('btnPrev').style.visibility = current === 1 ? 'hidden' : 'visible';
         
@@ -377,20 +393,21 @@ pointer-events: none;">
             document.getElementById('btnSave').style.display = 'none';
         }
     }
-    
-    function enviarForm() {
-        
+
+    // 2. FUNCIÓN DE ENVÍO DE FORMULARIO (CORREGIDA)
+    function enviarForm(e) {
+        if (e) e.preventDefault(); // Detiene el envío normal para usar el Fetch
+
         const form = document.getElementById('multiStepForm');
         if (!form.checkValidity()) {
             form.reportValidity();
             return;
         }
-        event.preventDefault();
 
         const formData = new FormData(form);
 
-        // Ver qué se está enviando
-        console.log('=== Datos del form ===');
+        // Verificación en consola antes de enviar
+        console.log('=== Enviando estos datos ===');
         for (let [key, value] of formData.entries()) {
             console.log(`${key}:`, value);
         }
@@ -405,7 +422,6 @@ pointer-events: none;">
         })
         .then(res => res.json())
         .then(data => {
-            console.log('Respuesta:', data);
             if (data.res) {
                 mostrarToast('✅ Distribuidora activada correctamente', 'success');
                 setTimeout(() => {
@@ -415,7 +431,10 @@ pointer-events: none;">
                 mostrarToast('❌ ' + data.mensaje, 'error');
             }
         })
-        .catch(() => mostrarToast('❌ Error al activar', 'error'));
+        .catch(err => {
+            console.error('Error:', err);
+            mostrarToast('❌ Error al conectar con el servidor', 'error');
+        });
     }
 
     function mostrarToast(mensaje, tipo = 'success') {
@@ -430,5 +449,51 @@ pointer-events: none;">
             toast.style.transform = 'translateY(20px)';
         }, 3000);
     }
+
+    // 3. INICIALIZACIÓN DEL MAPA
+    document.addEventListener('DOMContentLoaded', function() {
+        const latIni = 25.5438;
+        const lngIni = -103.4189;
+
+        // Aseguramos que los inputs tengan valor desde el inicio
+        const latInput = document.getElementById('lat_input');
+        const lngInput = document.getElementById('lng_input');
+        
+        if (latInput) latInput.value = latIni;
+        if (lngInput) lngInput.value = lngIni;
+
+        // Guardamos el mapa en window para poder refrescarlo en movePage
+        window.leafletMap = L.map('map', { attributionControl: false }).setView([latIni, lngIni], 13);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(window.leafletMap);
+        
+        let marker = L.marker([latIni, lngIni], { draggable: true }).addTo(window.leafletMap);
+
+        const geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false,
+            placeholder: "Buscar dirección...",
+        })
+        .on('markgeocode', function(e) {
+            const center = e.geocode.center;
+            const nombreStr = e.geocode.name;
+
+            window.leafletMap.setView(center, 18);
+            marker.setLatLng(center);
+
+            // Actualización de campos de texto y coordenadas reales
+            document.getElementById('domicilio_input').value = nombreStr;
+            latInput.value = center.lat.toFixed(8);
+            lngInput.value = center.lng.toFixed(8);
+        })
+        .addTo(window.leafletMap);
+
+        marker.on('dragend', function() {
+            const pos = marker.getLatLng();
+            latInput.value = pos.lat.toFixed(8);
+            lngInput.value = pos.lng.toFixed(8);
+        });
+
+        setTimeout(() => { window.leafletMap.invalidateSize(); }, 600);
+    });
 </script>
 </html>

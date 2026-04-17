@@ -85,6 +85,7 @@ class DistribuidorasController
             'distribuidora.estado'            => 'required|string',
             'distribuidora.linea_credito'     => 'required|numeric',
             'distribuidora.puntos'            => 'required|integer',
+            'distribuidora.domicilio'         => 'required|string',
             'distribuidora.geolocalizacion_lat' => 'required|numeric',
             'distribuidora.geolocalizacion_lng' => 'required|numeric',
 
@@ -133,6 +134,7 @@ class DistribuidorasController
                     'estado'              => $datos['distribuidora']['estado'],
                     'linea_credito'       => $datos['distribuidora']['linea_credito'],
                     'puntos'              => $datos['distribuidora']['puntos'],
+                    'domicilio'            => $datos['distribuidora']['domicilio'],
                     'geolocalizacion_lat' => $datos['distribuidora']['geolocalizacion_lat'],
                     'geolocalizacion_lng' => $datos['distribuidora']['geolocalizacion_lng'],
                 ]);

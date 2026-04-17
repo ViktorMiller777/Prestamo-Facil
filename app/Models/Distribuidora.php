@@ -18,6 +18,7 @@ class Distribuidora extends Model
         'estado',
         'linea_credito',
         'puntos',
+        'domicilio',
         'geolocalizacion_lat',
         'geolocalizacion_lng',
     ];

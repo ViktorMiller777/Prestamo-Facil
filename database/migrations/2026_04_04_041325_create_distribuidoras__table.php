@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('estado');
             $table->decimal('linea_credito', 10, 2)->default(0);
             $table->integer('puntos')->default(0);
+            $table->string('domicilio')->nullable();
             $table->decimal('geolocalizacion_lat', 10, 7)->nullable();
             $table->decimal('geolocalizacion_lng', 10, 7)->nullable();
             $table->timestamps();

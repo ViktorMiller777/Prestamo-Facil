@@ -94,7 +94,7 @@
         .title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; color: var(--pf-dark-blue); }
 
         /* FORMULARIO */
-        .form-group { margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
 
         .form-label {
             display: block;
@@ -183,6 +183,9 @@
             text-align: center;
             font-size: 1rem;
             margin-bottom:0px
+        }
+        a{
+            margin-top:110px;
         }
     </style>
 </head>
