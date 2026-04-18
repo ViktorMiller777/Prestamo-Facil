@@ -42,7 +42,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             width: 100%;
         }
@@ -53,14 +53,14 @@
         }
 
         .welcome-section h2 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--dark);
         }
 
         .welcome-section p {
             color: #64748b;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-top: 5px;
         }
 

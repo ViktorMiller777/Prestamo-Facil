@@ -144,15 +144,15 @@
                         <i data-lucide="users"></i> Distribuidoras
                     </a>
                 </li>
-                @endif
                 <li>
                     <a href="{{ route('gerente.presolicitud') }}" class="{{ request()->routeIs('gerente.presolicitud') ? 'active' : '' }}">
                         <i data-lucide="file-text"></i> Presolicitudes
                     </a>
                 </li>
-                <li><a href="#"><i data-lucide="git-merge"></i> Relaciones</a></li>
-                <li><a href="#"><i data-lucide="ticket"></i> Vales</a></li>
-                <li><a href="#"><i data-lucide="settings"></i> Configuración</a></li>
+                @endif
+                @if(auth()->check() && auth()->user()->role_id == 5)
+                <li><a href="#"><i data-lucide="git-merge"></i> Prevales</a></li>
+                @endif
             </ul>
         </nav>
     </div>

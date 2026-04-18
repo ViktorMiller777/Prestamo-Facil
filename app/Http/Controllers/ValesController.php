@@ -73,6 +73,7 @@ class ValesController
                 'telefono_personal'=> $datos['telefono_personal'],
                 'celular'          => $datos['celular'],
             ]);
+            
 
             // B. Crear Cliente usando el ID de la persona recién creada
             $cliente = Cliente::create([

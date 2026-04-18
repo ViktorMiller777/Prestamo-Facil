@@ -26,8 +26,31 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = $request->user();
+
+        // Interceptamos si es Distribuidora (Rol 4) para validar su estado
+        if ($user->role_id === 4) {
+            $estado = $user->distribuidora->estado;
+
+            if ($estado !== 'activo') {
+                // Si no está activa, cerramos la sesión que Laravel acaba de abrir
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                $mensaje = ($estado === 'presolicitud') 
+                    ? 'Tu cuenta está en proceso de validación (Presolicitud).' 
+                    : 'Tu cuenta de distribuidora se encuentra inactiva.';
+
+                return redirect()->route('login')->withErrors([
+                    'email' => $mensaje
+                ]);
+            }
+        }
+
         $request->session()->regenerate();
-        return match($request->user()->role_id) {
+
+        return match($user->role_id) {
             1 => redirect()->route('gerente.productos'),
             2 => redirect()->route('coordinador.dashboard'),
             3 => redirect()->route('verificador.dashboard'),

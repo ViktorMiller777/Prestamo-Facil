@@ -21,12 +21,16 @@ class ClientesController
     }
 
 
-    public function clientesDistribuidora($id){
-        $clientes = Cliente::where('distribuidor_id', $id)->with('persona') ->get();
-        return response()->json([
-            'mensaje' => 'clientes de distribuidora',
-            'clientes' => $clientes
-        ],200);
+    // Quitamos el ($id) de los paréntesis
+    public function clientesDistribuidora() {
+        // Obtenemos el ID directamente del usuario logueado
+        $id = auth()->user()->distribuidora->id;
+
+        $clientes = Cliente::where('distribuidor_id', $id)
+                    ->with('persona')
+                    ->get();
+
+        return view('distribuidora.clientes', compact('clientes'));
     }
 
     public function crearCliente(Request $request){

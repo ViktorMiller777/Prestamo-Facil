@@ -124,7 +124,7 @@
     <div class="box-2">
         <div class="box-products">
             @foreach ($productos as $producto)
-                <div class="product-card-flex" onclick="abrirModalProducto('modalPrevale',{{ $producto->id }})">
+                <div class="product-card-flex" onclick="abrirModalProducto('modalPrevale', '{{ $producto->id }}')">
                     <div class="product-amount">${{ number_format($producto->monto, 2) }}</div>
                     <div class="product-badge">{{ $producto->quincenas }} Quincenas</div>
                     
