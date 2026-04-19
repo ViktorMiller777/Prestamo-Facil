@@ -346,17 +346,15 @@
 </nav>
 
 
-    @auth
     <div class="pf-user">
-      <div class="pf-avatar">
-        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', auth()->user()->name)[1] ?? '', 0, 1)) }}
-      </div>
-      <div>
-        <div class="pf-user-name">{{ auth()->user()->name }}</div>
-        <div class="pf-user-role">{{ ucfirst(auth()->user()->rol) }}</div>
-      </div>
-    </div>
-    @endauth
+  <div class="pf-avatar">RV</div>
+  <div>
+    <div class="pf-user-name">Roberto Vega</div>
+    <div class="pf-user-role">Verificador</div>
+  </div>
+</div>
+
+
   </aside>
 
   {{-- ─── CONTENIDO PRINCIPAL ─── --}}
