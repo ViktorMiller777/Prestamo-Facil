@@ -18,9 +18,16 @@ class Distribuidora extends Model
         'estado',
         'linea_credito',
         'puntos',
+        'domicilio',
         'geolocalizacion_lat',
         'geolocalizacion_lng',
     ];
+
+    public function documentos(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Documento::class, 'documentable');
+    }
+
 
     public function usuario(): BelongsTo{
         return $this->belongsTo(User::class,'usuario_id');

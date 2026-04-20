@@ -21,6 +21,8 @@ return new class extends Migration
             $table->decimal('interes_quincenal', 5, 2);
             $table->integer('quincenas');
             $table->decimal('seguro', 10, 2)->default(0);
+            $table->decimal('comision',10, 2)->default(0);
+            $table->decimal('pago',10, 2)->default(0);
             $table->string('nombre_cliente');
             $table->string('nombre_distribuidora');
             $table->timestamp('fecha_emision')->useCurrent();

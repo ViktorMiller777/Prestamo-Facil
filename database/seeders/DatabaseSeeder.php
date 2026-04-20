@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CategoriaSeeder::class,
             RoleSeeder::class,
             SucursalSeeder::class,
+            ConfiguracionSeeder::class,
         ]);
     }
 }

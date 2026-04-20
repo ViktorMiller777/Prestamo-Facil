@@ -12,9 +12,13 @@ class Cliente extends Model
     protected $fillable = [
         'persona_id',
         'distribuidor_id',
-        'comprobante_domicilio',
-        'INE'
     ];
+
+    public function documentos(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Documento::class, 'documentable');
+    }
+
 
     public function persona(): BelongsTo{
         return $this->belongsTo(Persona::class,'persona_id');

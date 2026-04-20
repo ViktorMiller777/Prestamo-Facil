@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('num_distribuidora'); // "XXXXXXXXX" [cite: 2]
             $table->string('nombre_distribuidora'); // "Luz Maria Rivas Ruiz" [cite: 2]
-            $table->text('domicilio')->nullable(); // Calle las cruces, Villa Jardin [cite: 2]
+            $table->string('domicilio'); // Calle las cruces, Villa Jardin [cite: 2]
             $table->decimal('limite_de_credito', 12, 2); // "\$20,000" [cite: 4]
             $table->decimal('credito_disponible', 12, 2); // "\$5,200" [cite: 4]
             $table->integer('puntos')->default(0); // "346" [cite: 5]
@@ -22,19 +22,15 @@ return new class extends Migration
             $table->string('pago_anticipado')->nullable(); // "13,14,15 de febrero" 
             $table->decimal('total_pagar', 12, 2); // "\$4,800.00" 
 
-            //$table->unsignedBigInteger('vale_id')->nullable(); 
-            $table->string('producto'); // Ej: "$2/10$ Plus" [cite: 8]
-            //$table->string('cliente'); // Ej: "Luis Ramirez López" [cite: 8]
-            $table->string('pagos_realizados'); // Ej: "$5/10$" [cite: 8]
-            $table->decimal('comision', 12, 2)->default(0.00);
-            $table->decimal('pago', 12, 2)->default(0.00);
+            $table->string('pagos_realizados');
+
             $table->decimal('recargos', 12, 2)->default(0.00);
             $table->decimal('total', 12, 2)->default(0.00); // Total por fila [cite: 8]
             $table->decimal('totales', 12, 2)->default(0.00); // Sumatoria final [cite: 8]
 
             $table->string('nombre_empresa')->default('Prestamo Fácil SA'); // [cite: 9]
             $table->string('convenio'); // "1628789" [cite: 12]
-            $table->string('cable'); // Corrigiendo 'clabe' 
+            $table->string('clabe'); // Corrigiendo 'clabe' 
 
             $table->timestamps();
         });

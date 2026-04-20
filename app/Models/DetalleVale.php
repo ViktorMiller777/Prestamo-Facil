@@ -19,6 +19,8 @@ class DetalleVale extends Model
         'interes_quincenal',
         'quincenas',
         'seguro',
+        'comision',
+        'pago',
         'nombre_cliente',
         'nombre_distribuidora',
         'fecha_emision',

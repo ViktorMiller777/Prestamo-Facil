@@ -14,34 +14,37 @@ class DistribuidorasController
 
     public function listaDistribuidoras()
     {
-        $distribuidoras = Distribuidora::with('usuario.persona')->get();
+        $distribuidoras = Distribuidora::whereIn('estado', ['activo', 'moroso'])->with(['usuario.persona', 'categoria', 'documentos'])->paginate(5);
         return view('gerente.distribuidora', compact('distribuidoras'));
     }
 
-    public function distribuidorasInactivas(){
-        $distribuidoras = Distribuidora::where('estado', 'inactivo')->with('usuario.persona')->get();
+    //Esta funcion muestra las distribuidoras con el estado en presolicitud, VISTA PARA VERIFICADOR
+    public function distribuidorasPresolicitud(){
+        $distribuidoras = Distribuidora::where('estado', 'presolicitud')->with('usuario.persona')->get();
 
         return view('verificador.notificaciones', compact('distribuidoras'));
-        // return response()->json([
-        //     'mensaje' => 'exito!',
-        //     'distribuidoras' => $distribuidoras
-        // ],200);
+    }
+
+
+    //Esta funcion muestras las distribuidora con el estado en inactivo,
+    public function distribuidorasInactivas(){
+        $distribuidoras = Distribuidora::where('estado', 'inactivo')->with(['usuario.persona', 'documentos'])->get();
+
+        return view('gerente.presolicitud', compact('distribuidoras'));
+    
     }
 
     public function detalle($id)
     {
         $distribuidora = Distribuidora::where('id', $id)
-            ->with('usuario.persona')
+            ->with(['usuario.persona', 'documentos'])
             ->firstOrFail();
 
         return view('verificador.datos-distribuidora', compact('distribuidora'));
     }
 
-
     public function obtenerDetalleDistribuidoras()
     {
-        // Usamos with() para cargar las relaciones de golpe
-        // Si tus modelos tienen estos nombres de funciones, funcionará:
         $distribuidoras = Distribuidora::with([
             'usuario.persona', // Trae el usuario y su info personal
             'usuario.role',    // Trae el rol del usuario
@@ -70,9 +73,9 @@ class DistribuidorasController
             'persona.sexo'              => 'required|in:F,M,O',
             'persona.fecha_nacimiento'  => 'required|date|before:today',
             'persona.CURP'              => 'required|string|size:18|unique:personas,CURP',
-            'persona.RFC'               => 'nullable|string|min:12|max:13|unique:personas,RFC',
-            'persona.telefono_personal' => 'nullable|string|max:15|unique:personas,telefono_personal',
-            'persona.celular'           => 'required|string|max:15|unique:personas,celular',
+            'persona.RFC'               => 'required|string|min:12|max:13|unique:personas,RFC',
+            'persona.telefono_personal' => 'required|string|size:10|unique:personas,telefono_personal',
+            'persona.celular'           => 'required|string|size:10|unique:personas,celular',
 
             // Datos del usuario
             'usuario.sucursal_id'       => 'required|exists:sucursales,id',
@@ -85,8 +88,11 @@ class DistribuidorasController
             'distribuidora.estado'            => 'required|string',
             'distribuidora.linea_credito'     => 'required|numeric',
             'distribuidora.puntos'            => 'required|integer',
+            'distribuidora.domicilio'         => 'required|string',
             'distribuidora.geolocalizacion_lat' => 'required|numeric',
             'distribuidora.geolocalizacion_lng' => 'required|numeric',
+            'distribuidora.comprobante_domicilio' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:5120',
+            'distribuidora.ine'                  => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:5120',
 
             // Datos del familiar (Persona secundaria)
             'familiar.nombre'            => 'required|string|max:100',
@@ -112,7 +118,7 @@ class DistribuidorasController
         ]);
 
         try {
-            return DB::transaction(function () use ($datos) {
+            return DB::transaction(function () use ($datos, $request) {
                 
                 // 1. Crear Persona Titular
                 $persona = Persona::create($datos['persona']);
@@ -133,9 +139,27 @@ class DistribuidorasController
                     'estado'              => $datos['distribuidora']['estado'],
                     'linea_credito'       => $datos['distribuidora']['linea_credito'],
                     'puntos'              => $datos['distribuidora']['puntos'],
+                    'domicilio'            => $datos['distribuidora']['domicilio'],
                     'geolocalizacion_lat' => $datos['distribuidora']['geolocalizacion_lat'],
                     'geolocalizacion_lng' => $datos['distribuidora']['geolocalizacion_lng'],
                 ]);
+
+                // 3.1 Guardar Documentos en la nueva tabla
+                if ($request->hasFile('distribuidora.comprobante_domicilio')) {
+                    $pathComprobante = $request->file('distribuidora.comprobante_domicilio')->store('documentos/distribuidoras/comprobantes', 'spaces');
+                    $distribuidora->documentos()->create([
+                        'tipo' => 'Comprobante Domicilio',
+                        'archivo_path' => $pathComprobante
+                    ]);
+                }
+
+                if ($request->hasFile('distribuidora.ine')) {
+                    $pathIne = $request->file('distribuidora.ine')->store('documentos/distribuidoras/ine', 'spaces');
+                    $distribuidora->documentos()->create([
+                        'tipo' => 'INE',
+                        'archivo_path' => $pathIne
+                    ]);
+                }
 
                 // 4. Crear Persona Familiar
                 $personaFamiliar = Persona::create([
@@ -187,6 +211,17 @@ class DistribuidorasController
         }
     }
 
+    public function inactivarDistribuidora($id)
+    {
+        $distribuidora = Distribuidora::findOrFail($id);
+        $distribuidora->update(['estado' => 'inactivo']);
+
+        return response()->json([
+            'res' => true,
+            'mensaje' => 'Distribuidora inactivada correctamente'
+        ], 200);
+    }
+    
     public function activarDistribuidora($id)
     {
         $distribuidora = Distribuidora::findOrFail($id);
@@ -196,5 +231,23 @@ class DistribuidorasController
             'res' => true,
             'mensaje' => 'Distribuidora activada correctamente'
         ], 200);
+    }
+
+    public function actualizarEstado(Request $request, $id)
+    {
+        $request->validate([
+            'estado' => 'required|in:activo,moroso',
+            'categoria_id' => 'required|in:1,2,3',
+            'linea_credito' => 'required|numeric|min:0'
+        ]);
+
+        $distribuidora = Distribuidora::findOrFail($id);
+        $distribuidora->update([
+            'estado' => $request->estado,
+            'categoria_id' => $request->categoria_id,
+            'linea_credito' => $request->linea_credito
+        ]);
+
+        return redirect()->back()->with('success', 'Datos de la distribuidora actualizados correctamente.');
     }
 }

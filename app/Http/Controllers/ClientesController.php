@@ -21,12 +21,16 @@ class ClientesController
     }
 
 
-    public function clientesDistribuidora($id){
-        $clientes = Cliente::where('distribuidor_id', $id)->with('persona') ->get();
-        return response()->json([
-            'mensaje' => 'clientes de distribuidora',
-            'clientes' => $clientes
-        ],200);
+    // Quitamos el ($id) de los paréntesis
+    public function clientesDistribuidora() {
+        // Obtenemos el ID directamente del usuario logueado
+        $id = auth()->user()->distribuidora->id;
+
+        $clientes = Cliente::where('distribuidor_id', $id)
+                    ->with(['persona', 'documentos'])
+                    ->get();
+
+        return view('distribuidora.clientes', compact('clientes'));
     }
 
     public function crearCliente(Request $request){
@@ -43,11 +47,11 @@ class ClientesController
 
             //Datos del cliente
             'distribuidor_id'   => 'required',
-            'comprobante_domicilio' => 'required',
-            'INE'               =>  'required'
+            'comprobante_domicilio' => 'required|file|mimes:pdf,jpg,png,jpeg|max:5120',
+            'INE'               =>  'required|file|mimes:pdf,jpg,png,jpeg|max:5120'
         ]);
 
-        return DB::transaction(function () use ($datos) {
+        return DB::transaction(function () use ($datos, $request) {
             
             // 3. Creamos primero la Persona
             $persona = Persona::create([
@@ -64,9 +68,24 @@ class ClientesController
             $cliente = Cliente::create([
                 'persona_id'            => $persona->id,
                 'distribuidor_id'       => $datos['distribuidor_id'],
-                'comprobante_domicilio' => $datos['comprobante_domicilio'],
-                'INE'                   => $datos['INE']
             ]);
+
+            // Guardar Documentos en la nueva tabla
+            if ($request->hasFile('comprobante_domicilio')) {
+                $pathComprobante = $request->file('comprobante_domicilio')->store('documentos/clientes/comprobantes', 'spaces');
+                $cliente->documentos()->create([
+                    'tipo' => 'Comprobante Domicilio',
+                    'archivo_path' => $pathComprobante
+                ]);
+            }
+
+            if ($request->hasFile('INE')) {
+                $pathIne = $request->file('INE')->store('documentos/clientes/ine', 'spaces');
+                $cliente->documentos()->create([
+                    'tipo' => 'INE',
+                    'archivo_path' => $pathIne
+                ]);
+            }
 
             return response()->json([
                 'mensaje' => 'Persona y Cliente creados exitosamente!',

@@ -52,38 +52,59 @@ class ProcesarCorteQuincenal implements ShouldQueue
                 $sumaComisiones = 0;
 
                 foreach ($detallesPendientes as $detalle) {
-                    $quincenas = $detalle->quincenas ?? 1;
-                    // Sumamos el pago parcial de cada vale
-                    $totalAbonoQuincenal += ($detalle->monto / $quincenas);
+                    // Sumamos el pago completo de cada vale (que ya incluye capital, interés y seguros)
+                    $totalAbonoQuincenal += $detalle->pago;
                     $sumaMontosOriginales += $detalle->monto;
                     $sumaComisiones += $detalle->porcentaje_comision ?? 0;
                 }
-
-                $fechaLimite = now()->addDays(15); 
+                
+                // $fechaLimite = now()->addDays(15); 
+                $fechaLimite = now()->subDays(1);
                 $pagoAnticipado = $fechaLimite->copy()->subDays(3);
+                
+                $montoRecargoBase = (float) Configuracion::obtener('recargos', 300);
+
+                if (now() > $fechaLimite) {
+                    $recargo = $detallesPendientes->count() * $montoRecargoBase;
+                } else {
+                    $recargo = 0;
+                }
+                $totalAPagarFinal = $totalAbonoQuincenal + $recargo;
+
+                $totalPagos = DetalleVale::whereHas('vale', function ($query) use ($dist) {
+                    $query->where('distribuidor_id', $dist->id)
+                          ->where('estado', 'activo');
+                })->sum('pago');
+                
+                $puntosGanados = floor(($totalPagos / 1200) * 3);
+
+                $numeroDePago = Relacion::where('num_distribuidora', $dist->id)->count() + 1;
+                $quincenasMax = $detallesPendientes->max('quincenas') ?? 1;
 
                 // 4. CREAR LA RELACIÓN ÚNICA (Solo una por distribuidora)
                 $relacion = Relacion::create([
                     'num_distribuidora'    => $dist->id,
                     'nombre_distribuidora' => $dist->usuario->persona->nombre . ' ' . $dist->usuario->persona->apellido,
+                    'domicilio'            => $dist->domicilio,
                     'limite_de_credito'    => $limite,
                     'credito_disponible'   => $disponible,
-                    'puntos'               => $dist->puntos ?? 0,
+                    'puntos'               => $puntosGanados,
+
                     'referencia_de_pago'   => 'CQ-' . $dist->id . '-' . now()->format('Ymd'),
                     'fecha_limite_pago'    => $fechaLimite,
                     'pago_anticipado'      => $pagoAnticipado->format('Y-m-d'),
-                    'producto'             => 'VARIOS', 
-                    'cliente'              => 'VARIOS', // Al ser varios vales, marcamos como VARIOS
-                    'pagos_realizados'     => 'CORTE Q.', 
-                    'vale_id'              => 0, // ID genérico ya que agrupa varios
-                    'total_pagar'          => round($totalAbonoQuincenal, 2),
-                    'comision'             => $sumaComisiones,
-                    'pago'                 => round($totalAbonoQuincenal, 2),
-                    'total'                => $sumaMontosOriginales,
+                    'total_pagar'          => $totalAPagarFinal,
+                   
+                    'pagos_realizados'     => $numeroDePago . '/' . $quincenasMax, 
+                 
+                    //CHECAR LAS OPERACIONES DE AQUI EN ADELANTE
+                    'recargos'             => $recargo,
+                    'total'                => $totalAPagarFinal,
                     'totales'              => $sumaMontosOriginales,
+
                     'nombre_empresa'       => "PF Prestamo Facil SA",
                     'convenio'             => "1628789",
-                    'cable'                => $dist->clabe ?? '12345678901234567890',
+                    'clabe'                => $dist->clabe ?? '12345678901234567890',
                 ]);
 
                 // 5. VINCULAR TODOS LOS DETALLES A LA MISMA RELACIÓN
@@ -92,6 +113,9 @@ class ProcesarCorteQuincenal implements ShouldQueue
                         'relacion_id' => $relacion->id
                     ]);
                 }
+
+                // Sumar los puntos obtenidos a la distribuidora
+                $dist->increment('puntos', $puntosGanados);
             }
         });
     }

@@ -60,17 +60,19 @@ return [
             'report' => false,
         ],
 
-	'spaces' => [
-	    'driver' => 's3',
-	    'key' => env('DO_SPACES_KEY'),
-	    'secret' => env('DO_SPACES_SECRET'),
-	    'region' => env('DO_SPACES_REGION', 'sfo3'),
-	    'bucket' => env('DO_SPACES_BUCKET'),
-	    'endpoint' => env('DO_SPACES_ENDPOINT', 'https://sfo3.digitaloceanspaces.com'),
-	    'url' => env('DO_SPACES_CDN_URL'),
-	    'use_path_style_endpoint' => false,
-	],
-
+        'spaces' => [
+            'driver' => 's3',
+            'key' => env('DO_SPACES_KEY'),
+            'secret' => env('DO_SPACES_SECRET'),
+            'region' => env('DO_SPACES_REGION'),
+            'bucket' => env('DO_SPACES_BUCKET'),
+            'endpoint' => env('DO_SPACES_ENDPOINT'),
+            'url' => env('DO_SPACES_CDN_URL'),
+            'use_path_style_endpoint' => false,
+            'throw' => false,
+            'report' => false,
+            'visibility' => 'public',
+        ],
 
     ],
 
