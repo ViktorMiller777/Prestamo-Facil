@@ -51,6 +51,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            return;
+        }
+
         $remoteIp = Request::ip();
         $isVpn = strpos($remoteIp, '10.200.0.') === 0;
         $appHostname = gethostname();
@@ -64,6 +68,7 @@ class AppServiceProvider extends ServiceProvider
             PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY_SERVER_CERT', true),
         ] : [];
         
+
         // CONEXIONES DESDE VPN
         if ($isVpn) {
             // APP1/APP2/APP3 desde LB: Master2 (escritura) y Slave (lectura)
