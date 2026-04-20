@@ -66,19 +66,8 @@ class AppServiceProvider extends ServiceProvider
         
         // CONEXIONES DESDE VPN
         if ($isVpn) {
-            // APP3: Todo a Master1
-            if (str_contains($appHostname, 'app3')) {
-                $baseConfig['host'] = env('MASTER1_HOST', '10.200.0.4');
-                $baseConfig['options'] = $sslOptions;
-                
-                Config::set('database.connections.mysql', $baseConfig);
-                
-                \Log::info('APP3 VPN Mode', [
-                    'host' => env('MASTER1_HOST'),
-                    'ip' => $remoteIp
-                ]);
-            } else {
-                // APP1/APP2: Master1 (escritura) y Slave (lectura)
+            // APP1/APP2/APP3 desde LB: Master2 (escritura) y Slave (lectura)
+            if ($remoteIp === '10.200.0.3') {
                 $baseConfig['write'] = ['host' => [env('MASTER2_HOST', '10.200.0.5')]];
                 $baseConfig['read'] = ['host' => [env('SLAVE_HOST', '10.200.0.6')]];
                 $baseConfig['sticky'] = true;
@@ -92,34 +81,35 @@ class AppServiceProvider extends ServiceProvider
                     'ip' => $remoteIp
                 ]);
             }
-        } else {
-            // CONEXIONES DESDE PÚBLICO
-            if (str_contains($appHostname, 'app3')) {
-                // APP3 no debería recibir tráfico público, pero por si acaso
-                $baseConfig['host'] = env('MASTER2_HOST', '10.200.0.5');
+            // cualquier otra IP VPN y está en APP3: Todo a Master1
+            else if (str_contains($appHostname, 'app3')) {
+                $baseConfig['host'] = env('MASTER1_HOST', '10.200.0.4');
                 $baseConfig['options'] = $sslOptions;
                 
                 Config::set('database.connections.mysql', $baseConfig);
                 
-                \Log::warning('APP3 accessed from public IP!', [
-                    'host' => env('MASTER2_HOST'),
-                    'ip' => $remoteIp
-                ]);
-            } else {
-                // APP1/APP2: Master1 (escritura) + Master2 (lectura)
-                $baseConfig['write'] = ['host' => [env('MASTER2_HOST', '10.200.0.5')]];
-                $baseConfig['read'] = ['host' => [env('SLAVE_HOST', '10.200.0.6')]];
-                $baseConfig['sticky'] = true;
-                $baseConfig['options'] = $sslOptions;
-                
-                Config::set('database.connections.mysql', $baseConfig);
-                
-                \Log::info('APP1/APP2 Public Mode', [
-                    'write_host' => env('MASTER2_HOST'),
-                    'read_host' => env('SLAVE_HOST'),
+                \Log::info('APP3 VPN Mode', [
+                    'host' => env('MASTER1_HOST'),
                     'ip' => $remoteIp
                 ]);
             }
+            else{
+                 \Log::warning('VPN IP no reconocida', [
+                    'ip' => $remoteIp,
+                    'app' => $appHostname
+                ]);
+                
+                // Configuración por defecto o error
+                throw new \RuntimeException('Configuración no definida para esta combinación IP/App');
+            }
+        } else {
+            // Rechazar conexión explícitamente
+            \Log::error('Intento de conexión desde IP no-VPN bloqueado', [
+                'ip' => $remoteIp,
+                'app' => $appHostname
+            ]);
+            
+            throw new \RuntimeException('Acceso no permitido desde IP no-VPN');
         }
         
         // Forzar reconexión con nueva configuración

@@ -14,20 +14,29 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/db-status', function () {
+Route::get('/test-db', function () {
     try {
-        $result = DB::select('SELECT @@server_id as server_id, @@hostname as hostname');
+        $hostname = DB::select('SELECT @@hostname as host, @@server_id as id, @@port as port');
+        $ssl = DB::select("SHOW STATUS LIKE 'Ssl_cipher'");
         
         return [
+            'success' => true,
+            'app_hostname' => gethostname(),
             'client_ip' => request()->ip(),
             'is_vpn' => strpos(request()->ip(), '10.200.0.') === 0,
-            'current_mysql_host' => config('database.connections.mysql.host'),
-            'mysql_server_id' => $result[0]->server_id ?? 'unknown',
-            'mysql_hostname' => $result[0]->hostname ?? 'unknown',
-            'app_server_hostname' => gethostname(),
+            'database_host' => $hostname[0] ?? null,
+            'ssl_cipher' => $ssl[0]->Value ?? 'No SSL',
+            'config' => [
+                'write_host' => config('database.connections.mysql.write.host.0', 'N/A'),
+                'read_host' => config('database.connections.mysql.read.host.0', 'N/A'),
+            ]
         ];
     } catch (\Exception $e) {
-        return ['error' => $e->getMessage()];
+        return [
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ];
     }
 });
 
