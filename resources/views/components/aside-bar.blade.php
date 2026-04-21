@@ -162,9 +162,33 @@
                         <i data-lucide="bell"></i> Notificaciones
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('coordinador.distribuidoras') }}" class="{{ request()->routeIs('coordinador.distribuidoras') ? 'active' : '' }}">
+                        <i data-lucide="users"></i> Distribuidoras
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('coordinador.vales') }}" class="{{ request()->routeIs('coordinador.vales') ? 'active' : '' }}">
+                        <i data-lucide="ticket"></i> Vales
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('coordinador.clientes') }}" class="{{ request()->routeIs('coordinador.clientes') ? 'active' : '' }}">
+                        <i data-lucide="user-plus"></i> Clientes
+                    </a>
+                </li>
                 @endif
                 @if(auth()->check() && auth()->user()->role_id == 5)
-                <li><a href="{{ route('cajera.prevale') }}"><i data-lucide="git-merge"></i> Prevales</a></li>
+                <li>
+                    <a href="{{ route('cajera.prevale') }}" class="{{ request()->routeIs('cajera.prevale') ? 'active' : '' }}">
+                        <i data-lucide="git-merge"></i> Prevales
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cajera.conciliacion') }}" class="{{ request()->routeIs('cajera.conciliacion') ? 'active' : '' }}">
+                        <i data-lucide="calculator"></i> Conciliación
+                    </a>
+                </li>
                 @endif
             </ul>
         </nav>

@@ -18,6 +18,12 @@ class DistribuidorasController
         return view('gerente.distribuidora', compact('distribuidoras'));
     }
 
+    public function listaDistribuidorasCoordinador()
+    {
+        $distribuidoras = Distribuidora::whereIn('estado', ['activo', 'moroso'])->with(['usuario.persona', 'categoria', 'documentos'])->paginate(5);
+        return view('coordinador.distribuidora', compact('distribuidoras'));
+    }
+
     //Esta funcion muestra las distribuidoras con el estado en presolicitud, VISTA PARA VERIFICADOR
     public function distribuidorasPresolicitud(){
         $distribuidoras = Distribuidora::where('estado', 'presolicitud')->with('usuario.persona')->get();

@@ -213,7 +213,7 @@
                 </div>
 
                 <div class="detalle-item">
-                    <span class="detalle-label">Plazo y Distribuidora</span>
+                    <span class="detalle-label">Plazo</span>
                     <span class="detalle-valor" id="modalPlazo"></span>
                     <span style="font-size: 0.85rem; color: #64748b;" id="modalDistribuidora"></span>
                 </div>
@@ -314,18 +314,22 @@
 
             let hasDocs = false;
             
-            const parseDocUrl = (url) => url.startsWith('http') || url.startsWith('/') ? url : '/storage/' + url;
+            if (vale.cliente.documentos && Array.isArray(vale.cliente.documentos)) {
+                const ine = vale.cliente.documentos.find(d => d.tipo === 'INE');
+                const comp = vale.cliente.documentos.find(d => d.tipo === 'Comprobante Domicilio');
 
-            if (vale.cliente.INE) {
-                btnINE.href = parseDocUrl(vale.cliente.INE);
-                btnINE.style.display = 'inline-flex';
-                hasDocs = true;
+                if (ine) {
+                    btnINE.href = ine.url_temporal;
+                    btnINE.style.display = 'inline-flex';
+                    hasDocs = true;
+                }
+                if (comp) {
+                    btnComp.href = comp.url_temporal;
+                    btnComp.style.display = 'inline-flex';
+                    hasDocs = true;
+                }
             }
-            if (vale.cliente.comprobante_domicilio) {
-                btnComp.href = parseDocUrl(vale.cliente.comprobante_domicilio);
-                btnComp.style.display = 'inline-flex';
-                hasDocs = true;
-            }
+
             if (!hasDocs) {
                 txtSin.style.display = 'block';
             }

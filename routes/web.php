@@ -57,6 +57,9 @@ Route::middleware(['auth', 'coordinador'])->group(function () {
         return view('auth.register');
     })->name('distribuidoras.create');
 
+    Route::get('/coordinador/distribuidora', [DistribuidorasController::class, 'listaDistribuidorasCoordinador'])->name('coordinador.distribuidoras');
+    Route::get('/coordinador/vales', [ValesController::class, 'listaValesCoordinador'])->name('coordinador.vales');
+    Route::get('/coordinador/clientes', [ClientesController::class, 'listaClientesCoordinador'])->name('coordinador.clientes');
     Route::post('/distribuidoras/store', [DistribuidorasController::class, 'crearDistribuidora'])->name('distribuidoras.store');
 });
 
@@ -106,6 +109,9 @@ Route::middleware(['auth', 'cajera'])->group(function () {
     Route::get('/cajera/prevale', [ValesController::class, 'listaVales'])->name('cajera.prevale');
     Route::get('/cajera/prevale/buscar/{folio}', [ValesController::class, 'buscarPorFolio']);
     Route::post('/cajera/prevale/confirmar/{id}', [ValesController::class, 'confirmarPrevale']);
+
+    Route::get('/cajera/conciliacion', [ValesController::class, 'vistaConciliacion'])->name('cajera.conciliacion');
+    Route::get('/cajera/conciliacion/buscar/{folio}', [ValesController::class, 'buscarValeActivo']);
 });
 
 // ================================

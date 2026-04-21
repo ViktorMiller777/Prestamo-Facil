@@ -16,8 +16,23 @@ class ClientesController
             'mensaje' => 'Todos los clientes',
             'clientes' => $clientes
         ],200);
+    }
 
-        
+    public function listaClientesCoordinador(Request $request)
+    {
+        $query = Cliente::with(['persona', 'distribuidora.usuario.persona', 'documentos']);
+
+        if ($request->filled('distribuidora')) {
+            $nombre = $request->input('distribuidora');
+            $query->whereHas('distribuidora.usuario.persona', function ($q) use ($nombre) {
+                $q->where('nombre', 'like', "%{$nombre}%")
+                  ->orWhere('apellido', 'like', "%{$nombre}%");
+            });
+        }
+
+        $clientes = $query->paginate(5)->withQueryString();
+
+        return view('coordinador.clientes', compact('clientes'));
     }
 
 
