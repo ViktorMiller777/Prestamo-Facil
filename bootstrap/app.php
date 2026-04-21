@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(\App\Http\Middleware\SetDatabaseConnection::class);
         $middleware->alias([
             'gerente'      => \App\Http\Middleware\SoloGerente::class,
             'coordinador'  => \App\Http\Middleware\SoloCoordinador::class,

@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if ($this->app->runningInConsole()) {
+        /*if ($this->app->runningInConsole()) {
             return;
         }
 
@@ -118,7 +118,7 @@ class AppServiceProvider extends ServiceProvider
         }
         
         // Forzar reconexión con nueva configuración
-        DB::purge('mysql');
+        DB::purge('mysql'); */
     }
 
 }
