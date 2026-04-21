@@ -92,6 +92,7 @@
         }
 
         .card-purple { background: var(--btn-purple); box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.3); }
+        .card-blue { background: #3b82f6; box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3); }
         .card-gray { background: var(--btn-gray); box-shadow: 0 20px 25px -5px rgba(100, 116, 139, 0.3); }
         .card-red { background: var(--btn-red); box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.3); }
 
@@ -147,20 +148,19 @@
         <div class="options-grid">
             <a href="{{ route('verificador.presolicitud') }}" class="option-card card-purple">
                 <div class="icon-container">
-                    <i data-lucide="bell" style="width: 48px; height: 48px; color: white;"></i>
+                    <i data-lucide="file-check" style="width: 48px; height: 48px; color: white;"></i>
                 </div>
-                <h1>Notificaciones</h1>
-                <span>Revisar avisos nuevos</span>
+                <h1>Presolicitudes</h1>
+                <span>Validar nuevas cuentas</span>
             </a>
 
-            <a href="#" class="option-card card-gray">
+            <a href="{{ route('verificador.distribuidoras') }}" class="option-card card-blue">
                 <div class="icon-container">
-                    <i data-lucide="settings" style="width: 48px; height: 48px; color: white;"></i>
+                    <i data-lucide="users" style="width: 48px; height: 48px; color: white;"></i>
                 </div>
-                <h1>Ajustes</h1>
-                <span>Configurar mi cuenta</span>
+                <h1>Listado General</h1>
+                <span>Consulta de distribuidoras</span>
             </a>
-
             <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display:none;">
                 @csrf
             </form>
@@ -170,6 +170,13 @@
                 </div>
                 <h1>Cerrar Sesión</h1>
                 <span>Salir del sistema</span>
+            </a>
+            <a href="{{ route('profile.edit') }}" class="option-card card-gray">
+                <div class="icon-container">
+                    <i data-lucide="settings" style="width: 48px; height: 48px; color: white;"></i>
+                </div>
+                <h1>Ajustes</h1>
+                <span>Configurar mi cuenta</span>
             </a>
         </div>
     </div>

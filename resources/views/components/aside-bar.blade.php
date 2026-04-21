@@ -155,13 +155,13 @@
                         <i data-lucide="settings"></i> Configuración
                     </a>
                 </li>
-                @endif
-                @if(auth()->check() && auth()->user()->role_id == 2)
                 <li>
-                    <a href="{{ route('coordinador.notificaciones') }}" class="{{ request()->routeIs('coordinador.notificaciones') ? 'active' : '' }}">
-                        <i data-lucide="bell"></i> Notificaciones
+                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                        <i data-lucide="user"></i> Mi Perfil
                     </a>
                 </li>
+                @endif
+                @if(auth()->check() && auth()->user()->role_id == 2)
                 <li>
                     <a href="{{ route('coordinador.distribuidoras') }}" class="{{ request()->routeIs('coordinador.distribuidoras') ? 'active' : '' }}">
                         <i data-lucide="users"></i> Distribuidoras
@@ -182,7 +182,31 @@
                         <i data-lucide="user-plus"></i> Cambios
                     </a>
                 </li>
+                <p class="menu-label">Sistema</p>
+                <li>
+                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                        <i data-lucide="user"></i> Mi Perfil
+                    </a>
+                </li>
                 @endif
+                @if(auth()->check() && auth()->user()->role_id == 3)
+                <li>
+                    <a href="{{ route('verificador.presolicitud') }}" class="{{ request()->routeIs('verificador.presolicitud') ? 'active' : '' }}">
+                        <i data-lucide="file-check"></i> Presolicitudes
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('verificador.distribuidoras') }}" class="{{ request()->routeIs('verificador.distribuidoras') ? 'active' : '' }}">
+                        <i data-lucide="users"></i> Listado General
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                        <i data-lucide="user"></i> Mi Perfil
+                    </a>
+                </li>
+                @endif
+
                 @if(auth()->check() && auth()->user()->role_id == 5)
                 <li>
                     <a href="{{ route('cajera.prevale') }}" class="{{ request()->routeIs('cajera.prevale') ? 'active' : '' }}">
@@ -194,8 +218,37 @@
                         <i data-lucide="calculator"></i> Conciliación
                     </a>
                 </li>
+                <p class="menu-label">Sistema</p>
+                <li>
+                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                        <i data-lucide="user"></i> Mi Perfil
+                    </a>
+                </li>
+                @endif
+                @if(auth()->check() && auth()->user()->role_id == 4)
+                <li>
+                    <a href="{{ route('productos') }}" class="{{ request()->routeIs('productos') ? 'active' : '' }}">
+                        <i data-lucide="package"></i> Productos
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('distribuidora.clientes') }}" class="{{ request()->routeIs('distribuidora.clientes') ? 'active' : '' }}">
+                        <i data-lucide="users"></i> Clientes
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('distribuidora.vale') }}" class="{{ request()->routeIs('distribuidora.vale') ? 'active' : '' }}">
+                        <i data-lucide="ticket"></i> Vales
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                        <i data-lucide="user"></i> Mi Perfil
+                    </a>
+                </li>
                 @endif
             </ul>
+
         </nav>
     </div>
 

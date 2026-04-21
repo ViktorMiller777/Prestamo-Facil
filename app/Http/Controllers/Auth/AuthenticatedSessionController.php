@@ -52,7 +52,7 @@ class AuthenticatedSessionController extends Controller
 
         return match($user->role_id) {
             1 => redirect()->route('gerente.productos'),
-            2 => redirect()->route('coordinador.notificaciones'),
+            2 => redirect()->route('coordinador.distribuidoras'),
             3 => redirect()->route('verificador.dashboard'),
             4 => redirect()->route('distribuidora.dashboard'),
             5 => redirect()->route('cajera.prevale'),

@@ -22,7 +22,15 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        body { background: var(--bg); padding: 20px; padding-top: 8rem !important; display: flex; justify-content: center; }
+        body { background: var(--bg); display: flex; min-height: 100vh; }
+
+        .main-content { 
+            flex: 1; 
+            padding: 40px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
 
         .container { width: 100%; max-width: 1100px; }
 
@@ -292,9 +300,10 @@
     </style>
 </head>
 <body>
-    <x-header-bar />
+    <x-aside-bar />
 
-    <div class="container">
+    <main class="main-content">
+        <div class="container">
 
         {{-- ══════════════════════════════════════════════
              PANEL PRINCIPAL: Ingresar Token A
@@ -410,6 +419,7 @@
             </table>
         </div>
     </div>
+    </main>
 
     {{-- ══════════════════════════════════════════════════════════
          MODAL: Token B generado (después de validar Token A)

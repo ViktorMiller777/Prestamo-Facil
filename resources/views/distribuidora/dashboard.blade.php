@@ -94,8 +94,9 @@
 
         /* Colores usando tus mismas sombras de Verificador */
         .card-green  { background: var(--btn-green); box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3); }
-        .card-blue   { background: var(--btn-blue); box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3); }
-        .card-purple { background: var(--btn-purple); box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.3); }
+        .card-blue        { background: var(--btn-blue); box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3); }
+        .card-dark-blue   { background: #1e40af; box-shadow: 0 20px 25px -5px rgba(30, 64, 175, 0.3); }
+        .card-purple      { background: var(--btn-purple); box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.3); }
         .card-gray   { background: var(--btn-gray); box-shadow: 0 20px 25px -5px rgba(100, 116, 139, 0.3); }
         .card-orange { background: var(--btn-orange); box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.3); }
         .card-red    { background: var(--btn-red); box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.3); }
@@ -158,9 +159,9 @@
                 <span>Administrar cartera</span>
             </a>
 
-            <a href="{{ route('distribuidora.aceptar_cliente') }}" class="option-card card-blue">
+            <a href="{{ route('distribuidora.aceptar_cliente') }}" class="option-card card-dark-blue">
                 <div class="icon-container">
-                    <i data-lucide="users" style="width: 48px; height: 48px; color: white;"></i>
+                    <i data-lucide="user-check" style="width: 48px; height: 48px; color: white;"></i>
                 </div>
                 <h1>Aceptas Cambio</h1>
                 <span>Aceptar cliente</span>
@@ -173,15 +174,6 @@
                 <h1>Relaciones</h1>
                 <span>Historial y vínculos</span>
             </a>
-
-            <a href="#" class="option-card card-gray">
-                <div class="icon-container">
-                    <i data-lucide="settings" style="width: 48px; height: 48px; color: white;"></i>
-                </div>
-                <h1>Ajustes</h1>
-                <span>Configurar cuenta</span>
-            </a>
-
             <a href="{{ route('distribuidora.vale') }}" class="option-card card-orange">
                 <div class="icon-container">
                     <i data-lucide="ticket" style="width: 48px; height: 48px; color: white;"></i>
@@ -190,6 +182,13 @@
                 <span>Consulta de estados</span>
             </a>
 
+            <a href="{{ route('profile.edit') }}" class="option-card card-gray">
+                <div class="icon-container">
+                    <i data-lucide="settings" style="width: 48px; height: 48px; color: white;"></i>
+                </div>
+                <h1>Ajustes</h1>
+                <span>Configurar cuenta</span>
+            </a>
             <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display:none;">
                 @csrf
             </form>
