@@ -18,11 +18,43 @@ class DistribuidorasController
         return view('gerente.distribuidora', compact('distribuidoras'));
     }
 
-    //Esta funcion muestra las distribuidoras con el estado en presolicitud, VISTA PARA VERIFICADOR
-    public function distribuidorasPresolicitud(){
-        $distribuidoras = Distribuidora::where('estado', 'presolicitud')->with('usuario.persona')->get();
+    public function listaDistribuidorasCoordinador()
+    {
+        $distribuidoras = Distribuidora::whereIn('estado', ['activo', 'moroso'])->with(['usuario.persona', 'categoria', 'documentos'])->paginate(5);
+        return view('coordinador.distribuidora', compact('distribuidoras'));
+    }
 
-        return view('verificador.notificaciones', compact('distribuidoras'));
+    public function listaDistribuidorasVerificador(Request $request){
+        $query = Distribuidora::with('usuario.persona');
+
+        if ($request->has('buscar') && !empty($request->buscar)) {
+            $buscar = $request->buscar;
+            $query->whereHas('usuario.persona', function($q) use ($buscar) {
+                $q->where('nombre', 'like', "%$buscar%")
+                  ->orWhere('apellido', 'like', "%$buscar%");
+            });
+        }
+
+        $distribuidoras = $query->paginate(5);
+
+        return view('verificador.distribuidora-table', compact('distribuidoras'));
+    }
+
+    //Esta funcion muestra las distribuidoras con el estado en presolicitud, VISTA PARA VERIFICADOR
+    public function distribuidorasPresolicitud(Request $request){
+        $query = Distribuidora::where('estado', 'presolicitud')->with('usuario.persona');
+
+        if ($request->has('buscar') && !empty($request->buscar)) {
+            $buscar = $request->buscar;
+            $query->whereHas('usuario.persona', function($q) use ($buscar) {
+                $q->where('nombre', 'like', "%$buscar%")
+                  ->orWhere('apellido', 'like', "%$buscar%");
+            });
+        }
+
+        $distribuidoras = $query->paginate(5);
+
+        return view('verificador.distribuidoras', compact('distribuidoras'));
     }
 
 

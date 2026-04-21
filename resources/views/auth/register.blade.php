@@ -479,7 +479,7 @@
                 if (res.ok) {
                     mostrarToast('✅ Registro completado con éxito', 'success');
                     setTimeout(() => {
-                        window.location.href = "{{ route('coordinador.notificaciones') }}";
+                        window.location.href = "{{ route('coordinador.distribuidoras') }}";
                     }, 2000);
                 } else if (res.status === 422) {
                     // Errores de validación de Laravel

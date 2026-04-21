@@ -58,8 +58,9 @@ class ProcesarCorteQuincenal implements ShouldQueue
                     $sumaComisiones += $detalle->porcentaje_comision ?? 0;
                 }
                 
-                // $fechaLimite = now()->addDays(15); 
-                $fechaLimite = now()->subDays(1);
+                $fechaLimite = now()->addDays(15); 
+                //$fechaLimite = now()->subDays(1);
+
                 $pagoAnticipado = $fechaLimite->copy()->subDays(3);
                 
                 $montoRecargoBase = (float) Configuracion::obtener('recargos', 300);

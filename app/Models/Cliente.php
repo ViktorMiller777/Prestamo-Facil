@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 
 class Cliente extends Model
 {
@@ -30,6 +32,17 @@ class Cliente extends Model
 
     public function vale(): HasMany{
         return $this->hasOne(Vale::class,'cliente_id');
+    }
+
+    public function cambioActivo(): HasOne
+    {
+        return $this->hasOne(CambioDistribuidora::class, 'cliente_id')
+            ->whereIn('estado', ['pendiente', 'coordinador_validado']);
+    }
+
+     public function cambios(): HasMany
+    {
+        return $this->hasMany(CambioDistribuidora::class, 'cliente_id');
     }
 
     //lonleydigger

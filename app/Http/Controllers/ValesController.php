@@ -17,15 +17,60 @@ class ValesController
         return view('cajera.prevale');
     }
 
+    public function vistaConciliacion(){
+        return view('cajera.conciliacion');
+    }
+
+    public function listaValesCoordinador(Request $request)
+    {
+        $query = Vale::with(['cliente.persona', 'distribuidora.usuario.persona', 'producto', 'detalleVale']);
+
+        if ($request->filled('distribuidora')) {
+            $nombre = $request->input('distribuidora');
+            $query->whereHas('distribuidora.usuario.persona', function ($q) use ($nombre) {
+                $q->where('nombre', 'like', "%{$nombre}%")
+                  ->orWhere('apellido', 'like', "%{$nombre}%");
+            });
+        }
+
+        $vales = $query->paginate(5)->withQueryString();
+
+        return view('coordinador.vales', compact('vales'));
+    }
+
     public function buscarPorFolio($folio)
     {
         $vale = Vale::where('folio', $folio)
             ->where('estado', 'prevale')
-            ->with(['cliente.persona', 'distribuidora', 'producto'])
+            ->with(['cliente.persona', 'cliente.documentos', 'distribuidora.usuario.persona', 'producto'])
             ->first();
 
         if (!$vale) {
             return response()->json(['mensaje' => 'Prevale no encontrado o no está pendiente de validación'], 404);
+        }
+
+        // Generamos URLs temporales para los documentos del cliente
+        if ($vale->cliente) {
+            foreach ($vale->cliente->documentos as $doc) {
+                $doc->url_temporal = \Illuminate\Support\Facades\Storage::disk('spaces')->temporaryUrl(
+                    $doc->archivo_path, 
+                    now()->addMinutes(10)
+                );
+            }
+        }
+
+        return response()->json(['vale' => $vale], 200);
+    }
+
+    public function buscarValeActivo($folio)
+    {
+        $vale = Vale::where('folio', $folio)
+            ->where('estado', 'activo')
+            ->with(['cliente.persona', 'distribuidora.usuario.persona', 'producto', 'detalleVale.relacion'])
+            ->first();
+
+        if (!$vale) {
+            return response()->json(['mensaje' => 'Vale no encontrado o no está activo para conciliación'], 404);
         }
 
         return response()->json(['vale' => $vale], 200);
