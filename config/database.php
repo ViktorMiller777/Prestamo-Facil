@@ -66,9 +66,59 @@ return [
             ] : [],
         ],*/
 
-        'mysql' => [
+        /*'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '10.200.0.5'),
+            'port' => env('DB_PORT', '53721'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? [
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA'),
+                PDO::MYSQL_ATTR_SSL_CERT => env('DB_SSL_CERT'),
+                PDO::MYSQL_ATTR_SSL_KEY => env('DB_SSL_KEY'),
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+            ] : [],
+        ],*/
+
+        'mysql_normal' => [
+            'driver' => 'mysql',
+            'host' => env('MASTER2_HOST'),
+            'read' => [
+                'host' => [env('SLAVE_HOST')],
+            ],
+            'write' => [
+                'host' => [env('MASTER2_HOST')],
+            ],
+            'port' => env('DB_PORT', '53721'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? [
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA'),
+                PDO::MYSQL_ATTR_SSL_CERT => env('DB_SSL_CERT'),
+                PDO::MYSQL_ATTR_SSL_KEY => env('DB_SSL_KEY'),
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+            ] : [],
+        ],
+
+        'mysql_vpnApp3' => [
+            'driver' => 'mysql',
+            'host' => env('MASTER1_HOST'),
             'port' => env('DB_PORT', '53721'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
