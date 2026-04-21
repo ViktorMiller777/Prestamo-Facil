@@ -8,6 +8,7 @@ use App\Http\Controllers\RelacionesController;
 use App\Http\Controllers\DetallesValesController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ConfiguracionesController;
+use App\Http\Controllers\CambioDistribuidoraController;
 use Illuminate\Support\Facades\Route;
 
 // ================================
@@ -20,22 +21,16 @@ Route::get('/', function () {
 // ================================
 // GERENTE - role_id 1
 // ================================
-
 Route::middleware(['auth', 'gerente'])->group(function () {
     Route::get('/gerente/dashboard', function () {
         return view('gerente.dashboard');
     })->name('gerente.dashboard');
 
     Route::get('/gerente/productos', [ProductosController::class, 'listaProductos'])->name('gerente.productos');
-
     Route::get('/gerente/distribuidora', [DistribuidorasController::class, 'listaDistribuidoras'])->name('gerente.distribuidoras');
-
     Route::post('/distribuidoras/store', [DistribuidorasController::class, 'crearDistribuidora'])->name('distribuidoras.store');
-    
     Route::post('/gerente/distribuidora/{id}/estado', [DistribuidorasController::class, 'actualizarEstado'])->name('gerente.distribuidoras.estado');
-
-    Route::get('/gerente/presolicitudes',[DistribuidorasController::class,'distribuidorasInactivas'])->name('gerente.presolicitud');
-
+    Route::get('/gerente/presolicitudes', [DistribuidorasController::class, 'distribuidorasInactivas'])->name('gerente.presolicitud');
     Route::get('/gerente/configuracion', [ConfiguracionesController::class, 'index'])->name('gerente.configuracion');
     Route::post('/gerente/configuracion', [ConfiguracionesController::class, 'update'])->name('gerente.configuracion.update');
 });
@@ -43,7 +38,6 @@ Route::middleware(['auth', 'gerente'])->group(function () {
 // ================================
 // COORDINADOR - role_id 2
 // ================================
-
 Route::middleware(['auth', 'coordinador'])->group(function () {
     Route::get('/coordinador/dashboard', function () {
         return view('coordinador.dashboard');
@@ -61,46 +55,48 @@ Route::middleware(['auth', 'coordinador'])->group(function () {
     Route::get('/coordinador/vales', [ValesController::class, 'listaValesCoordinador'])->name('coordinador.vales');
     Route::get('/coordinador/clientes', [ClientesController::class, 'listaClientesCoordinador'])->name('coordinador.clientes');
     Route::post('/distribuidoras/store', [DistribuidorasController::class, 'crearDistribuidora'])->name('distribuidoras.store');
+
+    // ── Cambios de distribuidora ──
+    Route::get('/coordinador/cambio_cliente', [CambioDistribuidoraController::class, 'vistaCoordinador'])->name('coordinador.cambio_cliente');
+    Route::post('/coordinador/cambios/validar-token-origen', [CambioDistribuidoraController::class, 'validarTokenOrigen'])->name('coordinador.cambio.validar');
+    Route::post('/coordinador/cambios/rechazar', [CambioDistribuidoraController::class, 'rechazarCambio'])->name('coordinador.cambio.rechazar');
 });
 
 // ================================
 // VERIFICADOR - role_id 3
 // ================================
-
 Route::middleware(['auth', 'verificador'])->group(function () {
-    Route::get('/verificador/dashboard', function () {return view('verificador.dashboard');})->name('verificador.dashboard');
+    Route::get('/verificador/dashboard', function () {
+        return view('verificador.dashboard');
+    })->name('verificador.dashboard');
 
     Route::get('/verificador/presolicitudes', [DistribuidorasController::class, 'distribuidorasPresolicitud'])->name('verificador.presolicitud');
-
     Route::get('/verificador/distribuidora/{id}', [DistribuidorasController::class, 'detalle'])->name('verificador.detalle');
 });
 
 // ================================
 // DISTRIBUIDOR - role_id 4
 // ================================
-
 Route::middleware(['auth', 'distribuidor'])->group(function () {
     Route::get('/distribuidora/dashboard', function () {
         return view('distribuidora.dashboard');
     })->name('distribuidora.dashboard');
 
-    Route::get('/distribuidora/clientes', [ClientesController::class,'clientesDistribuidora'])->name('distribuidora.clientes');
-
+    Route::get('/distribuidora/clientes', [ClientesController::class, 'clientesDistribuidora'])->name('distribuidora.clientes');
     Route::get('/distribuidora/vales', [ValesController::class, 'valesPorDistribuidora'])->name('distribuidora.vale');
-
     Route::get('/distribuidora/productos', [ProductosController::class, 'listaProductos'])->name('productos');
-    // Asegúrate de que apunte a listaRelacionesAuth y no a otra función
     Route::get('/distribuidora/relaciones', [RelacionesController::class, 'listaRelacionesAuth'])->name('relaciones');
+    Route::get('/distribudora/detalle_vale/{id}', [DetallesValesController::class, 'verDetalleRelacion'])->name('detalle_vale');
 
-    Route::get('/distribudora/detalle_vale/{id}',[DetallesValesController::class, 'verDetalleRelacion'])->name('detalle_vale');
-
+    // ── Cambios de distribuidora ──
+    Route::post('/distribuidora/clientes/{cliente}/solicitar-cambio', [CambioDistribuidoraController::class, 'solicitarCambio'])->name('distribuidora.cambio.solicitar');
+Route::get('/distribuidora/aceptar_cliente', [CambioDistribuidoraController::class, 'vistaCompletar'])->name('distribuidora.aceptar_cliente');
+    Route::post('/distribuidora/cambios/completar', [CambioDistribuidoraController::class, 'completarCambio'])->name('distribuidora.cambio.completar');
 });
-
 
 // ================================
 // CAJERA - role_id 5
 // ================================
-
 Route::middleware(['auth', 'cajera'])->group(function () {
     Route::get('/cajera/dashboard', function () {
         return view('cajera.dashboard');
@@ -109,7 +105,6 @@ Route::middleware(['auth', 'cajera'])->group(function () {
     Route::get('/cajera/prevale', [ValesController::class, 'listaVales'])->name('cajera.prevale');
     Route::get('/cajera/prevale/buscar/{folio}', [ValesController::class, 'buscarPorFolio']);
     Route::post('/cajera/prevale/confirmar/{id}', [ValesController::class, 'confirmarPrevale']);
-
     Route::get('/cajera/conciliacion', [ValesController::class, 'vistaConciliacion'])->name('cajera.conciliacion');
     Route::get('/cajera/conciliacion/buscar/{folio}', [ValesController::class, 'buscarValeActivo']);
 });
@@ -117,7 +112,6 @@ Route::middleware(['auth', 'cajera'])->group(function () {
 // ================================
 // RUTAS COMPARTIDAS AUTH
 // ================================
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

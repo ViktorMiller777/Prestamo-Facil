@@ -177,6 +177,11 @@
                         <i data-lucide="user-plus"></i> Clientes
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('coordinador.cambio_cliente') }}" class="{{ request()->routeIs('coordinador.cambio_cliente') ? 'active' : '' }}">
+                        <i data-lucide="user-plus"></i> Cambios
+                    </a>
+                </li>
                 @endif
                 @if(auth()->check() && auth()->user()->role_id == 5)
                 <li>
