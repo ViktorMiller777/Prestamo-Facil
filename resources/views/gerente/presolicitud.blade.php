@@ -114,7 +114,6 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Distribuidora</th>
                                 <th>Contacto</th>
                                 <th>Línea de Crédito</th>
@@ -127,7 +126,6 @@
                         <tbody>
                             @forelse($distribuidoras as $dist)
                             <tr>
-                                <td style="color: #94a3b8; font-weight: 500;">#{{ $dist->id }}</td>
                                 <td>
                                     <div class="user-info">
                                         <span class="user-name">{{ $dist->usuario->persona->nombre }} {{ $dist->usuario->persona->apellido }}</span>

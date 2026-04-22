@@ -228,7 +228,6 @@
                     <tr onclick="verDistribuidora({{ $dist->id }})">
                         <td>
                             <span class="dist-name">{{ $dist->usuario->persona->nombre }} {{ $dist->usuario->persona->apellido }}</span>
-                            <span class="dist-sub">ID: #{{ $dist->id }}</span>
                         </td>
                         <td>
                             <span class="dist-name" style="font-weight: 500;">{{ $dist->usuario->persona->celular }}</span>
