@@ -27,8 +27,8 @@ class UserSeeder extends Seeder
                     'celular' => '5555555555',
                 ],
                 'usuario' => [
-                    'sucursal_id' => 1,
-                    'role_id' => 5,
+                    'sucursal_id' => 2,
+                    'role_id' => 10,
                     'email' => 'cajera@example.com',
                     'password' => '123456789',
                 ]
@@ -45,8 +45,8 @@ class UserSeeder extends Seeder
                     'celular' => '1111111111',
                 ],
                 'usuario' => [
-                    'sucursal_id' => 1,
-                    'role_id' => 1,
+                    'sucursal_id' => 2,
+                    'role_id' => 2,
                     'email' => 'gerente@example.com',
                     'password' => '123456789',
                 ]
@@ -63,8 +63,8 @@ class UserSeeder extends Seeder
                     'celular' => '3333333333',
                 ],
                 'usuario' => [
-                    'sucursal_id' => 1,
-                    'role_id' => 3,
+                    'sucursal_id' => 2,
+                    'role_id' => 6,
                     'email' => 'verificador@example.com',
                     'password' => '123456789',
                 ]
@@ -81,8 +81,8 @@ class UserSeeder extends Seeder
                     'celular' => '2222222222',
                 ],
                 'usuario' => [
-                    'sucursal_id' => 1,
-                    'role_id' => 2,
+                    'sucursal_id' => 2,
+                    'role_id' => 4,
                     'email' => 'coordinador@example.com',
                     'password' => '123456789',
                 ]
@@ -107,3 +107,4 @@ class UserSeeder extends Seeder
         }
     }
 }
+
