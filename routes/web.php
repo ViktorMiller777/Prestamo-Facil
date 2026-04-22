@@ -43,9 +43,6 @@ Route::middleware(['auth', 'coordinador'])->group(function () {
         return view('coordinador.dashboard');
     })->name('coordinador.dashboard');
 
-    Route::get('/coordinador/distribuidoras', [DistribuidorasController::class, 'listaDistribuidoras'])->name('coordinador.distribuidoras');
-
-
     Route::get('/nueva-distribuidora', function () {
         return view('auth.register');
     })->name('distribuidoras.create');
