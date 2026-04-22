@@ -57,9 +57,6 @@ Route::get('/test-db', function () {
 // GERENTE - role_id 1
 // ================================
 Route::middleware(['auth', 'gerente'])->group(function () {
-    Route::get('/gerente/dashboard', function () {
-        return view('gerente.dashboard');
-    })->name('gerente.dashboard');
 
     Route::get('/gerente/productos', [ProductosController::class, 'listaProductos'])->name('gerente.productos');
     Route::get('/gerente/distribuidora', [DistribuidorasController::class, 'listaDistribuidoras'])->name('gerente.distribuidoras');
@@ -152,11 +149,11 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/dashboard', function () {
     return match(auth()->user()->role_id) {
-        1 => redirect()->route('gerente.dashboard'),
+        1 => redirect()->route('gerente.productos'),
         2 => redirect()->route('coordinador.distribuidoras'),
         3 => redirect()->route('verificador.dashboard'),
         4 => redirect()->route('distribuidora.dashboard'),
-        5 => redirect()->route('cajera.dashboard'),
+        5 => redirect()->route('cajera.prevale'),
         default => redirect()->route('login'),
     };
 })->middleware('auth')->name('dashboard');
