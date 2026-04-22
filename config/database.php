@@ -1,4 +1,4 @@
-<?php
+}<?php
 
 use Illuminate\Support\Str;
 use Pdo\Mysql;
@@ -87,6 +87,22 @@ return [
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
             ] : [],
         ],*/
+	
+	'mysql_test' => [
+	    'driver' => 'mysql',
+	    'host' => env('MASTER2_HOST'),
+	    'port' => env('DB_PORT'),
+	    'database' => env('DB_DATABASE'),
+	    'username' => env('DB_USERNAME'),
+	    'password' => env('DB_PASSWORD'),
+	    'options' => [
+	        PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA'),
+	        PDO::MYSQL_ATTR_SSL_CERT => env('DB_SSL_CERT'),
+	        PDO::MYSQL_ATTR_SSL_KEY => env('DB_SSL_KEY'),
+	        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+	    ],
+	],
+
 
         'mysql_normal' => [
             'driver' => 'mysql',
