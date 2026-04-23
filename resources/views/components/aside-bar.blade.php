@@ -177,12 +177,12 @@
                         <i data-lucide="user-plus"></i> Clientes
                     </a>
                 </li>
-/*                <li>
+                <!--<li>
                     <a href="{{ route('coordinador.cambio_cliente') }}" class="{{ request()->routeIs('coordinador.cambio_cliente') ? 'active' : '' }}">
                         <i data-lucide="user-plus"></i> Cambios
                     </a>
-                </li>
-*/
+                </li>-->
+
                 <p class="menu-label">Sistema</p>
                 <li>
                     <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
