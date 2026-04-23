@@ -113,6 +113,7 @@ return [
             'write' => [
                 'host' => [env('MASTER2_HOST')],
             ],
+            'sticky' => true,
             'port' => env('DB_PORT', '53721'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
