@@ -35,7 +35,7 @@ class SetDatabaseConnection
 
         if ($current !== $new) {
             Config::set('database.default', $new);
-            DB::purge($new);
+            //DB::purge($new);
 
             Log::info('DB SWITCH', [
                 'from' => $current,
