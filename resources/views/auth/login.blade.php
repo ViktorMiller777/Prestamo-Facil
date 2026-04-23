@@ -7,7 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { 
@@ -323,6 +323,9 @@
                         <a href="forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
                     </div>
 
+                    <div class="captcha-container">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    </div>
 
                     <button type="submit" class="btn-submit">
                         Ingresar al Sistema
