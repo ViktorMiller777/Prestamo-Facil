@@ -10,12 +10,47 @@ use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ConfiguracionesController;
 use App\Http\Controllers\CambioDistribuidoraController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
 // ================================
 // RUTAS PÚBLICAS
 // ================================
 Route::get('/', function () {
     return redirect()->route('login');
+});
+
+Route::get('/test-db', function () {
+    try {
+        $connection = Config::get('database.default');
+        $config = Config::get("database.connections.$connection");
+
+        $hostname = DB::select('SELECT @@hostname as host, @@server_id as id, @@port as port');
+        $ssl = DB::select("SHOW STATUS LIKE 'Ssl_cipher'");
+
+        return [
+            'success' => true,
+            'app_hostname' => gethostname(),
+            'client_ip' => request()->ip(),
+            'is_vpn' => str_starts_with(request()->ip(), '10.200.0.'),
+            'connection_used' => $connection,
+
+            'database_host' => $hostname[0] ?? null,
+            'ssl_cipher' => $ssl[0]->Value ?? 'No SSL',
+
+            'config' => [
+                'host' => $config['host'] ?? null,
+                'read_host' => $config['read']['host'][0] ?? null,
+                'write_host' => $config['write']['host'][0] ?? null,
+            ]
+        ];
+
+    } catch (\Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage(),
+        ];
+    }
 });
 
 // ================================

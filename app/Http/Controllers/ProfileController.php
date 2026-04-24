@@ -17,7 +17,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         return view('profile.premium', [
-            'user' => $request->user(),
+            'user' => $request->user()->load(['persona', 'sucursal', 'role']),
         ]);
     }
 

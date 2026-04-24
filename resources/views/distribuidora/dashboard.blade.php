@@ -159,13 +159,13 @@
                 <span>Administrar cartera</span>
             </a>
 
-            <a href="{{ route('distribuidora.aceptar_cliente') }}" class="option-card card-dark-blue">
+            <!-- <a href="{{ route('distribuidora.aceptar_cliente') }}" class="option-card card-dark-blue">
                 <div class="icon-container">
                     <i data-lucide="user-check" style="width: 48px; height: 48px; color: white;"></i>
                 </div>
                 <h1>Aceptas Cambio</h1>
                 <span>Aceptar cliente</span>
-            </a>
+            </a> -->
 
             <a href="{{ route('relaciones') }}" class="option-card card-purple">
                 <div class="icon-container">

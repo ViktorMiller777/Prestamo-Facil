@@ -324,7 +324,7 @@
                     </div>
 
                     <div class="captcha-container">
-                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
                     </div>
 
                     <button type="submit" class="btn-submit">
