@@ -20,6 +20,10 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/test-error', function () {
+    throw new \Exception('Error de prueba');
+});
+
 Route::get('/test-db', function () {
     try {
         $connection = Config::get('database.default');
