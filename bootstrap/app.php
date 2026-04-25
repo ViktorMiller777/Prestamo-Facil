@@ -15,14 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     
     ->withMiddleware(function (Middleware $middleware): void {
-//        $middleware->append(\App\Http\Middleware\SetDatabaseConnection::class);
-	$middleware->trustProxies(
-    		at: '*',
-    		headers: Request::HEADER_X_FORWARDED_FOR |
-             		Request::HEADER_X_FORWARDED_HOST |
-           	  	Request::HEADER_X_FORWARDED_PORT |
-        	     	Request::HEADER_X_FORWARDED_PROTO
-	);
+        $middleware->append(\App\Http\Middleware\SetDatabaseConnection::class);
+        $middleware->trustProxies(
+                at: '*',
+                headers: Request::HEADER_X_FORWARDED_FOR |
+                        Request::HEADER_X_FORWARDED_HOST |
+                    Request::HEADER_X_FORWARDED_PORT |
+                        Request::HEADER_X_FORWARDED_PROTO
+        );
         $middleware->alias([
             'gerente'      => \App\Http\Middleware\SoloGerente::class,
             'coordinador'  => \App\Http\Middleware\SoloCoordinador::class,
