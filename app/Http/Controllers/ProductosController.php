@@ -77,6 +77,13 @@ class ProductosController
             'activo'               => 'sometimes|boolean',
         ]);
         
+         if (isset($validated['porcentaje_comision'])) {
+            $validated['porcentaje_comision'] = (float) $validated['porcentaje_comision'] / 100;
+        }
+
+        if (isset($validated['interes_quincenal'])) {
+            $validated['interes_quincenal'] = (float) $validated['interes_quincenal'] / 100;
+        }
 
         $producto->update($validated);
 

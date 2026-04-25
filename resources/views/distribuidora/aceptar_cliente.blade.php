@@ -204,6 +204,31 @@
         }
 
         .empty-state { padding: 50px; text-align: center; color: var(--text-muted); }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            z-index: 99999;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 380px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        #toast.toast-success { background: #16a34a; }
+        #toast.toast-error   { background: #dc2626; }
+        #toast.toast-warning { background: #d97706; }
     </style>
 </head>
 <body>
@@ -260,7 +285,7 @@
                 </div>
 
                 <div class="alert-blue">
-                    Al ingresar el Token B válido, el cliente quedará asignado automáticamente a tu distribuidora. Esta acción es irreversible.
+                    Al ingresar el Token B válido, el cliente quedará asignado automáticamente a tu distribuidora.
                 </div>
 
                 {{-- Resultado de éxito --}}
@@ -326,6 +351,9 @@
         </div>
     </div>
 
+    {{-- Toast de notificación --}}
+    <div id="toast"></div>
+
     <script>
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -333,9 +361,15 @@
             var token = document.getElementById('input-token-destino').value.trim().toUpperCase();
 
             if (token.length < 4) {
-                alert('Ingresa el Token B completo.');
+                mostrarToast('⚠️ Ingresa el Token B completo (mínimo 4 caracteres).', 'warning');
                 return;
             }
+
+            // Bloquear botón mientras procesa
+            const btn = document.querySelector('.btn-completar');
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" style="width:18px;"></i> Procesando...';
+            lucide.createIcons();
 
             fetch('/distribuidora/cambios/completar', {
                 method: 'POST',
@@ -359,12 +393,41 @@
                 document.getElementById('resultado-exito').classList.add('visible');
                 lucide.createIcons();
 
+                mostrarToast('✅ ¡Cliente transferido exitosamente!', 'success');
+
                 // Recargar historial tras 3 segundos
                 setTimeout(function() { location.reload(); }, 3000);
             })
             .catch(function(err) {
-                alert(err.mensaje ?? 'Token inválido, expirado o incorrecto para esta distribuidora.');
+                const mensaje = err.mensaje ?? 'Token inválido, expirado o incorrecto para esta distribuidora.';
+                mostrarToast('❌ ' + mensaje, 'error');
+
+                // Restaurar botón
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="check-circle-2" style="width:18px;"></i> Completar transferencia';
+                lucide.createIcons();
             });
+        }
+
+        function mostrarToast(mensaje, tipo = 'success') {
+            const toast = document.getElementById('toast');
+
+            // Limpiar clases previas
+            toast.className = '';
+            toast.textContent = mensaje;
+
+            if (tipo === 'success') toast.classList.add('toast-success');
+            else if (tipo === 'error') toast.classList.add('toast-error');
+            else if (tipo === 'warning') toast.classList.add('toast-warning');
+
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+            }, 4000);
         }
 
         lucide.createIcons();

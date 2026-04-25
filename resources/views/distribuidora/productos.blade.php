@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
+    <script src="https://unpkg.com/lucide@latest"></script> 
 </head>
 <style>
     * {
@@ -278,12 +279,15 @@
     </div>
 <div id="modalPrevale" class="modal">
     <div class="modal-content" style="max-width: 800px;"> <h2 style="margin-bottom: 20px;">Registro de Vale</h2>
-        
-        <form id="formPrevale" enctype="multipart/form-data">
+        <div id="erroresVale"></div>
+        <form action="/api/crear/vale" method="POST" id="formPrevale" 
+            enctype="multipart/form-data"
+            onsubmit="enviarVale(event)">    
             @csrf
             <input type="hidden" name="producto_id" id="modal_producto_id">
             <input type="hidden" name="distribuidor_id" value="{{ auth()->user()->distribuidora->id }}">
             <input type="hidden" name="estado" value="prevale">
+            <input type="hidden" name="folio" id="folio_input">
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
@@ -296,16 +300,15 @@
                 </div>
                 <div class="form-group">
                     <label>Sexo</label>
-                    <select name="sexo" class="w-full border p-2 rounded-lg">
+                    <select name="sexo">
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Fecha de Nacimiento</label>
-                    <input type="date" name="fecha_nacimiento" required>
+                    <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" required>
                 </div>
-
                 <div class="form-group">
                     <label>CURP</label>
                     <input type="text" name="CURP" required maxlength="18" style="text-transform: uppercase">
@@ -314,29 +317,30 @@
                     <label>RFC</label>
                     <input type="text" name="RFC" required maxlength="13" style="text-transform: uppercase">
                 </div>
-
                 <div class="form-group">
                     <label>Teléfono Personal</label>
-                    <input type="tel" name="telefono_personal" placeholder="871...">
+                    <input type="text" name="telefono_personal" maxlength="10" pattern="[0-9]{10}" placeholder="10 dígitos">
                 </div>
                 <div class="form-group">
                     <label>Celular</label>
-                    <input type="tel" name="celular" required placeholder="871...">
+                    <input type="text" name="celular" maxlength="10" pattern="[0-9]{10}" placeholder="10 dígitos" required>
                 </div>
-
                 <div class="form-group">
                     <label>Comprobante Domicilio (PDF)</label>
-                    <input type="file" name="comprobante_domicilio" accept="application/pdf">
+                    <input type="file" name="comprobante_domicilio" accept="application/pdf" required>
                 </div>
                 <div class="form-group">
                     <label>INE (PDF)</label>
-                    <input type="file" name="INE" accept="application/pdf">
+                    <input type="file" name="INE" accept="application/pdf" required>
                 </div>
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="button" onclick="cerrarModal('modalPrevale')" style="flex:1; background:#9ca3af; color:white;" class="btn-submit">Cancelar</button>
-                <button type="button" onclick="enviarVale()" style="flex:2;" class="btn-submit">Emitir Vale</button>
+                <button type="button" onclick="cerrarModal('modalPrevale')" 
+                        style="flex:1; background:#9ca3af; color:white;" class="btn-submit">Cancelar</button>
+                <button type="submit" style="flex:2;" class="btn-submit" id="btnEmitir">
+                    <i style="width: 16px;"></i> Emitir Vale
+                </button>
             </div>
         </form>
     </div>
@@ -369,11 +373,42 @@ pointer-events: none;">
         document.body.style.overflow = 'auto';
     }
 
-    async function enviarVale() {
-        const form = document.getElementById('formPrevale');
-        const formData = new FormData(form);
+    const hoy = new Date();
+const maxFecha = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate());
+document.getElementById('fecha_nacimiento').max = maxFecha.toISOString().split('T')[0];
 
-        formData.append('folio', 'VALE-' + Date.now());
+    async function enviarVale(e) {
+    if (e) e.preventDefault();
+
+    const form = document.getElementById('formPrevale');
+    const erroresDiv = document.getElementById('erroresVale');
+    const btnEmitir = document.getElementById('btnEmitir');
+
+    // Limpiar errores previos
+    erroresDiv.innerHTML = '';
+
+    // Validar campos requeridos
+    const camposInvalidos = form.querySelectorAll('input:invalid, select:invalid');
+    if (camposInvalidos.length > 0) {
+        let html = '<div class="alert-error">';
+        camposInvalidos.forEach(campo => {
+            const label = campo.closest('.form-group')?.querySelector('label')?.textContent || campo.name;
+            html += `<span><i data-lucide="alert-circle" style="width:18px;"></i> El campo "${label.trim()}" es obligatorio o inválido</span>`;
+        });
+        html += '</div>';
+        erroresDiv.innerHTML = html;
+        lucide.createIcons();
+        erroresDiv.scrollIntoView({ behavior: 'smooth' });
+        return;
+    }
+
+    // Generar folio y bloquear botón
+        document.getElementById('folio_input').value = 'VALE-' + Date.now();
+        btnEmitir.disabled = true;
+        btnEmitir.innerHTML = '<i data-lucide="loader-2" style="width:16px;"></i> Procesando...';
+        lucide.createIcons();
+
+        const formData = new FormData(form);
 
         try {
             const response = await fetch('/api/crear/vale', {
@@ -390,16 +425,35 @@ pointer-events: none;">
             if (response.ok) {
                 cerrarModal('modalPrevale');
                 form.reset();
-                mostrarToast('✅ Vale creado exitosamente', 'success');
+                erroresDiv.innerHTML = '';
+                mostrarToast('✅ Prevale emitido exitosamente', 'success');
+            } else if (response.status === 422 && res.errors) {
+                let html = '<div class="alert-error">';
+                Object.values(res.errors).forEach(errores => {
+                    errores.forEach(error => {
+                        html += `<span><i data-lucide="alert-circle" style="width:18px;"></i> ${error}</span>`;
+                    });
+                });
+                html += '</div>';
+                erroresDiv.innerHTML = html;
+                lucide.createIcons();
+                erroresDiv.scrollIntoView({ behavior: 'smooth' });
+                btnEmitir.disabled = false;
+                btnEmitir.innerHTML = '<i data-lucide="check-circle" style="width:16px;"></i> Emitir Vale';
+                lucide.createIcons();
             } else {
-                mostrarToast('❌ ' + (res.message || 'Error al crear el vale'), 'error');
+                mostrarToast('❌ Ha ocurrido un error interno, intenta de nuevo', 'error');
+                btnEmitir.disabled = false;
+                btnEmitir.innerHTML = '<i data-lucide="check-circle" style="width:16px;"></i> Emitir Vale';
+                lucide.createIcons();
             }
         } catch (error) {
-            console.error('Error en la conexión:', error);
-            mostrarToast('❌ Error de conexión', 'error');
+            mostrarToast('❌ Error de conexión con el servidor', 'error');
+            btnEmitir.disabled = false;
+            btnEmitir.innerHTML = '<i data-lucide="check-circle" style="width:16px;"></i> Emitir Vale';
+            lucide.createIcons();
         }
     }
-
     function mostrarToast(mensaje, tipo = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = mensaje;
@@ -411,5 +465,6 @@ pointer-events: none;">
             toast.style.transform = 'translateY(-20px)';
         }, 3000);
     }
+    lucide.createIcons();
 </script>
 </html>
