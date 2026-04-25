@@ -240,11 +240,15 @@
                             </div>
                             <div class="form-group">
                                 <label>Teléfono Fijo</label>
-                                <input type="number" name="persona[telefono_personal]" required>
+                                <input type="text" name="persona[telefono_personal]" 
+                                    maxlength="10" pattern="[0-9]{10}" 
+                                    placeholder="10 dígitos" required>
                             </div>
                             <div class="form-group">
                                 <label>Celular</label>
-                                <input type="number" name="persona[celular]" required>
+                                <input type="text" name="persona[celular]" 
+                                    maxlength="10" pattern="[0-9]{10}" 
+                                    placeholder="10 dígitos" required>
                             </div>
                             <div class="form-group" style="grid-column: span 3;">
                                 <label>Domicilio Confirmado</label>
@@ -325,13 +329,17 @@
                                 <label>RFC Familiar</label>
                                 <input type="text" name="familiar[RFC]" required maxlength="13">
                             </div>
-                             <div class="form-group">
+                           <div class="form-group">
                                 <label>Teléfono Personal</label>
-                                <input type="number" name="familiar[telefono_personal]" required>
+                                <input type="text" name="familiar[telefono_personal]" 
+                                    maxlength="10" pattern="[0-9]{10}" 
+                                    placeholder="10 dígitos" required>
                             </div>
                             <div class="form-group">
                                 <label>Celular</label>
-                                <input type="number" name="familiar[celular]" required>
+                                <input type="text" name="familiar[celular]" 
+                                    maxlength="10" pattern="[0-9]{10}" 
+                                    placeholder="10 dígitos" required>
                             </div>
                             <div class="form-group">
                                 <label>Sexo Familiar</label>
@@ -454,17 +462,28 @@
 
         function enviarForm(e) {
             if (e) e.preventDefault();
+            
             const form = document.getElementById('multiStepForm');
             const btnSave = document.getElementById('btnSave');
-            
+
             // Limpiar errores previos
             document.querySelectorAll('.error-msg').forEach(el => el.remove());
             document.querySelectorAll('input, select').forEach(el => el.classList.remove('is-invalid'));
 
-            const formData = new FormData(form);
+            // Validar campos requeridos antes de enviar
+            const camposInvalidos = form.querySelectorAll('input:invalid, select:invalid');
+            if (camposInvalidos.length > 0) {
+                camposInvalidos.forEach(campo => campo.classList.add('is-invalid'));
+                mostrarToast('❌ Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            // Deshabilitar botón solo si todo está bien
             btnSave.disabled = true;
             btnSave.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Procesando...';
             lucide.createIcons();
+
+            const formData = new FormData(form);
 
             fetch('/api/crear/distribuidora', {
                 method: 'POST',
@@ -482,23 +501,27 @@
                         window.location.href = "{{ route('coordinador.distribuidoras') }}";
                     }, 2000);
                 } else if (res.status === 422) {
-                    // Errores de validación de Laravel
                     mostrarToast('❌ Revisa los campos marcados en rojo', 'error');
                     highlightErrors(data.errors);
+                    btnSave.disabled = false;
+                    btnSave.innerHTML = '<i data-lucide="check-circle" style="width: 16px;"></i> Finalizar Registro';
+                    lucide.createIcons();
                 } else {
                     mostrarToast('❌ ' + (data.mensaje || 'Error en el servidor'), 'error');
+                    btnSave.disabled = false;
+                    btnSave.innerHTML = '<i data-lucide="check-circle" style="width: 16px;"></i> Finalizar Registro';
+                    lucide.createIcons();
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 mostrarToast('❌ Error de conexión', 'error');
-            })
-            .finally(() => {
                 btnSave.disabled = false;
                 btnSave.innerHTML = '<i data-lucide="check-circle" style="width: 16px;"></i> Finalizar Registro';
                 lucide.createIcons();
             });
         }
 
+        
         function highlightErrors(errors) {
             let firstErrorPage = null;
             let errorList = [];

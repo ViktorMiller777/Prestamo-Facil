@@ -150,11 +150,11 @@
                                     <div style="position: relative; display: flex; align-items: center;">
                                         @if(str_contains($config->clave, 'puntos') || str_contains($config->clave, 'recargo'))
                                             <span style="position: absolute; left: 12px; color: #64748b; font-weight: 700;">$</span>
-                                            <input type="text" name="configuraciones[{{ $config->clave }}]" value="{{ $config->valor }}" 
-                                                style="padding: 10px 10px 10px 25px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;">
+                                            <input type="number" name="configuraciones[{{ $config->clave }}]" value="{{ $config->valor }}" 
+                                                style="padding: 10px 10px 10px 25px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;" required>
                                         @else
-                                            <input type="text" name="configuraciones[{{ $config->clave }}]" value="{{ $config->valor }}" 
-                                                style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;">
+                                            <input type="number" name="configuraciones[{{ $config->clave }}]" value="{{ $config->valor }}" 
+                                                style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;" required>
                                         @endif
                                     </div>
                                     @if($config->descripcion)

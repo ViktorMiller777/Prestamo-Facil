@@ -254,34 +254,37 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3>Crear Nuevo Producto</h3>
-                <button onclick="cerrarModal('modalCrear')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+                <button type="button" onclick="cerrarModal('modalCrear')" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Monto del Préstamo ($)</label>
-                    <input type="number" step="0.01" id="crear-monto" placeholder="0.00">
+            <form id="formCrearProducto" onsubmit="event.preventDefault(); crearProducto()">
+                @csrf
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Monto del Préstamo ($)</label>
+                        <input type="number" step="0.01" name="monto" id="crear-monto" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Plazo (Quincenas)</label>
+                        <input type="number" name="quincenas" id="crear-quincenas" placeholder="Ej: 12" min="0" max="99" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Interés (%)</label>
+                        <input type="number" step="0.01" name="interes_quincenal" id="crear-interes" placeholder="3.5" min="0" max="12" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Seguro ($)</label>
+                        <input type="number" step="0.01" name="seguro" id="crear-seguro" placeholder="150.00" required>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Comisión de Apertura (%)</label>
+                        <input type="number" step="0.01" name="porcentaje_comision" id="crear-comision" placeholder="5.0" min="0" max="99" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Plazo (Quincenas)</label>
-                    <input type="number" id="crear-quincenas" placeholder="Ej: 12">
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancelar" style="padding: 12px 24px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; cursor: pointer;" onclick="cerrarModal('modalCrear')">Cancelar</button>
+                    <button type="submit" class="btn-nuevo">Guardar Producto</button>
                 </div>
-                <div class="form-group">
-                    <label>Interés (%)</label>
-                    <input type="number" step="0.01" id="crear-interes" placeholder="3.5">
-                </div>
-                <div class="form-group">
-                    <label>Seguro ($)</label>
-                    <input type="number" step="0.01" id="crear-seguro" placeholder="150.00">
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Comisión de Apertura (%)</label>
-                    <input type="number" step="0.01" id="crear-comision" placeholder="5.0">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancelar" style="padding: 12px 24px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; cursor: pointer;" onclick="cerrarModal('modalCrear')">Cancelar</button>
-                <button class="btn-nuevo" onclick="crearProducto()">Guardar Producto</button>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -308,9 +311,9 @@
                 </div>
                 <div class="form-group">
                     <label>Seguro ($)</label>
-                    <input type="number" step="0.01" id="editar-seguro">
+                    <input type="number" step="0.01" id="editar-seguro" required>
                 </div>
-                <div class="form-group" style="grid-column: span 2;">
+                <div class="form-group" style="grid-column: span 2;" required>
                     <label>Comisión (%)</label>
                     <input type="text" id="editar-comision">
                 </div>
@@ -351,6 +354,10 @@
         }
 
         function crearProducto() {
+            const btn = document.querySelector('#formCrearProducto button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Guardando...';
+
             const body = {
                 monto:               parseFloat(document.getElementById('crear-monto').value),
                 quincenas:           parseInt(document.getElementById('crear-quincenas').value),
@@ -372,12 +379,19 @@
             .then(data => {
                 if (data.errors) {
                     mostrarToast('❌ Error de validación', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Guardar Producto';
                     return;
                 }
                 cerrarModal('modalCrear');
                 mostrarToast('✅ Producto creado exitosamente', 'success');
                 setTimeout(() => location.reload(), 1500);
             })
+            .catch(() => {
+                mostrarToast('❌ Error de conexión', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Guardar Producto';
+            });
         }
         
         function editarProducto(id, monto, quincenas, interes, seguro, comision) {
@@ -419,7 +433,6 @@
         }
 
         function eliminarProducto(id) {
-            if (!confirm('¿Estás seguro de eliminar este producto?')) return;
             fetch(`/api/eliminar/producto/${id}`, {
                 method: 'DELETE',
                 headers: {
