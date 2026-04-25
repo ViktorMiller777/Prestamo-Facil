@@ -11,18 +11,22 @@ class SucursalSeeder extends Seeder
     {
         $sucursales = [
             [
+                'id'        => 1,                    // ID 1
                 'nombre'    => 'Prestamo_Facil',
                 'municipio' => 'Gómez Palacio',
             ],
             [
+                'id'        => 2,                    // ID 2
                 'nombre'    => 'Prestamo_Facil',
                 'municipio' => 'Lerdo',
             ],
             [
+                'id'        => 3,                    // ID 3
                 'nombre'    => 'Prestamo_Facil',
                 'municipio' => 'Durango',
             ],
             [
+                'id'        => 4,                    // ID 4
                 'nombre'    => 'Prestamo_Facil',
                 'municipio' => 'Torreón',
             ],
