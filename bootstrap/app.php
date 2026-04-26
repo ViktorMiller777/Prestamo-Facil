@@ -5,6 +5,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -33,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->render(function (QueryException  $e){
+            if($e->getCode() === 2002 || str_contains($e->getMessage(), 'Connection refused ')) {
+                Log::emergency("La base de datos esta caida.");
+                return response()->view('errores.db-fail',[],503);
+            }
+        });
     })->create();

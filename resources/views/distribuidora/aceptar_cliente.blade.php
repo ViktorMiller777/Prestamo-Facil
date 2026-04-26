@@ -236,9 +236,6 @@
 
     <div class="container">
 
-        {{-- ══════════════════════════════════════════════
-             PANEL: Completar cambio con Token B
-        ══════════════════════════════════════════════ --}}
         <div class="page-card">
             <div class="page-header">
                 <div class="page-header-icon">
@@ -299,9 +296,6 @@
             </div>
         </div>
 
-        {{-- ══════════════════════════════════════════════
-             HISTORIAL: Transferencias recibidas
-        ══════════════════════════════════════════════ --}}
         <div class="page-card">
             <div class="page-header">
                 <div class="page-header-icon" style="background: #f3f4f6; color: #64748b;">
