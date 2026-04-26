@@ -5,89 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicio en Mantenimiento | Préstamo Fácil</title>
     <meta name="description" content="Estamos realizando mantenimiento en nuestros servidores. Volveremos pronto.">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
+        :root {
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --border: #e2e8f0;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
         *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #0c1a3a 50%, #0f172a 100%);
-            color: white;
-            display: flex;
+            background: var(--bg);
+            color: var(--text-main);
+            display: flex; 
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-y: auto;
+            padding: 20px;
             position: relative;
         }
 
-        /* ── Fondo animado ── */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.15;
-            animation: drift 20s ease-in-out infinite alternate;
-            pointer-events: none;
-        }
-        .bg-orb-1 {
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, #1e40af, transparent);
-            top: -200px; left: -200px;
-            animation-delay: 0s;
-        }
-        .bg-orb-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, #7c3aed, transparent);
-            bottom: -150px; right: -100px;
-            animation-delay: -8s;
-        }
-        .bg-orb-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, #0369a1, transparent);
-            top: 50%; left: 60%;
-            animation-delay: -4s;
-        }
-        @keyframes drift {
-            from { transform: translate(0, 0) scale(1); }
-            to   { transform: translate(30px, -40px) scale(1.08); }
-        }
-
-        /* ── Grid de puntos ── */
-        .dot-grid {
-            position: fixed;
-            inset: 0;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-        }
+        /* ── Cleanup for removed animated background ── */
+        .bg-orb, .dot-grid { display: none; }
 
         /* ── Tarjeta principal ── */
         .card {
             position: relative;
             z-index: 10;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: 28px;
-            padding: 3.5rem 4rem;
-            max-width: 640px;
+            background: var(--white);
+            border-radius: 24px;
+            padding: 50px;
+            max-width: 580px;
             width: calc(100% - 2rem);
             text-align: center;
-            box-shadow:
-                0 40px 80px rgba(0,0,0,0.5),
-                0 0 0 1px rgba(255,255,255,0.05) inset;
-            animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            animation: fadeIn 0.6s ease-out;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to   { opacity: 1; transform: translateY(0); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ── Ícono central ── */
@@ -101,7 +71,7 @@
         .icon-ring {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1.5px solid rgba(239, 68, 68, 0.2);
             animation: ripple 2.5s ease-out infinite;
         }
         .icon-ring:nth-child(1) { width: 90px;  height: 90px;  animation-delay: 0s; }
@@ -114,24 +84,24 @@
         .icon-circle {
             position: relative;
             z-index: 1;
-            width: 72px; height: 72px;
-            background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05));
-            border: 1px solid rgba(239,68,68,0.4);
-            border-radius: 50%;
+            width: 80px; height: 80px;
+            background: #fef2f2;
+            border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #f87171;
+            color: var(--danger);
+            border: 1px solid #fee2e2;
         }
-        .icon-circle i { width: 32px; height: 32px; }
+        .icon-circle i { width: 36px; height: 36px; }
 
         /* ── Código de error ── */
         .error-code {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: #f87171;
+            color: var(--danger);
             background: rgba(239,68,68,0.1);
             border: 1px solid rgba(239,68,68,0.2);
             border-radius: 99px;
@@ -144,26 +114,23 @@
         .error-title {
             font-size: 2.4rem;
             font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #ffffff, #93c5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-main); /* Use main text color */
+            margin-bottom: 1.2rem;
+            line-height: 1.1;
         }
 
         /* ── Descripción ── */
         .error-desc {
             font-size: 1.05rem;
-            color: #94a3b8;
+            color: var(--text-muted);
             line-height: 1.7;
             margin-bottom: 2rem;
         }
 
         /* ── Separador ── */
         .divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            height: 1px; /* Keep separator */
+            background: var(--border);
             margin: 2rem 0;
         }
 
@@ -178,23 +145,23 @@
         .chip {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 99px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            font-weight: 500;
+            gap: 6px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
         }
         .chip-dot {
-            width: 8px; height: 8px;
+            width: 7px; height: 7px;
             border-radius: 50%;
-            flex-shrink: 0;
         }
-        .chip-dot.red    { background: #ef4444; box-shadow: 0 0 6px #ef4444; animation: blink 1.5s ease-in-out infinite; }
-        .chip-dot.yellow { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
-        .chip-dot.green  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+        .chip-dot.red    { background: var(--danger); animation: blink 1.5s ease-in-out infinite; }
+        .chip-dot.yellow { background: var(--warning); }
+        .chip-dot.green  { background: var(--success); }
+
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50%       { opacity: 0.3; }
@@ -202,23 +169,20 @@
 
         /* ── Footer ── */
         .card-footer {
-            margin-top: 2.5rem;
-            font-size: 0.8rem;
-            color: #475569;
+            margin-top: 2rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            color: var(--text-muted);
         }
-        .card-footer i { width: 14px; height: 14px; }
+
         .logo-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-weight: 800;
-            font-size: 0.95rem;
-            color: #e2e8f0;
-            margin-bottom: 0.5rem;
         }
         .logo-box {
             background: linear-gradient(135deg, #2563eb, #1e40af);
@@ -227,31 +191,29 @@
             border-radius: 8px;
             font-size: 0.8rem;
             font-weight: 900;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.4);
         }
 
         /* ── Responsive ── */
         @media (max-width: 600px) {
-            .card { padding: 2.5rem 1.75rem; }
-            .error-title { font-size: 1.8rem; }
+            .card { padding: 30px 20px; width: 100%; }
+            .error-title { font-size: 1.75rem; margin-bottom: 0.8rem; }
+            .error-desc { font-size: 0.95rem; }
+            .icon-ring:nth-child(1) { width: 75px;  height: 75px; }
+            .icon-ring:nth-child(2) { width: 100px; height: 100px; }
+            .icon-ring:nth-child(3) { width: 125px; height: 125px; }
+            .icon-circle { width: 65px; height: 65px; border-radius: 18px; }
+            .icon-circle i { width: 28px; height: 28px; }
+            .status-chips { gap: 8px; margin-bottom: 1.5rem; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Orbes de fondo -->
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-    <div class="dot-grid"></div>
-
     <!-- Tarjeta -->
     <div class="card">
-
         <!-- Logo -->
         <div style="margin-bottom: 2rem;">
-            <div class="logo-badge">
-                <span class="logo-box">PF</span>
+            <div class="logo-badge" style="color: var(--text-main); font-size: 1.2rem;">
+                <span class="logo-box" style="padding: 5px 12px; font-size: 0.9rem;">PF</span>
                 Préstamo Fácil
             </div>
         </div>
@@ -262,15 +224,12 @@
             <div class="icon-ring"></div>
             <div class="icon-ring"></div>
             <div class="icon-circle">
-                <i data-lucide="database-zap"></i>
+                <i data-lucide="server-off"></i>
             </div>
         </div>
 
-        <!-- Badge de error -->
-        <div class="error-code">Error 503 &mdash; Servicio no disponible</div>
-
-        <!-- Título -->
-        <h1 class="error-title">Servicio en<br>Mantenimiento</h1>
+        <span class="error-code">Error 503 &mdash; Database Connection</span>
+        <h1 class="error-title">Servicio en Mantenimiento</h1>
 
         <!-- Descripción -->
         <p class="error-desc">
@@ -297,14 +256,11 @@
             </div>
         </div>
 
-      
-
         <!-- Footer -->
         <div class="card-footer">
-            <i data-lucide="shield-check"></i>
-            &copy; {{ date('Y') }} Préstamo Fácil México &mdash; Todos los derechos reservados.
+            <i data-lucide="shield-check" style="width: 16px;"></i>
+            &copy; {{ date('Y') }} Préstamo Fácil &bull; Soporte Técnico
         </div>
-
     </div>
 
     <script>
