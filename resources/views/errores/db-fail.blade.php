@@ -134,6 +134,44 @@
             margin: 2rem 0;
         }
 
+        /* ── Sugerencia y Botón (Consistencia con CSRF) ── */
+        .suggestion-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .btn-reload {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-reload:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
         /* ── Chips de estado ── */
         .status-chips {
             display: flex;
@@ -228,15 +266,27 @@
             </div>
         </div>
 
-        <span class="error-code">Error 503 &mdash; Database Connection</span>
+        <span class="error-code">{{ isset($error_type) ? str_replace('_', ' ', $error_type) : 'Error 503 — Database Connection' }}</span>
         <h1 class="error-title">Servicio en Mantenimiento</h1>
 
         <!-- Descripción -->
         <p class="error-desc">
-            Estamos experimentando dificultades técnicas con nuestro servidor de datos.<br>
-            Nuestro equipo ya está trabajando para restablecer el servicio.<br>
-            Por favor, intenta de nuevo en unos minutos.
+            {{ $message ?? 'Estamos experimentando dificultades técnicas con nuestro servidor de datos. Nuestro equipo ya está trabajando para restablecer el servicio.' }}
         </p>
+
+        @if(isset($suggestion))
+            <div class="suggestion-box">
+                <i data-lucide="info" style="color: var(--accent); flex-shrink: 0; width: 20px;"></i>
+                <span>{{ $suggestion }}</span>
+            </div>
+        @endif
+
+        @if(isset($auto_reload) && $auto_reload)
+            <button onclick="window.location.reload()" class="btn-reload">
+                <i data-lucide="refresh-cw" style="width: 18px;"></i>
+                Reintentar Conexión
+            </button>
+        @endif
 
         <div class="divider"></div>
 
