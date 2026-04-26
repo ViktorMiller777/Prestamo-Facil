@@ -3,9 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Middleware\TrustProxies;
-use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -22,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 at: '*',
                 headers: Request::HEADER_X_FORWARDED_FOR |
                         Request::HEADER_X_FORWARDED_HOST |
-                    Request::HEADER_X_FORWARDED_PORT |
+                        Request::HEADER_X_FORWARDED_PORT |
                         Request::HEADER_X_FORWARDED_PROTO
         );
         $middleware->alias([
@@ -36,10 +35,22 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (QueryException  $e){
-            if($e->getCode() === 2002 || str_contains($e->getMessage(), 'Connection refused ')) {
-                Log::emergency("La base de datos esta caida.");
-                return response()->view('errores.db-fail',[],503);
+
+        $exceptions->render(function (\Throwable $e) {
+
+            Log::error("EXCEPCION: ".$e::class." | ".$e->getMessage());
+
+            if (
+                $e instanceof \PDOException ||
+                $e instanceof \Illuminate\Database\QueryException ||
+                $e instanceof \Illuminate\Http\Client\ConnectionException ||
+                str_contains($e->getMessage(), 'SQLSTATE') ||
+                str_contains($e->getMessage(), 'Connection') ||
+                str_contains($e->getMessage(), 'refused') ||
+                str_contains($e->getMessage(), 'gone away') ||
+                str_contains($e->getMessage(), 'SSL')
+            ) {
+                return response()->view('errores.db-fail', [], 503);
             }
         });
-    })->create();
+    }) -> create();
