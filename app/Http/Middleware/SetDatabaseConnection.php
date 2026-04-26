@@ -16,8 +16,8 @@ class SetDatabaseConnection
         $host = gethostname();
 
         $isVpn = str_starts_with($ip, '10.200.0.');
-        $isFromLB = ($ip === '10.200.0.3');  // ✅ TRUE si viene del balanceador
-        $isApp3 = ($host === 'app3');         // ✅ Más exacto que str_contains
+        $isFromLB = ($ip === '10.200.0.3');
+        $isApp3 = ($host === 'app3');
 
         Log::info('MIDDLEWARE DB ejecutado', [
             'ip' => $ip,
