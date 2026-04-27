@@ -62,7 +62,7 @@ return [
 
         'mysql_normal' => [
             'driver' => 'mysql',
-            'host' => env('MASTER2_HOST'),
+            //'host' => env('MASTER2_HOST'),
             'read' => [
                 'host' => [env('SLAVE_HOST')],
             ],
