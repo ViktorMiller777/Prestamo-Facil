@@ -143,6 +143,10 @@
                 <strong>{{ $d1 }},{{ $d2 }},{{ $d3 }} de {{ strtolower($mesAnio) }}</strong>
             </div>
             <div>
+                <span>Categoría</span>
+                <strong>${{ number_format($relacion['categoria'] ?? 0, 2) }}</strong>
+            </div>
+            <div>
                 <span>Total a Pagar</span>
                 <strong class="text-total">${{ number_format($relacion['total_pagar'], 2) }}</strong>
             </div>
@@ -152,10 +156,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Producto</th>
                         <th>Cliente</th>
                         <th>Pagos Realizados</th>
+                        <th>Categoría</th>
                         <th>Comisión</th>
                         <th>Pago</th>
                         <th>Recargos</th>
@@ -168,12 +172,18 @@
                         $totalPago = 0;
                         $totalRecargos = 0;
                         $totalGeneral = 0;
+                        $totalCategoriaSum = 0;
+                        // Calculamos el ratio de categoría para desglosarlo por fila
+                        $ratioCategoria = ($relacion['totales'] > 0) ? (($relacion['categoria'] ?? 0) / $relacion['totales']) : 0;
                     @endphp
                     @foreach($detalles as $index => $det)
                     @php
                         $comision = $det['comision'] ?? 0;
                         $pago = $det['pago'] ?? 0;
-                        // Calculamos el recargo individual dividiendo el total de recargos entre la cantidad de vales
+                        $montoBase = $det['monto'] ?? 0;
+                        $categoriaFila = $montoBase * $ratioCategoria;
+
+                        // Calculamos el recargo individual
                         $recargos = (count($detalles) > 0) ? ($relacion['recargos'] / count($detalles)) : 0;
                         $totalFila = $pago + $recargos;
 
@@ -181,9 +191,9 @@
                         $totalPago += $pago;
                         $totalRecargos += $recargos;
                         $totalGeneral += $totalFila;
+                        $totalCategoriaSum += $categoriaFila;
                     @endphp
                     <tr>
-                        <td>{{ $index + 1 }}</td>
                         <td>{{ $det['producto_folio'] }}</td>
                         <td>{{ $det['nombre_cliente'] }}</td>
                         <td>
@@ -192,6 +202,7 @@
                             @endphp
                             {{ $pagoActual }}/{{ $det['quincenas'] }}
                         </td>
+                        <td>${{ number_format($categoriaFila, 2) }}</td>
                         <td>${{ number_format($comision, 2) }}</td>
                         <td>${{ number_format($pago, 2) }}</td>
                         <td>${{ number_format($recargos, 2) }}</td>
@@ -201,7 +212,8 @@
                 </tbody>
                 <tfoot>
                     <tr class="row-total">
-                        <td colspan="4" style="text-align: right;">Totales</td>
+                        <td colspan="3" style="text-align: right;">Totales</td>
+                        <td>${{ number_format($totalCategoriaSum, 2) }}</td>
                         <td>${{ number_format($totalComision, 2) }}</td>
                         <td>${{ number_format($totalPago, 2) }}</td>
                         <td>${{ number_format($totalRecargos, 2) }}</td>
@@ -215,7 +227,7 @@
             <div class="bank-data">
                 <div class="bank-logo">BBVA</div>
                 <p>Convenio: <strong>{{ $relacion['convenio'] }}</strong></p>
-                <p>Clabe: <strong>{{ $relacion['cable'] }}</strong></p>
+                <p>Clabe: <strong>{{ $relacion['clabe'] }}</strong></p>
             </div>
             <div style="text-align: right; font-size: 0.75rem; color: #94a3b8;">
                 Generado el: {{ now()->format('d/m/Y H:i') }}<br>

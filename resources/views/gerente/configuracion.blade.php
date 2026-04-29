@@ -152,12 +152,20 @@
                                             <span style="position: absolute; left: 12px; color: #64748b; font-weight: 700;">$</span>
                                             <input type="number" name="configuraciones[{{ $config->clave }}]" value="{{ $config->valor }}" 
                                                 style="padding: 10px 10px 10px 25px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;" required>
+
+                                        @elseif(str_contains($config->clave, 'fecha'))
+                                            <input type="date" name="configuraciones[{{ $config->clave }}]" 
+                                                value="{{ \Carbon\Carbon::parse($config->valor)->format('Y-m-d') }}" 
+                                                min="{{ now()->format('Y-m-d') }}"
+                                                style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;" required>
+
                                         @else
                                             <input type="number" name="configuraciones[{{ $config->clave }}]" value="{{ $config->valor }}" 
                                                 style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.9rem; width: 100%;" required>
                                         @endif
                                     </div>
                                     @if($config->descripcion)
+
                                         <small style="color: #94a3b8; font-size: 0.75rem;">{{ $config->descripcion }}</small>
                                     @endif
                                 </div>

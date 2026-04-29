@@ -248,11 +248,11 @@
                                 <label>Celular</label>
                                 <input type="text" name="persona[celular]" 
                                     maxlength="10" pattern="[0-9]{10}" 
-                                    placeholder="10 dígitos" required>
+                                    placeholder="10 dígitos">
                             </div>
                             <div class="form-group" style="grid-column: span 3;">
                                 <label>Domicilio Confirmado</label>
-                                <input type="text" name="distribuidora[domicilio]" id="domicilio_input" readonly style="background: #f1f5f9; cursor: not-allowed;" placeholder="Se llenará al buscar en el mapa ↓">
+                                <input type="text" value="Torre Oriental 855" name="distribuidora[domicilio]" id="domicilio_input" readonly style="background: #f1f5f9; cursor: not-allowed;" placeholder="Se llenará al buscar en el mapa ↓">
                             </div>
 
                             <div class="form-group" style="grid-column: span 3; margin-top: 5px;">

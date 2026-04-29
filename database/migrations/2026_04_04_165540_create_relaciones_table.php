@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('total_pagar', 12, 2); // "\$4,800.00" 
 
             $table->string('pagos_realizados');
-
+$table->decimal('categoria', 12, 2)->default(0.00); // Dinero por categoría
             $table->decimal('recargos', 12, 2)->default(0.00);
             $table->decimal('total', 12, 2)->default(0.00); // Total por fila [cite: 8]
             $table->decimal('totales', 12, 2)->default(0.00); // Sumatoria final [cite: 8]

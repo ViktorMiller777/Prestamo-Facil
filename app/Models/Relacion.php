@@ -23,11 +23,11 @@ class Relacion extends Model
         'total_pagar',
 
         'pagos_realizados',
-
+        'categoria',
         'recargos',
         'total',
         'totales',
-
+        
         //RELLENO
         'nombre_empresa',
         'convenio',
