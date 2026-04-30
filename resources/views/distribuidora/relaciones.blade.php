@@ -59,10 +59,9 @@
                     <tr>
                         <th>Referencia</th>
                         <th>Fecha Límite</th>
-                        <th>Límite Crédito</th>
-                        <th>Disponible</th>
-                        <th>Recargos</th>
                         <th>Total a Pagar</th>
+                        <th>Pagado</th>
+                        <th>Pendiente</th>
                         <th>Ver Detalle</th> 
                     </tr>
                 </thead>
@@ -77,13 +76,13 @@
                                 <span class="text-bold">{{ \Carbon\Carbon::parse($rel->fecha_limite_pago)->format('d/m/Y') }}</span>
                                 <br><small>Anticipado: {{ \Carbon\Carbon::parse($rel->pago_anticipado)->format('d/m/Y') }}</small>
                             </td>
-                            <td>${{ number_format($rel->limite_de_credito, 2) }}</td>
-                            <td>${{ number_format($rel->credito_disponible, 2) }}</td>
-                            <td style="{{ $rel->recargos > 0 ? 'color: #dc2626; font-weight: bold;' : '' }}">
-                                ${{ number_format($rel->recargos, 2) }}
+                            <td>
+                                <span class="text-bold">${{ number_format($rel->total_pagar, 2) }}</span>
+                                <br><small>Adeudo Ant: ${{ number_format($rel->adeudo_anterior, 2) }}</small>
                             </td>
-                            <td class="text-money" style="font-size: 1.1rem;">
-                                ${{ number_format($rel->total_pagar, 2) }}
+                            <td class="text-money">${{ number_format($rel->monto_pagado, 2) }}</td>
+                            <td style="{{ $rel->saldo_pendiente > 0 ? 'color: #dc2626; font-weight: bold;' : '' }}">
+                                ${{ number_format($rel->saldo_pendiente, 2) }}
                             </td>
                              <td>
                             <a href="{{ route('detalle_vale', $rel->id) }}" class="btn-detalle">

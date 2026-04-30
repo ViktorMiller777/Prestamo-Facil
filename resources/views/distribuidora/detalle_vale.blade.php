@@ -147,6 +147,10 @@
                 <strong>${{ number_format($relacion['categoria'] ?? 0, 2) }}</strong>
             </div>
             <div>
+                <span>Adeudo Anterior</span>
+                <strong style="color: #ef4444;">${{ number_format($relacion['adeudo_anterior'] ?? 0, 2) }}</strong>
+            </div>
+            <div>
                 <span>Total a Pagar</span>
                 <strong class="text-total">${{ number_format($relacion['total_pagar'], 2) }}</strong>
             </div>
@@ -185,7 +189,8 @@
 
                         // Calculamos el recargo individual
                         $recargos = (count($detalles) > 0) ? ($relacion['recargos'] / count($detalles)) : 0;
-                        $totalFila = $pago + $recargos;
+                        // El total de la fila es Pago + Recargos - Descuento de Categoría
+                        $totalFila = ($pago + $recargos) - $categoriaFila;
 
                         $totalComision += $comision;
                         $totalPago += $pago;

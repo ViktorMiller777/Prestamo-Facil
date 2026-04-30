@@ -27,6 +27,10 @@ class Relacion extends Model
         'recargos',
         'total',
         'totales',
+
+        'monto_pagado',
+        'saldo_pendiente',
+        'adeudo_anterior',
         
         //RELLENO
         'nombre_empresa',
